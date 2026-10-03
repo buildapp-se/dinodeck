@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge, offline, ljud och alla bilder live. Kvar: uttal
-nextAction: Patrik lyssnar igenom de 60 ljuden. Sedan uttal av namnen (BACKLOG P1 punkt 6)
+currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
+nextAction: Patrik lyssnar igenom de 120 ljudklippen (60 läten, 60 namn) och säger vilka som ska göras om
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -94,13 +94,26 @@ reviewedAt: 2026-10-03
 - **Verifierat** i Chromium 390×844 och 1024×768: tryck på djuret spelar rätt fil utan att vända, tryck ovanför bilden och på namnet vänder, "Lyssna" spelar lätet, svep sparar favorit utan ljud, ljud av döljer allt. `npm test`: 13 tester.
 - **Inte verifierat:** hur det låter. Riktig telefon, särskilt iPhone (ljud kräver ett tryck först, och tyst läge kan stänga av Web Audio). Djupa läten kan bli svaga i en telefonhögtalare: alligatorbaserade läten har bara omkring 30 % av energin över 300 Hz.
 
+## 2026-10-03: uttal av namnen
+
+- **Byggt:** 60 klipp i `public/audio/` (`<id>-say-sv.mp3`, `<id>-say-en.mp3`, 638 kB), knapp med högtalare vid uttalsraden på kortets baksida och i detaljvyn, `tools/make-names.py`.
+- **Ingen tjänst, inget konto.** Talsyntesen är Piper (`piper-tts` 1.8.0, GPL-3, körs bara som verktyg på den här datorn och följer inte med appen). Villkor lästa 2026-10-03 i varje rösts `MODEL_CARD`:
+  - Svenska `sv_SE-nst-medium`: tränad från grunden av KB-labb på NST-databasen, **CC0**.
+  - Engelska `en_GB-cori-high`: tränad från grunden på inspelningar från LibriVox, **public domain**.
+  - Förrådet med röster (`rhasspy/piper-voices`) är MIT. Klippen får publiceras och kräver ingen källhänvisning. Röster som är finjusterade från `lessac` valdes bort: den datamängden har hårdare villkor.
+- **Fälla: ge inte rösten namnet som text.** Svenska rösten lägger då trycket på första stavelsen i alla namn och säger sj-ljud i Brachiosaurus och Pachycephalosaurus. Engelska rösten får Deinonychus, Maiasaura, Iguanodon och Plateosaurus fel. Uttalet står därför som fonetisk skrift (IPA, så som espeak-ng skriver den) per namn och språk i tabellen `NAMES`, och matas in med `[[ ... ]]`. Det följer uttalshjälpen i katalogen (`pronounce`).
+- **INTE AVLYSSNAT.** Claude har granskat den fonetiska skriften, inte ljudet. Skriptet kontrollerar att rösten har alla tecken och att längden är rimlig per ljud. Låter ett namn fel: ändra raden i `NAMES` och kör om.
+- Röstmodellerna (177 MB) laddas ned vid första körningen till `audio-src/voices/`, som är gitignorerad.
+- **Verifierat** i Chromium 390×844 och 1024×768: knappen spelar rätt fil på svenska och engelska, på kortets baksida och i detaljvyn, och döljs med ljudet av. Offline sparas nu 162 filer, `dist/` är 6,8 MB.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.
 - `npm test`: typkontroll och tester. Läs exit-koden, inte bara utskriften.
 - `npm run build`: bygger till `dist/`, och skriver `dist/sw.js`.
 - `uv run --with pillow tools/make-icons.py`: gör om ikoner och favicon.
-- `uv run --with soundfile --with numpy tools/make-sounds.py`: bygger om alla 60 ljud. En rad per kontroll, felkod om något ser fel ut.
+- `uv run --with soundfile --with numpy tools/make-sounds.py`: bygger om alla 60 läten. En rad per kontroll, felkod om något ser fel ut.
+- `uv run --python 3.12 --with piper-tts --with soundfile --with numpy tools/make-names.py`: bygger om de 60 namnklippen.
 - Push till `main` bygger och lägger ut via `.github/workflows/deploy.yml`.
 
 ## Bildpipeline

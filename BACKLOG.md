@@ -12,7 +12,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 3. ✅ **Utmaningar och låsta kort** (2026-10-03).
 4. ✅ **Tidslinje** (2026-10-03).
 5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
-6. ✅ **Ljud** (2026-10-03), två per djur. **Patrik lyssnar igenom alla 60**: de är byggda och uppmätta men inte avlyssnade. Kvar: **uttal** av namnen, 30 × 2 språk.
+6. ✅ **Ljud och uttal** (2026-10-03): två läten per djur och namnet uppläst på två språk. **Patrik lyssnar igenom alla 120 klipp**: de är byggda och uppmätta men inte avlyssnade av någon.
 7. ✅ **Offline** (service worker), manifest med ikoner och favicon (2026-10-03).
 8. ✅ **Föräldraläge** (2026-10-03).
 

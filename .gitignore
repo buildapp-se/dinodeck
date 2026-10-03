@@ -2,5 +2,7 @@ node_modules/
 dist/
 # Source art and Codex logs stay on this machine, never production assets.
 img-src/
+# Voice models for tools/make-names.py: 177 MB, downloaded on first run.
+audio-src/voices/
 .repowise/
 .playwright-mcp/

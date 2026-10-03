@@ -299,7 +299,19 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 .listen { margin-top: 10px; background: var(--bg); color: var(--paper); }
 .guess { margin-top: 6px; font-size: 0.85rem; color: var(--muted); }
 .detail .art img { cursor: pointer; }
-.muted .snd, .muted .listen, .muted .guess { display: none; }
+.say-btn {
+  min-width: 44px;
+  min-height: 44px;
+  margin-left: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.07);
+  font-size: 1.1rem;
+  font-style: normal;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.muted .snd, .muted .listen, .muted .guess, .muted .say-btn { display: none; }
 
 /* Parent mode */
 .hold {

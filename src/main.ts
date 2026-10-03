@@ -46,7 +46,7 @@ function factsHtml(d: Dino): string {
   const note = groupNote(l, d.group);
   const size = `${t(l, 'about')} ${num(l, d.lengthM)} m`;
   return `
-    <p class="say">${d.pronounce[l]}</p>
+    <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">🔊</button></p>
     ${note ? `<p class="note">${note}</p>` : ''}
     <p class="lead">${d.short[l]}</p>
     <dl class="facts">

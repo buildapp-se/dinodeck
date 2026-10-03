@@ -23,6 +23,7 @@ const UI = {
   found: { sv: 'Hittad i', en: 'Found in' },
   sound: { sv: 'Hur lät den?', en: 'What did it sound like?' },
   listen: { sv: 'Lyssna', en: 'Listen' },
+  sayName: { sv: 'Hör namnet', en: 'Hear the name' },
   soundGuess: {
     sv: 'Ingen har hört djuret på riktigt. Ljudet är en gissning.',
     en: 'Nobody has ever heard this animal. The sound is a guess.',

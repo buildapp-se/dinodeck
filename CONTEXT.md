@@ -19,7 +19,7 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 | Profiler | En gemensam samling per enhet. Inga profiler. |
 | Föräldraläge | Lås upp allt, nollställ, språk, ljud av. Öppnas med 3 sekunders tryck på kugghjulet uppe till höger. Språkbytet finns bara här. |
 | Ljud | Två per djur: filmvrål när man trycker på djuret, och "så här tror forskare att den lät" på baksidan. Byggs av fria inspelningar av nutida djur, pitchade efter kroppsvikt. Bara CC0 eller public domain, antecknat per källfil i `audio-src/sources.json`. Parasaurolophus läte är ett syntetiskt horn. |
-| Uttal | Färdiga ljudklipp, 30 namn × 2 språk. Tjänst väljs när steget byggs, efter att villkoren för gratisnivån är lästa. |
+| Uttal | Färdiga ljudklipp, 30 namn × 2 språk. Ingen tjänst och inget konto: Piper körs lokalt med rösterna `sv_SE-nst` (CC0) och `en_GB-cori` (public domain). Klippen får publiceras utan källhänvisning. Uttalet skrivs som fonetisk skrift i `tools/make-names.py`, inte som text. |
 | Fakta | Varje kort har källa i datat. Osäkert (färg, läte, fjädrar) skrivs som "forskare tror". Patrik stickprovar. |
 | Bilder | En frilagd bild per djur. Används på kort, i scen och som silhuett (silhuetten görs i CSS). |
 | Bildstil | Patrik valde `03-gouache-picturebook` ur stilrunda 1 (2026-10-03): detaljerad, naturtrogen bilderboksmålning i varma jordfärger. Referensbilder är T. rex och Velociraptor. En alternativ "söt" stil som går att välja i appen ligger i backloggen, mycket senare. |
