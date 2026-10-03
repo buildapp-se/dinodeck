@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# Source art and Codex logs stay on this machine, never production assets.
+img-src/
+.repowise/
+.playwright-mcp/
