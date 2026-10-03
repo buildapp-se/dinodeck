@@ -4,8 +4,8 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 ## P0
 
-1. **Välj bildstil.** Patrik väljer ur stilrunda 2 (`img-src/style-round/`). Därefter fryses tre referensbilder och promptmallen skrivs in i `HANDOFF.md`.
-2. **Bilder till de 8 startkorten.** Generera i vald stil, frilägg, konvertera till `public/img/<id>.webp`. Avgör i samma steg om Codex ger genomskinlig bakgrund direkt eller om den tas bort i efterhand.
+1. ✅ **Bildstil vald** (2026-10-03): gouache-bilderbok, se `CONTEXT.md`.
+2. **Bilder till alla 30 djur.** Pipeline i `HANDOFF.md`. Varje bild granskas mot anatominoten i `img-src/BRIEF-art.md` innan den konverteras.
 
 ## P1
 
@@ -23,3 +23,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 - Favicon saknas (404 i konsolen).
 - Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.
 - Uppläsning av kortens texter (v2).
+
+## P3
+
+- **Alternativa bildstilar som går att välja i appen**, till exempel söta dinosaurier. Patrik 2026-10-03: "mycket senare". Stilrunda 2 (`img-src/style-round/sheet2.png`) har sju kandidater. Kräver en bilduppsättning per stil och ett val i inställningarna.

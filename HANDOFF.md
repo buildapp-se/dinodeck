@@ -2,8 +2,8 @@
 schemaVersion: 1
 status: active
 currentGoal: Steg 1 och 2 live (kortlek, favoriter, utmaningar, 30 djur), sedan bilder i vald stil
-nextAction: Patrik väljer bildstil ur stilrunda 2, därefter bilder till de 8 startkorten
-blockers: [bildstil ej vald]
+nextAction: Granska och konvertera Codex-bilderna för de 28 återstående djuren, sedan tidslinjen
+blockers: []
 reviewedAt: 2026-10-03
 ---
 
@@ -35,8 +35,17 @@ reviewedAt: 2026-10-03
 
 Codex CLI körs härifrån: `codex exec --skip-git-repo-check -s workspace-write -C /c/dev/dinodeck "<prompt>"`, med `$imagegen` i briefen. Resultaten hamnar i `C:\Users\patri\.codex\generated_images\` och kopieras till `img-src/`.
 
-- **Stilrunda 1 underkänd.** Åtta stilar i en och samma Codex-session blev samma halvrealistiska paleoart i olika färg. Brief: `img-src/style-round/BRIEF.md`.
-- **Stilrunda 2:** en ny Codex-session per stil, stilen först i prompten, `img-src/style-round/BRIEF2.md` och `styles2.txt`. Filer `r2-<stil>-<djur>.png`.
+**Vald stil: `03-gouache-picturebook` ur stilrunda 1.** Arbetsgång per djur:
+
+1. **Generera.** Mall, anatominot och färger per djur står i `img-src/BRIEF-art.md`. Referensbilderna `img-src/tyrannosaurus-rex.png` och `velociraptor.png` bifogas varje körning. Prompten måste stå före `-i`, annars sväljer flaggan den: `codex exec ... "<prompt>" -i a.png -i b.png`.
+2. **Granska** bilden mot anatominoten. Gör om bara det som är fel.
+3. **Konvertera:** `uv run --with pillow tools/convert-art.py <id>`. Tar bort vit bakgrund (eller behåller genomskinlighet som redan finns), beskär och sparar `public/img/<id>.webp`, längsta sida 900 px. Skriptet avslutar med fel om en bild ser fel ut.
+
+- Codex ger ibland genomskinlig bakgrund och ibland vit, trots samma instruktion. Skriptet klarar båda.
+- Vitt som är helt inneslutet av kroppen tas inte bort (markerat `ponytail:` i skriptet).
+- `img-src/` är gitignorerad: källbilder och briefer finns bara på den här datorn.
+- **Stilrunda 1** (`img-src/style-round/sheet.png`): åtta stilar i en och samma Codex-session blev nästan samma teckning i olika färg. Claude underkände rundan, Patrik valde ändå en av dem.
+- **Stilrunda 2** (`sheet2.png`): en Codex-session per stil gav sju tydligt olika stilar. Sparade som kandidater till alternativa stilar (backlog P3).
 - **Fälla:** Codex bearbetade alla PNG i mappen, även en fil som inte var dess egen. Briefen måste säga vilka filer som får röras.
 - **Fälla:** skalets säkerhetsspärr stoppar omdirigering till dynamiskt filnamn (`> "x-$key.log"`). Använd fast filnamn och `>>`.
 
