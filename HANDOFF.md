@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Kortlek, utmaningar, scen och alla bilder live. Kvar: tidslinje, ljud och uttal, offline, föräldraläge
-nextAction: Bygg tidslinjen (BACKLOG P1 punkt 4)
+currentGoal: Kortlek, utmaningar, scen, tidslinje och alla bilder live. Kvar: föräldraläge, offline, ljud, uttal
+nextAction: Bygg föräldraläget (BACKLOG P1 punkt 8)
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -39,6 +39,16 @@ reviewedAt: 2026-10-03
 - **Bakgrunder:** färgfält tills `public/img/bg-<period>.webp` finns. Brief: `img-src/BRIEF-bg.md`.
 - **Verifierat** i Chromium 390×844: lägga till, dra, större, vända, byta bakgrund, ta bort, sparat efter omladdning. **Inte verifierat:** riktig pekskärm, surfplatta i liggande läge.
 - **Fälla:** `vite preview` kan ligga kvar på porten efter att den stoppats, och webbläsaren kan visa gammal `index.html`. Ladda med `?v=N` och jämför skriptnamnet mot `dist/assets/` innan ett testresultat tros.
+
+## 2026-10-03: tidslinjen
+
+- **Byggt** (`src/timeline.ts` rena funktioner, `src/timelineView.ts`, rutt `#/tidslinje`): remsa i linjär skala, 20 px per miljon år, från 252 miljoner år sedan till idag. Djuren står vid mitten av sin tid, i rader så att inga krockar. Tryck på öppet djur ger kortet, tryck på låst ger utmaningen om just det djuret.
+- **Poängen** visas i en fast översikt ovanför remsan: hela tiden på en skärmbredd, Stegosaurus och T. rex utsatta, och två streck med siffror ur katalogen (77 respektive 66 miljoner år). Rutan i översikten visar var i remsan man är.
+- **Val av Claude:** första besöket öppnar vid äldsta djuret, inte vid tom trias. Läget i remsan minns man tills sidan laddas om. "Tillbaka" på ett kort leder till listan man kom från (favoriter eller tidslinje). Märken: asteroiden vid 66 och "Idag" vid 0. Periodgränser 252, 201, 145, 66 (avrundade).
+- **Verifierat** i Chromium 390×844 och 1024×768 liggande, mot `vite preview`: 30 djur, 22 låsta som silhuett, tryck öppet och låst, tillbaka med bevarat läge, engelska, ingen sidledes scroll på sidan, fem poster får plats i navigeringen. `npm test`: 9 tester, bland annat att inga djur krockar i en rad och att varje djur ligger inom sin period.
+- **Inte verifierat:** svep med finger på riktig pekskärm (remsan rullar med webbläsarens egen sidledes rullning), drag med mus.
+- **Känt:** på liggande surfplatta blir djuren små (8 rader på 530 px höjd). Långa namn kortas med tre punkter.
+- **Fälla:** Playwright-MCP:n delas mellan sessioner och svarar "Browser is already in use" om en annan session har den. Chrome DevTools-MCP:n med `isolatedContext` fungerar parallellt.
 
 ## Köra
 

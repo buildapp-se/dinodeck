@@ -40,6 +40,14 @@ const UI = {
   youWon: { sv: 'Du vann', en: 'You won' },
   seeCard: { sv: 'Visa kortet', en: 'See the card' },
   oneMore: { sv: 'En till', en: 'One more' },
+  timeline: { sv: 'Tidslinje', en: 'Timeline' },
+  today: { sv: 'Idag', en: 'Today' },
+  asteroid: { sv: 'Asteroiden slår ned', en: 'The asteroid hits' },
+  myShort: { sv: 'milj. år', en: 'million yrs' },
+  closer: {
+    sv: 'T. rex levde närmare oss i tid än Stegosaurus.',
+    en: 'T. rex lived closer in time to us than to Stegosaurus.',
+  },
   allWon: { sv: 'Du har vunnit alla kort!', en: 'You have won every card!' },
 } satisfies Record<string, Record<Lang, string>>;
 

@@ -10,7 +10,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 ## P1
 
 3. ✅ **Utmaningar och låsta kort** (2026-10-03).
-4. **Tidslinje.**
+4. ✅ **Tidslinje** (2026-10-03).
 5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
 6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.
 7. **Offline** (service worker) och manifest med ikoner.

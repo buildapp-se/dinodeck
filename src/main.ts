@@ -4,6 +4,7 @@ import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
 import { renderScene } from './sceneView.ts';
+import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { advance, loadState, saveState, toggleFavorite } from './state.ts';
 import { dietName, groupNote, num, t, weight, when } from './text.ts';
@@ -21,6 +22,9 @@ let queue = [...shuffle(Math.random, DINOS.filter(isOpen)), ...shuffle(Math.rand
 
 // A missing picture is normal until the art exists: drop the <img>, the placeholder behind it stays.
 document.addEventListener('error', (e) => { if (e.target instanceof HTMLImageElement) e.target.remove(); }, true);
+
+// Where "back" on a card leads: the list the child came from.
+let backTo = '#/favoriter';
 
 const view = document.querySelector<HTMLElement>('#view')!;
 const nav = document.querySelector<HTMLElement>('#nav')!;
@@ -158,7 +162,7 @@ function renderDetail(d: Dino): void {
   const isFav = state.favorites.includes(d.id);
   view.innerHTML = `
     <article class="detail">
-      <a class="chip" href="#/favoriter">← ${t(l, 'back')}</a>
+      <a class="chip" href="${backTo}">← ${t(l, 'back')}</a>
       ${artHtml(d)}
       <h2>${d.name}</h2>
       ${factsHtml(d)}
@@ -199,13 +203,14 @@ function renderChallenge(id: string): void {
 function renderNav(): void {
   const l = lang();
   const h = location.hash;
-  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/scen') ? 'scene' : h.startsWith('#/favoriter') || h.startsWith('#/dino/') ? 'fav' : 'deck';
+  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/scen') ? 'scene' : h.startsWith('#/tidslinje') ? 'time' : h.startsWith('#/dino/') ? (backTo === '#/tidslinje' ? 'time' : 'fav') : h.startsWith('#/favoriter') ? 'fav' : 'deck';
   const toWin = DINOS.filter((d) => !d.starter).length;
   const cur = (k: string) => (k === here ? ' aria-current="page"' : '');
   nav.innerHTML = `
     <a href="#/"${cur('deck')}><span aria-hidden="true">🦖</span><span>${t(l, 'deck')}</span></a>
     <a href="#/utmaning"${cur('play')}><span aria-hidden="true">⭐</span><span>${t(l, 'challenge')} <b>${state.won.length}/${toWin}</b></span></a>
     <a href="#/scen"${cur('scene')}><span aria-hidden="true">🌋</span><span>${t(l, 'scene')}</span></a>
+    <a href="#/tidslinje"${cur('time')}><span aria-hidden="true">⏳</span><span>${t(l, 'timeline')}</span></a>
     <a href="#/favoriter"${cur('fav')}><span aria-hidden="true">♥</span><span>${t(l, 'favorites')} <b>${state.favorites.length}</b></span></a>`;
 }
 
@@ -213,11 +218,13 @@ function render(): void {
   document.documentElement.lang = lang();
   langBtn.textContent = t(lang(), 'otherLang');
   const hash = location.hash;
+  if (hash === '#/tidslinje' || hash === '#/favoriter') backTo = hash;
   const dino = hash.startsWith('#/dino/') ? byId.get(hash.slice('#/dino/'.length)) : undefined;
   if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
   else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state) });
+  else if (hash.startsWith('#/tidslinje')) renderTimeline(view, { lang: lang(), dinos: DINOS, isOpen });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();
   renderNav();
