@@ -77,7 +77,8 @@ reviewedAt: 2026-10-03
 - **Fälla:** domänen delas med andra appar på buildapp.se. Service workern raderar bara cachar som börjar på `dinodeck-`. Rör aldrig `caches.keys()` utan det filtret.
 - **Fälla för lokala prov:** service workern registreras även mot `vite preview` (inte mot `npm run dev`). Gammalt innehåll i en lokal webbläsare kan alltså komma ur cachen. Sidan själv är alltid färsk när servern är uppe, bilder först efter en laddning till.
 - **Verifierat** lokalt i Chromium: 42 filer sparade, favicon och manifest svarar 200, nytt bygge visas vid första laddningen och gamla cachen tas bort, och med **servern avstängd** laddas kortlek, tidslinje och scen med alla bilder utan konsolfel.
-- **Inte verifierat:** installation på hemskärm på riktig telefon (Android och iOS), Safari.
+- **Verifierat live** (buildapp.se, Chromium): en webbläsare med service workern från 10:56 fick nya appkoden vid första laddningen efter varje deploy, och bytte sedan själv till cachen från 11:18 med alla 162 filer och tog bort den gamla. Ljud levereras ur cachen (`deliveryType: cache-storage`). Inga konsolfel, favicon ger inte längre 404.
+- **Inte verifierat:** live helt utan nät (verktygens offline-läge stryper sidan men inte service workern, så provet säger inget; lokalt är det provat med servern avstängd). Installation på hemskärm på riktig telefon (Android och iOS). Safari.
 
 ## 2026-10-03: ljuden
 
