@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Steg 1 och 2 live (kortlek, favoriter, utmaningar, 30 djur), sedan bilder i vald stil
-nextAction: Granska och konvertera Codex-bilderna för de 28 återstående djuren, sedan tidslinjen
+currentGoal: Kortlek, utmaningar, scen och alla bilder live. Kvar: tidslinje, ljud och uttal, offline, föräldraläge
+nextAction: Bygg tidslinjen (BACKLOG P1 punkt 4)
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -23,6 +23,14 @@ reviewedAt: 2026-10-03
 - **Frågetyper** (`src/challenge.ts`, rena funktioner): räkna (3 till 5), plus och minus (6 till 7), gånger och faktafrågor om kost, period och längst (8 till 10). **Silhuett-para** finns i koden men slås på av sig själv först när minst tre bilder finns i `public/img/`.
 - **Verifierat:** `npm test` (typkontroll + 6 tester, 1 200 slumpade frågor kontrollräknade). I Chromium 390×844: låst kort går inte att vända eller spara, en utmaning per nivå spelad till vinst, vunnet kort öppet och överst i leken, detaljvy efter vinst.
 - **Inte verifierat:** silhuettfrågor i webbläsare (inga bilder finns), riktig telefon.
+
+## 2026-10-03: bilder till alla 30 djur
+
+- **Alla 30 djur och tre scenbakgrunder ligger i `public/img/`.** 28 djur genererades i tre Codex-omgångar med T. rex och Velociraptor som stilreferens.
+- **Granskning:** Claude gick igenom alla mot anatominoterna i liten storlek (400 px). Apatosaurus (för kort hals, ingen pisksvans) och Mosasaurus (stjärtfena som på en haj) gjordes om en gång och godkändes. Detaljer som antal fingrar och klor är inte kontrollerade i full storlek.
+- **Silhuettfrågor** verifierade i Chromium: mörk form, tre färgbilder att välja mellan, rätt svar godkänns. De använder bara öppna kort, så låsta djur inte avslöjas i färg.
+- **Storlek:** 30 djur 70 till 150 kB styck, bakgrunder 260 till 310 kB, hela `dist/` ca 4 MB.
+- **Fälla:** bakgrundsborttagningen i `convert-art.py` tar ca 10 sekunder per bild (flodfyllning i ren Python). 28 bilder tar flera minuter: kör i bakgrunden.
 
 ## 2026-10-03: scenen
 

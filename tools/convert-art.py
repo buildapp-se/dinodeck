@@ -53,8 +53,11 @@ def convert(name: str) -> str | None:
     scale = LONGEST / max(im.size)
     im = im.resize((round(im.width * scale), round(im.height * scale)), Image.Resampling.LANCZOS)
     out = OUT / f"{name}.webp"
-    im.save(out, "WEBP", quality=82, method=6)
-    size = out.stat().st_size
+    for quality in (82, 74, 66):  # busy textures need a lower setting to fit the budget
+        im.save(out, "WEBP", quality=quality, method=6)
+        size = out.stat().st_size
+        if size <= MAX_BYTES:
+            break
     print(f"{name}: {im.width}x{im.height}, {size // 1000} kB, {covered:.0%} of box covered")
     if size > MAX_BYTES:
         return f"{size} bytes is over {MAX_BYTES}"

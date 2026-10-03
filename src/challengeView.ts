@@ -5,6 +5,8 @@ import { t } from './text.ts';
 export interface ChallengeContext {
   lang: Lang;
   dinos: readonly Dino[];
+  /** Animals that may appear in silhouette questions: open cards only, so locked ones stay a surprise. */
+  matchPool: readonly Dino[];
   /** The card being played for. */
   target: Dino;
   artHtml(d: Dino): string;
@@ -42,7 +44,7 @@ export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): voi
 }
 
 async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Promise<void> {
-  const withImage = await findImages(ctx.dinos);
+  const withImage = await findImages(ctx.matchPool);
   const byId = new Map(ctx.dinos.map((d) => [d.id, d]));
   const l = ctx.lang;
   let right = 0;

@@ -5,11 +5,11 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 ## P0
 
 1. ✅ **Bildstil vald** (2026-10-03): gouache-bilderbok, se `CONTEXT.md`.
-2. **Bilder till alla 30 djur.** Pipeline i `HANDOFF.md`. Varje bild granskas mot anatominoten i `img-src/BRIEF-art.md` innan den konverteras.
+2. ✅ **Bilder till alla 30 djur** (2026-10-03). Nya djur följer pipelinen i `HANDOFF.md` och granskas mot en anatominot i `img-src/BRIEF-art.md` innan de konverteras.
 
 ## P1
 
-3. ✅ **Utmaningar och låsta kort** (2026-10-03). Kvar: verifiera silhuettfrågorna i webbläsare när bilder finns.
+3. ✅ **Utmaningar och låsta kort** (2026-10-03).
 4. **Tidslinje.**
 5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
 6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.

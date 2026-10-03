@@ -184,6 +184,7 @@ function renderChallenge(id: string): void {
   renderLevelPicker(view, {
     lang: l,
     dinos: DINOS,
+    matchPool: DINOS.filter(isOpen),
     target,
     artHtml,
     onWin(d) {
