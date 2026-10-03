@@ -145,6 +145,8 @@ reviewedAt: 2026-10-03
 - **Fälla:** måttet "andel orange" i `check-recolour.py` räknar även brunt (samma färgton, bara mörkare). Det duger för att se att något hänt, inte för att godkänna. Ögat avgör.
 - **Fälla:** "inget orange alls" ger grått. Nästa gång: namnge den färg som ska in (blågrå, mossgrön, valnöt), inte den som ska bort.
 - **Granskat av Claude i liten storlek** (380 px per bild): inga tappade horn, plattor, klor eller fjädrar, ingen mark eller bakgrund. Inte granskat i full storlek. Patrik har inte sett bilderna.
+- **Verifierat live** (buildapp.se, bygge 16:06 svensk tid, commit `0b6897b`): kontrollsumman för alla 26 bilder är samma som lokalt, både med `?v=<slump>` och med vanlig adress, och `sw.js` är den nya versionen. `npm test` 16 tester, `npm run build` grönt.
+- **Inte verifierat:** en webbläsare med appen redan sparad (gammal service worker). Enligt mätningen i avsnittet om offline får den gamla bilder vid första laddningen och nya vid nästa. Den som hämtade en bild direkt, utan service worker, under de senaste fyra timmarna före deployen kan ha den kvar i webbläsarens cache lika länge.
 - **Inte gjort:**
   - **Ikonerna** (`public/icons/`, favicon) är gjorda ur den gamla orange T. rex-bilden. `tools/make-icons.py` gör om dem.
   - **`heightM`** behöver inte ses över: posen är densamma.
