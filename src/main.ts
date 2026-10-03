@@ -1,6 +1,7 @@
 import './style.css';
 import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
 import { onPicture } from './picture.ts';
+import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
@@ -183,6 +184,18 @@ function renderFavorites(): void {
     : `<p class="empty">${t(l, 'noFavorites')}</p>`;
 }
 
+/** The line under the size comparison. Height is only stated for animals that stand on the ground. */
+function sizeNote(d: Dino): string {
+  const l = lang();
+  const about = t(l, 'about');
+  const size = d.wingspan
+    ? `${about} ${num(l, d.lengthM)} m ${t(l, 'wingTips')}`
+    : d.group === 'dinosaur'
+      ? `${about} ${num(l, d.heightM)} m ${t(l, 'tall')} ${t(l, 'and')} ${num(l, d.lengthM)} m ${t(l, 'long')}`
+      : `${about} ${num(l, d.lengthM)} m ${t(l, 'long')}`;
+  return `${t(l, 'child')}: ${num(l, CHILD_M)} m. ${d.name}: ${size}.`;
+}
+
 function renderDetail(d: Dino): void {
   const l = lang();
   const isFav = state.favorites.includes(d.id);
@@ -191,9 +204,29 @@ function renderDetail(d: Dino): void {
       <a class="chip" href="${backTo}">← ${t(l, 'back')}</a>
       ${artHtml(d)}
       <h2>${d.name}</h2>
+      <h3>${t(l, 'howBig')}</h3>
+      <div class="scale" aria-hidden="true">
+        <img class="scale-dino" src="img/${d.id}.webp" alt="">
+        <svg class="scale-child" viewBox="0 0 30 100"><circle cx="15" cy="11" r="10"/><path d="M8 24h14l6 30-5 2-3-14v20l3 36h-7l-1-30-1 30H7l3-36V42L7 56l-5-2z"/></svg>
+      </div>
+      <p class="scale-note">${sizeNote(d)}</p>
       ${factsHtml(d)}
       <button type="button" id="fav" class="chip">${isFav ? '♥ ' + t(l, 'remove') : '♡ ' + t(l, 'save')}</button>
     </article>`;
+  // Size comparison: the picture's height stands for the animal's height, and the child is drawn at the same scale.
+  const box = view.querySelector<HTMLElement>('.scale')!;
+  const shape = box.querySelector<HTMLImageElement>('.scale-dino')!;
+  const child = box.querySelector<SVGElement>('.scale-child')!;
+  const fit = (): void => {
+    if (!shape.naturalHeight) return;
+    const widthM = (d.heightM * shape.naturalWidth) / shape.naturalHeight;
+    const u = pxPerMetre(box.clientWidth, box.clientHeight, widthM, d.heightM, 10);
+    shape.style.height = `${u * d.heightM}px`;
+    child.style.height = `${u * CHILD_M}px`;
+    child.style.width = `${u * CHILD_M * CHILD_ASPECT}px`;
+  };
+  if (shape.complete) fit();
+  else shape.addEventListener('load', fit);
   const picture = view.querySelector<HTMLElement>('.detail .art img');
   picture?.addEventListener('click', () => { if (!state.muted) roar(d.id, picture); });
   view.querySelector('#fav')!.addEventListener('click', () => {

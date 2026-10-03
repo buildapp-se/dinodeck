@@ -25,6 +25,7 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 | Bildstil | Patrik valde `03-gouache-picturebook` ur stilrunda 1 (2026-10-03): detaljerad, naturtrogen bilderboksmålning i varma jordfärger. Referensbilder är T. rex och Velociraptor. En alternativ "söt" stil som går att välja i appen ligger i backloggen, mycket senare. |
 | Stack | Vite + TypeScript `strict`, inget ramverk. Tester med `node --test`. |
 | Host | GitHub Pages, `buildapp.se/dinodeck/`, repo `buildapp-se/dinodeck`. Bara den hosten. |
+| Storlek | Detaljvyn visar djuret som silhuett bredvid ett barn på 1,2 m, i samma skala. Djuret skalas efter höjd (`heightM`), inte längd: bilderna är målade snett framifrån. |
 | Offline | Ja, service worker som sparar app, data, bilder och ljud. Själva sidan hämtas från nätet först, så en ny version syns vid nästa laddning. Inget tillägg, egen `src/sw.js`. |
 
 ## Ordlista

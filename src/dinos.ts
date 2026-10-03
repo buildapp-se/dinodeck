@@ -18,6 +18,8 @@ export interface Dino {
   toMya: number;
   /** Body length in metres, or wingspan when `wingspan` is set. */
   lengthM: number;
+  /** Ground to the highest point of the animal as its picture shows it (top to bottom of the pose for one that flies or swims). */
+  heightM: number;
   wingspan?: true;
   weightKg: number;
   sizeLike: L;
@@ -53,6 +55,7 @@ export const STARTERS: Dino[] = [
     fromMya: 68,
     toMya: 66,
     lengthM: 12,
+    heightM: 4.5,
     weightKg: 8000,
     sizeLike: { sv: 'Lång som en buss', en: 'As long as a bus' },
     diet: 'carnivore',
@@ -90,6 +93,7 @@ export const STARTERS: Dino[] = [
     fromMya: 68,
     toMya: 66,
     lengthM: 9,
+    heightM: 3,
     weightKg: 6000,
     sizeLike: { sv: 'Tung som en elefant', en: 'As heavy as an elephant' },
     diet: 'herbivore',
@@ -127,6 +131,7 @@ export const STARTERS: Dino[] = [
     fromMya: 155,
     toMya: 145,
     lengthM: 9,
+    heightM: 4,
     weightKg: 5000,
     sizeLike: { sv: 'Lång som en buss', en: 'As long as a bus' },
     diet: 'herbivore',
@@ -164,6 +169,7 @@ export const STARTERS: Dino[] = [
     fromMya: 154,
     toMya: 150,
     lengthM: 22,
+    heightM: 12,
     weightKg: 40000,
     sizeLike: { sv: 'Hög som ett fyravåningshus', en: 'As tall as a four-storey building' },
     diet: 'herbivore',
@@ -198,6 +204,7 @@ export const STARTERS: Dino[] = [
     fromMya: 75,
     toMya: 71,
     lengthM: 2,
+    heightM: 0.7,
     weightKg: 15,
     sizeLike: { sv: 'Stor som en kalkon', en: 'The size of a turkey' },
     diet: 'carnivore',
@@ -235,6 +242,7 @@ export const STARTERS: Dino[] = [
     fromMya: 154,
     toMya: 152,
     lengthM: 26,
+    heightM: 5,
     weightKg: 15000,
     sizeLike: { sv: 'Lång som två bussar', en: 'As long as two buses' },
     diet: 'herbivore',
@@ -272,6 +280,7 @@ export const STARTERS: Dino[] = [
     fromMya: 68,
     toMya: 66,
     lengthM: 7,
+    heightM: 1.8,
     weightKg: 6000,
     sizeLike: { sv: 'Bred och låg som en stridsvagn', en: 'Wide and low like a tank' },
     diet: 'herbivore',
@@ -306,6 +315,7 @@ export const STARTERS: Dino[] = [
     fromMya: 86,
     toMya: 84,
     lengthM: 6,
+    heightM: 4,
     wingspan: true,
     weightKg: 25,
     sizeLike: { sv: 'Vingar breda som en liten bil är lång', en: 'Wings as wide as a small car is long' },

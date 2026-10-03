@@ -2,7 +2,7 @@
 schemaVersion: 1
 status: active
 currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
-nextAction: Patrik lyssnar igenom de 120 ljudklippen (60 läten, 60 namn) och säger vilka som ska göras om
+nextAction: Patrik lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -116,6 +116,17 @@ reviewedAt: 2026-10-03
 - **Verifierat** i 390×844 och 1024×768 på sju djur med olika bildformat, plus kortlek, favoritruta och utmaning.
 - **Lärdom:** höga bilder i bred ruta ska alltid provas i 1024, inte bara 390. Batchen mätte överlapp bara i mobilstorlek.
 
+## 2026-10-03: storleksjämförelse och dragbar översikt
+
+- **Storleksjämförelse** (detaljvyn, alltså kortet från favoriter och tidslinje): djuret som mörk silhuett och ett barn på 1,2 m på samma marklinje, i samma skala. Raden under säger höjd och längd. `src/scale.ts` räknar pixlar per meter, vyn ligger i `renderDetail`.
+- **Fälla som kostade ett varv:** första versionen skalade bilden efter kroppslängd. Bilderna är målade snett framifrån, så bildens bredd är mycket mindre än längden, och Triceratops blev 6,8 m hög, Argentinosaurus 27 m. Den versionen lades aldrig ut. Nu skalas bilden efter **höjd**.
+- **Nytt fält `heightM`** på alla 30 djur: från marken till högsta punkten så som djuret står på bilden (huvud, plattor, segel eller kam). Skrivna av Claude ur minnet efter att ha tittat på varje bilds pos, inte hämtade ur källan. Patrik stickprovar.
+  - Mest ungefärliga: Pteranodon (flyger, 4 m är posens höjd), Mosasaurus och Plesiosaurus (simmar), Microraptor (glidflyger), Argentinosaurus (halsens vinkel avgör). För de som inte står på marken säger raden bara längd eller vingbredd.
+  - Byts en bild mot en med annan pos ska `heightM` ses över.
+- **Översikten på tidslinjen går att dra i.** Tryck eller drag flyttar remsan så att den punkten hamnar i mitten. Patrik läste den som ett handtag, och det var den inte.
+- **Verifierat** i Chromium 390×844 och 1024×768: barn och djur har samma skala (nio djur mätta), står på samma linje och ryms i rutan. Översikten: tryck, drag, släpp. `npm test`: 16 tester.
+- **Inte verifierat:** riktigt finger på översikten.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.
@@ -151,7 +162,7 @@ Codex CLI körs härifrån: `codex exec --skip-git-repo-check -s workspace-write
 
 ## Fakta och källor
 
-Mått, årtal och fakta i katalogen är avrundade mittvärden skrivna av Claude ur minnet, inte hämtade rad för rad ur källan. Innehållet är inte jämfört mot källsidorna. Patrik stickprovar.
+Mått (även `heightM`), årtal och fakta i katalogen är avrundade mittvärden skrivna av Claude ur minnet, inte hämtade rad för rad ur källan. Innehållet är inte jämfört mot källsidorna. Patrik stickprovar.
 
 Källänkarna: 27 djur pekar på NHM Dino Directory, Pteranodon, Mosasaurus och Plesiosaurus på Wikipedia (de finns inte i NHM:s katalog). Kontrollerade 2026-10-03 genom att djurets namn står i sidans `<title>`.
 

@@ -18,8 +18,6 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 ## P2
 
-- **Storleksjämförelse med ett barn i detaljvyn** (Patrik 2026-10-03). Byggd och provad men inte utlagd: bilderna är målade snett framifrån, så bildens bredd är inte kroppslängden. Skalad efter längd blir Triceratops 6,8 m hög (verkligt cirka 3) och Argentinosaurus 27 m. Kräver ett höjdmått per djur (`heightM`, 30 nya värden) att skala bilden efter, eller en ren längdstapel utan silhuett. Uträkningen ligger kvar i `src/scale.ts` med test, vyn är borttagen.
-
 - Portera Sipdecks `promoteDeck` om nästa kort syns hoppa på riktig telefon (markerat `ponytail:` i `src/main.ts`).
 - Palett och typsnitt sätts efter vald bildstil (`src/style.css` är provisorisk).
 - Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.

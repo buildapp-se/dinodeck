@@ -40,7 +40,7 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
 
   view.innerHTML = `
     <section class="timeline">
-      <div class="mini" aria-hidden="true">
+      <div class="mini">
         <div class="mini-bands">
           ${PERIODS.map((p) => `<i data-bg="${p}" style="flex:${BOUNDS[p][0] - BOUNDS[p][1]}"></i>`).join('')}
           <i style="flex:${BOUNDS.cretaceous[1]}"></i>
@@ -73,6 +73,23 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
   strip.scrollLeft = keptScroll >= 0 ? keptScroll : PAD + (items[0]?.x ?? 0) - ITEM_W;
   strip.addEventListener('scroll', () => { keptScroll = strip.scrollLeft; showWhere(); }, { passive: true });
   showWhere();
+
+  // The overview is a handle too: a press or a drag on it moves the strip so that point is in the middle.
+  const bands = view.querySelector<HTMLElement>('.mini-bands')!;
+  let steering = false;
+  const steer = (e: PointerEvent): void => {
+    const r = bands.getBoundingClientRect();
+    strip.scrollLeft = ((e.clientX - r.left) / r.width) * width - strip.clientWidth / 2;
+  };
+  bands.addEventListener('pointerdown', (e) => {
+    steering = true;
+    try { bands.setPointerCapture(e.pointerId); } catch { /* capture is nice-to-have */ }
+    steer(e);
+  });
+  bands.addEventListener('pointermove', (e) => { if (steering) steer(e); });
+  const release = (): void => { steering = false; };
+  bands.addEventListener('pointerup', release);
+  bands.addEventListener('pointercancel', release);
 
   // Touch scrolls the strip natively. A mouse has to drag it, and a drag must not count as a click on an animal.
   let from: { x: number; left: number } | null = null;
