@@ -294,6 +294,53 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 }
 .tray img { width: 100%; height: 100%; object-fit: contain; }
 
+/* Parent mode */
+.hold {
+  position: relative;
+  font-size: 1.3rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  /* The accent layer grows from the left while the button is held. */
+  background: linear-gradient(var(--accent), var(--accent)) left / 0% 100% no-repeat, rgb(255 255 255 / 0.16);
+}
+.hold.holding { background-size: 100% 100%, auto; transition: background-size 3s linear; }
+.hold[data-hint]::after {
+  content: attr(data-hint);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 5;
+  margin-top: 6px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+.parent { display: flex; flex-direction: column; gap: 12px; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 18px;
+  background: rgb(0 0 0 / 0.07);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.row b { padding: 4px 14px; border-radius: 999px; background: var(--bg); color: var(--paper); white-space: nowrap; }
+.row[aria-pressed='false'] b { background: var(--muted); }
+.row.danger { justify-content: center; text-align: center; background: var(--heart); color: #fff; }
+
 /* Timeline */
 .timeline { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 4px 0 8px; }
 .timeline [data-bg='triassic'] { background: #c98a5a; }

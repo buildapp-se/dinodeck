@@ -17,7 +17,7 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 | Tidslinje | Vågrät remsa trias, jura, krita, djuren där de levde, "idag"-märke. Tryck öppnar kortet. |
 | Utmaningar | Tre typer: para silhuett, matte, faktafråga från kortet. Nivåer 3 till 5, 6 till 7, 8 till 10, vald med tre knappar vid varje start. 5 rätt vinner ett kort. Fel ger "försök igen", inget straff. |
 | Profiler | En gemensam samling per enhet. Inga profiler. |
-| Föräldraläge | Lås upp allt, nollställ, språk, ljud av. Öppnas med 3 sekunders tryck. |
+| Föräldraläge | Lås upp allt, nollställ, språk, ljud av. Öppnas med 3 sekunders tryck på kugghjulet uppe till höger. Språkbytet finns bara här. |
 | Ljud | Två per djur: filmvrål när man trycker på djuret, och "så här tror forskare att den lät" på baksidan. Byggs av fria inspelningar av nutida djur, pitchade per art. |
 | Uttal | Färdiga ljudklipp, 30 namn × 2 språk. Tjänst väljs när steget byggs, efter att villkoren för gratisnivån är lästa. |
 | Fakta | Varje kort har källa i datat. Osäkert (färg, läte, fjädrar) skrivs som "forskare tror". Patrik stickprovar. |

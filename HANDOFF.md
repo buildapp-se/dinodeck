@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Kortlek, utmaningar, scen, tidslinje och alla bilder live. Kvar: föräldraläge, offline, ljud, uttal
-nextAction: Bygg föräldraläget (BACKLOG P1 punkt 8)
+currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge och alla bilder live. Kvar: offline, ljud, uttal
+nextAction: Bygg offline och installation (BACKLOG P1 punkt 7)
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -49,6 +49,18 @@ reviewedAt: 2026-10-03
 - **Inte verifierat:** svep med finger på riktig pekskärm (remsan rullar med webbläsarens egen sidledes rullning), drag med mus.
 - **Känt:** på liggande surfplatta blir djuren små (8 rader på 530 px höjd). Långa namn kortas med tre punkter.
 - **Fälla:** Playwright-MCP:n delas mellan sessioner och svarar "Browser is already in use" om en annan session har den. Chrome DevTools-MCP:n med `isolatedContext` fungerar parallellt.
+
+## 2026-10-03: föräldraläget
+
+- **Byggt** (`src/parentView.ts`): kugghjulet uppe till höger hålls in i 3 sekunder (knappen fylls med färg under tiden). Kort tryck visar bara "Håll in i 3 sekunder". Innehåll: alla kort öppna (av och på), ljud (av och på), språk, nollställ samlingen.
+- **Val av Claude:**
+  - Språkknappen i sidhuvudet är borttagen, språk byts bara i föräldraläget. Första språket följer webbläsarens språk som förut.
+  - "Alla kort öppna" är en strömbrytare (`state.unlockAll`), inte en engångshandling: vunna kort ligger kvar i `state.won`, så att slå av den ger tillbaka läget före.
+  - Nollställning kräver två tryck och tar bort vunna kort, favoriter och scen. Språk och ljudval ligger kvar.
+  - Adressen `#/foralder` öppnar inte läget, bara trycket gör det.
+- **Verifierat** i Chromium 390×844 och 1024×768: kort tryck, 2 sekunder (öppnar inte), 3 sekunder (öppnar), alla fyra val sparas i `localStorage`, kortlek och tidslinje utan låsta kort när allt är öppet, nollställning i två steg. `npm test`: 10 tester.
+- **Inte verifierat:** riktigt finger. Ett långt tryck på telefon kan ge markering eller meny i vissa webbläsare, spärrat i CSS och med `contextmenu`, men inte provat på enhet.
+- **Känt:** slås "alla kort öppna" av igen ligger favoriter och scendjur som blev låsta kvar. I favoritlistan leder de då till utmaningen.
 
 ## Köra
 

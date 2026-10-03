@@ -3,10 +3,11 @@ import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
+import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { advance, loadState, saveState, toggleFavorite } from './state.ts';
+import { advance, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
 import { dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
@@ -14,11 +15,12 @@ const byId = new Map(DINOS.map((d) => [d.id, d]));
 const state = loadState(ids, navigator.language.startsWith('sv') ? 'sv' : 'en');
 const lang = (): Lang => state.lang;
 
-const isOpen = (d: Dino): boolean => d.starter || state.won.includes(d.id);
+const isOpen = (d: Dino): boolean => d.starter || state.unlockAll || state.won.includes(d.id);
 const locked = (): Dino[] => DINOS.filter((d) => !isOpen(d));
 
 // Open cards first, so the deck does not start on a run of locked ones.
-let queue = [...shuffle(Math.random, DINOS.filter(isOpen)), ...shuffle(Math.random, locked())].map((d) => d.id);
+const freshQueue = (): string[] => [...shuffle(Math.random, DINOS.filter(isOpen)), ...shuffle(Math.random, locked())].map((d) => d.id);
+let queue = freshQueue();
 
 // A missing picture is normal until the art exists: drop the <img>, the placeholder behind it stays.
 document.addEventListener('error', (e) => { if (e.target instanceof HTMLImageElement) e.target.remove(); }, true);
@@ -28,7 +30,9 @@ let backTo = '#/favoriter';
 
 const view = document.querySelector<HTMLElement>('#view')!;
 const nav = document.querySelector<HTMLElement>('#nav')!;
-const langBtn = document.querySelector<HTMLButtonElement>('#lang')!;
+const parentBtn = document.querySelector<HTMLButtonElement>('#parent')!;
+// Set by the three-second press, so typing the address is not a way in.
+let parentOpen = false;
 
 function artHtml(d: Dino): string {
   // The placeholder sits behind the image and stays if the image is missing.
@@ -203,7 +207,7 @@ function renderChallenge(id: string): void {
 function renderNav(): void {
   const l = lang();
   const h = location.hash;
-  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/scen') ? 'scene' : h.startsWith('#/tidslinje') ? 'time' : h.startsWith('#/dino/') ? (backTo === '#/tidslinje' ? 'time' : 'fav') : h.startsWith('#/favoriter') ? 'fav' : 'deck';
+  const here = parentOpen ? '' : h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/scen') ? 'scene' : h.startsWith('#/tidslinje') ? 'time' : h.startsWith('#/dino/') ? (backTo === '#/tidslinje' ? 'time' : 'fav') : h.startsWith('#/favoriter') ? 'fav' : 'deck';
   const toWin = DINOS.filter((d) => !d.starter).length;
   const cur = (k: string) => (k === here ? ' aria-current="page"' : '');
   nav.innerHTML = `
@@ -216,11 +220,28 @@ function renderNav(): void {
 
 function render(): void {
   document.documentElement.lang = lang();
-  langBtn.textContent = t(lang(), 'otherLang');
+  parentBtn.setAttribute('aria-label', `${t(lang(), 'parent')}: ${t(lang(), 'holdHint')}`);
   const hash = location.hash;
   if (hash === '#/tidslinje' || hash === '#/favoriter') backTo = hash;
+  if (hash !== '#/foralder') parentOpen = false;
   const dino = hash.startsWith('#/dino/') ? byId.get(hash.slice('#/dino/'.length)) : undefined;
-  if (dino && isOpen(dino)) renderDetail(dino);
+  if (parentOpen) {
+    // Any of the four can change which cards are open or what the page says: rebuild the deck order and the navigation.
+    const saved = (change: () => void) => () => {
+      change();
+      saveState(state);
+      queue = freshQueue();
+      document.documentElement.lang = lang();
+      renderNav();
+    };
+    renderParent(view, {
+      state,
+      toggleUnlock: saved(() => { state.unlockAll = !state.unlockAll; }),
+      toggleMute: saved(() => { state.muted = !state.muted; }),
+      toggleLang: saved(() => { state.lang = state.lang === 'sv' ? 'en' : 'sv'; }),
+      reset: saved(() => { Object.assign(state, resetCollection(state)); }),
+    });
+  } else if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
   else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state) });
@@ -230,10 +251,18 @@ function render(): void {
   renderNav();
 }
 
-langBtn.addEventListener('click', () => {
-  state.lang = state.lang === 'sv' ? 'en' : 'sv';
-  saveState(state);
-  render();
-});
+attachHold(
+  parentBtn,
+  () => {
+    parentOpen = true;
+    if (location.hash === '#/foralder') render();
+    else location.hash = '#/foralder';
+  },
+  () => {
+    // A short tap only says how it opens.
+    parentBtn.dataset.hint = t(lang(), 'holdHint');
+    setTimeout(() => delete parentBtn.dataset.hint, 2500);
+  },
+);
 window.addEventListener('hashchange', render);
 render();
