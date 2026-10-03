@@ -35,11 +35,13 @@ MAX_BYTES = 90_000
 HIGH_PASS = {"alligator": 40, "elephant": 80, "lion": 40, "bison": 40, "dove": 150, "gull": 600, "crane": 300, "raven": 400, "grouse": 30}
 
 # One layer is (source, which loud passage of it, pitch nudge, volume). The first layer is the main voice.
+# Never layer the elephant under another voice: it already weighs four tonnes, so the weight rule barely lowers it,
+# and its trumpet (most energy above 1 kHz, 1.6 s long) is heard as a separate squeak that stops mid-roar.
 # "roar" is what a film would do. "call" follows the card's own text under "What did it sound like?".
 L = lambda src, nth=0, tune=1.0, gain=1.0: (src, nth, tune, gain)
 RECIPES: dict[str, dict[str, list | str]] = {
     # Big meat-eaters: film = big cat, research = closed-mouth rumble like a crocodile (and a dove, far down).
-    "tyrannosaurus-rex": {"roar": [L("lion"), L("elephant", gain=0.5), L("alligator", gain=0.4)], "call": [L("alligator"), L("dove", gain=0.5)]},
+    "tyrannosaurus-rex": {"roar": [L("lion"), L("alligator", gain=0.6)], "call": [L("alligator"), L("dove", gain=0.5)]},
     "giganotosaurus": {"roar": [L("lion", 1), L("alligator", gain=0.5)], "call": [L("alligator", 1)]},
     "spinosaurus": {"roar": [L("lion", tune=1.1), L("alligator", 1, gain=0.6)], "call": [L("alligator", 2)]},
     "allosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", tune=1.05), L("dove", gain=0.4)]},
@@ -52,11 +54,11 @@ RECIPES: dict[str, dict[str, list | str]] = {
     "apatosaurus": {"roar": [L("elephant", tune=0.95), L("lion", gain=0.3)], "call": [L("bison", tune=1.05)]},
     "plateosaurus": {"roar": [L("elephant"), L("bison", gain=0.4)], "call": [L("alligator", 2)]},
     # Plant-eaters with horns, plates and armour: low grunts and snorts.
-    "triceratops": {"roar": [L("bison"), L("elephant", gain=0.4)], "call": [L("bison"), L("alligator", gain=0.4)]},
+    "triceratops": {"roar": [L("bison"), L("lion", gain=0.4)], "call": [L("bison"), L("alligator", gain=0.4)]},
     "stegosaurus": {"roar": [L("bison", tune=0.9)], "call": [L("alligator")]},
     "ankylosaurus": {"roar": [L("bison"), L("alligator", gain=0.5)], "call": [L("alligator", 1), L("bison", gain=0.4)]},
     "iguanodon": {"roar": [L("elephant"), L("bison", gain=0.5)], "call": [L("bison")]},
-    "therizinosaurus": {"roar": [L("bison"), L("elephant", gain=0.4)], "call": [L("dove"), L("alligator", gain=0.3)]},
+    "therizinosaurus": {"roar": [L("bison", tune=0.95), L("lion", 1, gain=0.4)], "call": [L("dove"), L("alligator", gain=0.3)]},
     "pachycephalosaurus": {"roar": [L("bison")], "call": [L("bison", tune=1.1)]},
     "protoceratops": {"roar": [L("bison", tune=1.1)], "call": [L("bison")]},
     # Duck-bills: the hollow crest of Parasaurolophus worked like a wind instrument, so that one is synthesised.
@@ -73,7 +75,7 @@ RECIPES: dict[str, dict[str, list | str]] = {
     # Not dinosaurs.
     "pteranodon": {"roar": [L("raven"), L("gull", gain=0.5)], "call": [L("gull", tune=0.9)]},
     "mosasaurus": {"roar": [L("lion", tune=0.9), L("alligator", gain=0.7)], "call": [L("alligator", tune=0.95)]},
-    "plesiosaurus": {"roar": [L("alligator", 1), L("elephant", gain=0.3)], "call": [L("alligator", 1)]},
+    "plesiosaurus": {"roar": [L("alligator", 1), L("lion", gain=0.3)], "call": [L("alligator", 1)]},
 }
 
 
