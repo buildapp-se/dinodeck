@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { DINOS } from './dinos.ts';
+import { DINOS } from './catalog.ts';
 import { advance, parseState, toggleFavorite } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
-  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [] });
-  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [] });
+  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [] });
+  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [] });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'] }), ids, 'sv');
-  assert.deepEqual(s, { v: 1, lang: 'en', favorites: ['triceratops'] });
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'] }), ids, 'sv');
+  assert.deepEqual(s, { v: 1, lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'] });
 });
 
 test('toggleFavorite adds then removes', () => {

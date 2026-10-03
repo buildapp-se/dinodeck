@@ -1,6 +1,9 @@
 import './style.css';
 import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
-import { DINOS, type Dino, type Lang } from './dinos.ts';
+import { DINOS } from './catalog.ts';
+import { shuffle } from './challenge.ts';
+import { renderLevelPicker } from './challengeView.ts';
+import type { Dino, Lang } from './dinos.ts';
 import { advance, loadState, saveState, toggleFavorite } from './state.ts';
 import { dietName, groupNote, num, t, weight, when } from './text.ts';
 
@@ -9,8 +12,14 @@ const byId = new Map(DINOS.map((d) => [d.id, d]));
 const state = loadState(ids, navigator.language.startsWith('sv') ? 'sv' : 'en');
 const lang = (): Lang => state.lang;
 
-// ponytail: Math.random sort is biased but fine for shuffling a card deck.
-let queue = [...ids].sort(() => Math.random() - 0.5);
+const isOpen = (d: Dino): boolean => d.starter || state.won.includes(d.id);
+const locked = (): Dino[] => DINOS.filter((d) => !isOpen(d));
+
+// Open cards first, so the deck does not start on a run of locked ones.
+let queue = [...shuffle(Math.random, DINOS.filter(isOpen)), ...shuffle(Math.random, locked())].map((d) => d.id);
+
+// A missing picture is normal until the art exists: drop the <img>, the placeholder behind it stays.
+document.addEventListener('error', (e) => { if (e.target instanceof HTMLImageElement) e.target.remove(); }, true);
 
 const view = document.querySelector<HTMLElement>('#view')!;
 const nav = document.querySelector<HTMLElement>('#nav')!;
@@ -55,6 +64,18 @@ function buildCard(d: Dino, depth: number): HTMLElement {
   card.tabIndex = depth === 0 ? 0 : -1;
   card.inert = depth !== 0;
   card.setAttribute('aria-label', d.name);
+  if (!isOpen(d)) {
+    // Locked: a dark shape and a way to win it. No back, so nothing to flip to.
+    card.classList.add('locked');
+    card.innerHTML = `
+      <div class="face front">
+        ${artHtml(d)}
+        <h2>${d.name}</h2>
+        <a class="chip win" href="#/utmaning/${d.id}">🔒 ${t(l, 'winMe')}</a>
+        <span class="cue cue-skip" aria-hidden="true">→</span>
+      </div>`;
+    return card;
+  }
   card.innerHTML = `
     <div class="face front">
       ${artHtml(d)}
@@ -66,17 +87,18 @@ function buildCard(d: Dino, depth: number): HTMLElement {
     <div class="face back">
       <div class="scroll"><h2>${d.name}</h2>${factsHtml(d)}</div>
     </div>`;
-  card.querySelector('img')!.addEventListener('error', (e) => (e.target as HTMLElement).remove());
   return card;
 }
 
 const handlers: DragHandlers = {
   tap() {
-    topCard()?.classList.toggle('flipped');
+    const card = topCard();
+    if (card && !card.classList.contains('locked')) card.classList.toggle('flipped');
   },
   swipe(dir) {
     const id = queue[0];
-    if (dir > 0 && id && !state.favorites.includes(id)) {
+    const d = id ? byId.get(id) : undefined;
+    if (dir > 0 && id && d && isOpen(d) && !state.favorites.includes(id)) {
       state.favorites = [...state.favorites, id];
       saveState(state);
       renderNav();
@@ -128,7 +150,6 @@ function renderFavorites(): void {
   view.innerHTML = favs.length
     ? `<ul class="grid">${favs.map((d) => `<li><a class="tile" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>`
     : `<p class="empty">${t(l, 'noFavorites')}</p>`;
-  view.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => img.remove()));
 }
 
 function renderDetail(d: Dino): void {
@@ -142,7 +163,6 @@ function renderDetail(d: Dino): void {
       ${factsHtml(d)}
       <button type="button" id="fav" class="chip">${isFav ? '♥ ' + t(l, 'remove') : '♡ ' + t(l, 'save')}</button>
     </article>`;
-  view.querySelector('img')!.addEventListener('error', (e) => (e.target as HTMLElement).remove());
   view.querySelector('#fav')!.addEventListener('click', () => {
     state.favorites = toggleFavorite(state.favorites, d.id);
     saveState(state);
@@ -150,12 +170,39 @@ function renderDetail(d: Dino): void {
   });
 }
 
+/** `id` is the card asked for with "Vinn mig"; without it a random locked card is the prize. */
+function renderChallenge(id: string): void {
+  const l = lang();
+  const left = locked();
+  const asked = byId.get(id);
+  const target = asked && !isOpen(asked) ? asked : left[Math.floor(Math.random() * left.length)];
+  if (!target) {
+    view.innerHTML = `<p class="empty">${t(l, 'allWon')}</p>`;
+    return;
+  }
+  renderLevelPicker(view, {
+    lang: l,
+    dinos: DINOS,
+    target,
+    artHtml,
+    onWin(d) {
+      if (!state.won.includes(d.id)) state.won = [...state.won, d.id];
+      saveState(state);
+      queue = [d.id, ...queue.filter((x) => x !== d.id)]; // the new card is on top of the deck
+      renderNav();
+    },
+  });
+}
+
 function renderNav(): void {
   const l = lang();
-  const here = location.hash.startsWith('#/favoriter') || location.hash.startsWith('#/dino/') ? 'fav' : 'deck';
+  const h = location.hash;
+  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/favoriter') || h.startsWith('#/dino/') ? 'fav' : 'deck';
+  const toWin = DINOS.filter((d) => !d.starter).length;
   const cur = (k: string) => (k === here ? ' aria-current="page"' : '');
   nav.innerHTML = `
     <a href="#/"${cur('deck')}><span aria-hidden="true">🦖</span><span>${t(l, 'deck')}</span></a>
+    <a href="#/utmaning"${cur('play')}><span aria-hidden="true">⭐</span><span>${t(l, 'challenge')} <b>${state.won.length}/${toWin}</b></span></a>
     <a href="#/favoriter"${cur('fav')}><span aria-hidden="true">♥</span><span>${t(l, 'favorites')} <b>${state.favorites.length}</b></span></a>`;
 }
 
@@ -164,7 +211,9 @@ function render(): void {
   langBtn.textContent = t(lang(), 'otherLang');
   const hash = location.hash;
   const dino = hash.startsWith('#/dino/') ? byId.get(hash.slice('#/dino/'.length)) : undefined;
-  if (dino) renderDetail(dino);
+  if (dino && isOpen(dino)) renderDetail(dino);
+  else if (dino) renderChallenge(dino.id);
+  else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();
   renderNav();

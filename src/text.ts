@@ -26,6 +26,16 @@ const UI = {
   more: { sv: 'Mer att läsa', en: 'Read more' },
   source: { sv: 'Källa', en: 'Source' },
   otherLang: { sv: 'English', en: 'Svenska' },
+  challenge: { sv: 'Utmaning', en: 'Challenge' },
+  winMe: { sv: 'Vinn mig', en: 'Win me' },
+  winThis: { sv: 'Vinn', en: 'Win' },
+  howOld: { sv: 'Hur gammal är du?', en: 'How old are you?' },
+  years: { sv: 'år', en: 'years' },
+  tryAgain: { sv: 'Försök igen!', en: 'Try again!' },
+  youWon: { sv: 'Du vann', en: 'You won' },
+  seeCard: { sv: 'Visa kortet', en: 'See the card' },
+  oneMore: { sv: 'En till', en: 'One more' },
+  allWon: { sv: 'Du har vunnit alla kort!', en: 'You have won every card!' },
 } satisfies Record<string, Record<Lang, string>>;
 
 export const t = (lang: Lang, key: keyof typeof UI): string => UI[key][lang];
@@ -40,6 +50,7 @@ const DIET: Record<Diet, Record<Lang, string>> = {
   carnivore: { sv: 'Kött', en: 'Meat' },
   herbivore: { sv: 'Växter', en: 'Plants' },
   piscivore: { sv: 'Fisk', en: 'Fish' },
+  omnivore: { sv: 'Växter och smådjur', en: 'Plants and small animals' },
 };
 
 const GROUP: Record<Exclude<Group, 'dinosaur'>, Record<Lang, string>> = {

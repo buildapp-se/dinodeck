@@ -3,7 +3,7 @@ export type L = Record<Lang, string>;
 
 export type Group = 'dinosaur' | 'pterosaur' | 'marine';
 export type Period = 'triassic' | 'jurassic' | 'cretaceous';
-export type Diet = 'carnivore' | 'herbivore' | 'piscivore';
+export type Diet = 'carnivore' | 'herbivore' | 'piscivore' | 'omnivore';
 
 export interface Dino {
   /** kebab-case, also the image file name: public/img/<id>.webp */
@@ -35,14 +35,14 @@ export interface Dino {
   source: { label: string; url: string };
 }
 
-const NHM = (slug: string) => ({
+export const NHM = (slug: string) => ({
   label: 'Natural History Museum, London',
   url: `https://www.nhm.ac.uk/discover/dino-directory/${slug}.html`,
 });
 
 // Sizes and dates are rounded mid-range estimates: adult size varies between finds and
 // between studies, so the cards say "about" in the UI.
-export const DINOS: Dino[] = [
+export const STARTERS: Dino[] = [
   {
     id: 'tyrannosaurus-rex',
     name: 'Tyrannosaurus rex',

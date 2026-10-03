@@ -4,13 +4,15 @@ export interface State {
   v: 1;
   lang: Lang;
   favorites: string[];
+  /** Ids won in challenges. Starters are open without being listed here. */
+  won: string[];
 }
 
 const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {
-  const fresh: State = { v: 1, lang: fallbackLang, favorites: [] };
+  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [] };
   if (!raw) return fresh;
   let data: unknown;
   try {
@@ -20,10 +22,14 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
   }
   if (typeof data !== 'object' || data === null) return fresh;
   const d = data as Record<string, unknown>;
-  const favorites = Array.isArray(d.favorites)
-    ? [...new Set(d.favorites.filter((id): id is string => typeof id === 'string' && knownIds.includes(id)))]
-    : [];
-  return { v: 1, lang: d.lang === 'sv' || d.lang === 'en' ? d.lang : fallbackLang, favorites };
+  const idList = (v: unknown): string[] =>
+    Array.isArray(v) ? [...new Set(v.filter((id): id is string => typeof id === 'string' && knownIds.includes(id)))] : [];
+  return {
+    v: 1,
+    lang: d.lang === 'sv' || d.lang === 'en' ? d.lang : fallbackLang,
+    favorites: idList(d.favorites),
+    won: idList(d.won),
+  };
 }
 
 export function toggleFavorite(favorites: readonly string[], id: string): string[] {

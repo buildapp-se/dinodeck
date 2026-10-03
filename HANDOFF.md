@@ -1,7 +1,7 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Steg 1 live (kortlek, baksida, favoriter), sedan bilder i vald stil
+currentGoal: Steg 1 och 2 live (kortlek, favoriter, utmaningar, 30 djur), sedan bilder i vald stil
 nextAction: Patrik väljer bildstil ur stilrunda 2, därefter bilder till de 8 startkorten
 blockers: [bildstil ej vald]
 reviewedAt: 2026-10-03
@@ -16,6 +16,13 @@ reviewedAt: 2026-10-03
 - **Verifierat:** `npm test` (typkontroll + 4 tester) och `npm run build` gröna. I Chromium 390×844 mot `vite preview`: tryck vänder, hjärtknapp och svep höger sparar, vänster sparar inte, favoritlista, detaljvy, språkbyte, ingen sidledes scroll.
 - **Inte verifierat:** riktig telefon eller surfplatta, Safari, Firefox.
 - **Bilder saknas.** Korten visar en platshållare (🦕) tills `public/img/<id>.webp` finns.
+
+## 2026-10-03: steg 2, utmaningar och låsta kort
+
+- **Byggt:** katalogen är 30 djur (`src/dinos.ts` 8 startkort, `src/dinos-won.ts` 22 som vinns, ihopsatta i `src/catalog.ts`). Låsta kort visas mörka med "Vinn mig". Utmaning: åldersval, 5 rätt vinner kortet, fel ger "Försök igen" utan straff. `won` sparas i state.
+- **Frågetyper** (`src/challenge.ts`, rena funktioner): räkna (3 till 5), plus och minus (6 till 7), gånger och faktafrågor om kost, period och längst (8 till 10). **Silhuett-para** finns i koden men slås på av sig själv först när minst tre bilder finns i `public/img/`.
+- **Verifierat:** `npm test` (typkontroll + 6 tester, 1 200 slumpade frågor kontrollräknade). I Chromium 390×844: låst kort går inte att vända eller spara, en utmaning per nivå spelad till vinst, vunnet kort öppet och överst i leken, detaljvy efter vinst.
+- **Inte verifierat:** silhuettfrågor i webbläsare (inga bilder finns), riktig telefon.
 
 ## Köra
 
@@ -36,8 +43,12 @@ Codex CLI körs härifrån: `codex exec --skip-git-repo-check -s workspace-write
 ## De 30 djuren
 
 - **Startkort (8, i katalogen):** Tyrannosaurus rex, Triceratops, Stegosaurus, Brachiosaurus, Velociraptor, Diplodocus, Ankylosaurus, Pteranodon.
-- **Vinns (22, inte skrivna än):** Spinosaurus, Allosaurus, Giganotosaurus, Carnotaurus, Dilophosaurus, Deinonychus, Compsognathus, Gallimimus, Oviraptor, Therizinosaurus, Archaeopteryx, Microraptor, Argentinosaurus, Apatosaurus, Iguanodon, Parasaurolophus, Maiasaura, Pachycephalosaurus, Protoceratops, Plateosaurus, Mosasaurus, Plesiosaurus.
+- **Vinns (22, i katalogen):** Spinosaurus, Allosaurus, Giganotosaurus, Carnotaurus, Dilophosaurus, Deinonychus, Compsognathus, Gallimimus, Oviraptor, Therizinosaurus, Archaeopteryx, Microraptor, Argentinosaurus, Apatosaurus, Iguanodon, Parasaurolophus, Maiasaura, Pachycephalosaurus, Protoceratops, Plateosaurus, Mosasaurus, Plesiosaurus.
 
 ## Fakta och källor
 
-Mått och årtal i `src/dinos.ts` är avrundade mittvärden skrivna av Claude, inte hämtade rad för rad ur källan. Källänkarna (NHM Dino Directory) är kontrollerade att de finns (HTTP 200, 2026-10-03), men innehållet är inte jämfört mot korten. Patrik stickprovar.
+Mått, årtal och fakta i katalogen är avrundade mittvärden skrivna av Claude ur minnet, inte hämtade rad för rad ur källan. Innehållet är inte jämfört mot källsidorna. Patrik stickprovar.
+
+Källänkarna: 27 djur pekar på NHM Dino Directory, Pteranodon, Mosasaurus och Plesiosaurus på Wikipedia (de finns inte i NHM:s katalog). Kontrollerade 2026-10-03 genom att djurets namn står i sidans `<title>`.
+
+**Fälla:** nhm.ac.uk svarar HTTP 200 även för sidor som inte finns (titeln blir då "undefined | Natural History Museum"). En statuskod bevisar alltså ingenting där, kontrollera titeln.

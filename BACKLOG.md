@@ -9,7 +9,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 ## P1
 
-3. **Utmaningar och låsta kort.** Tre typer, tre åldersnivåer, 5 rätt vinner ett kort. Katalogen utökas till 30 djur (lista i `HANDOFF.md`). `won` läggs till i state.
+3. ✅ **Utmaningar och låsta kort** (2026-10-03). Kvar: verifiera silhuettfrågorna i webbläsare när bilder finns.
 4. **Tidslinje.**
 5. **Scen** med tre bakgrunder.
 6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.
