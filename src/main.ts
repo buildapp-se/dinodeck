@@ -3,6 +3,7 @@ import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
+import { renderScene } from './sceneView.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { advance, loadState, saveState, toggleFavorite } from './state.ts';
 import { dietName, groupNote, num, t, weight, when } from './text.ts';
@@ -197,12 +198,13 @@ function renderChallenge(id: string): void {
 function renderNav(): void {
   const l = lang();
   const h = location.hash;
-  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/favoriter') || h.startsWith('#/dino/') ? 'fav' : 'deck';
+  const here = h.startsWith('#/utmaning') ? 'play' : h.startsWith('#/scen') ? 'scene' : h.startsWith('#/favoriter') || h.startsWith('#/dino/') ? 'fav' : 'deck';
   const toWin = DINOS.filter((d) => !d.starter).length;
   const cur = (k: string) => (k === here ? ' aria-current="page"' : '');
   nav.innerHTML = `
     <a href="#/"${cur('deck')}><span aria-hidden="true">🦖</span><span>${t(l, 'deck')}</span></a>
     <a href="#/utmaning"${cur('play')}><span aria-hidden="true">⭐</span><span>${t(l, 'challenge')} <b>${state.won.length}/${toWin}</b></span></a>
+    <a href="#/scen"${cur('scene')}><span aria-hidden="true">🌋</span><span>${t(l, 'scene')}</span></a>
     <a href="#/favoriter"${cur('fav')}><span aria-hidden="true">♥</span><span>${t(l, 'favorites')} <b>${state.favorites.length}</b></span></a>`;
 }
 
@@ -214,6 +216,7 @@ function render(): void {
   if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
+  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state) });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();
   renderNav();

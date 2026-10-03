@@ -11,7 +11,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 3. ✅ **Utmaningar och låsta kort** (2026-10-03). Kvar: verifiera silhuettfrågorna i webbläsare när bilder finns.
 4. **Tidslinje.**
-5. **Scen** med tre bakgrunder.
+5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
 6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.
 7. **Offline** (service worker) och manifest med ikoner.
 8. **Föräldraläge.**

@@ -242,6 +242,56 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 .big.right { background: #3f9d5a; opacity: 1; }
 .big.pic.right { background: #d9f2df; }
 
+/* Scene */
+.scene { display: flex; flex-direction: column; gap: 10px; width: min(96vw, 1100px); margin: 0 auto; padding: 4px 0 10px; min-height: 0; flex: 1; }
+.seg { display: flex; gap: 6px; justify-content: center; }
+.seg button, .tools button {
+  min-height: 44px;
+  min-width: 56px;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  color: var(--paper);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.seg button[aria-pressed='true'] { background: var(--accent); color: var(--ink); }
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  max-height: 58vh;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
+/* Painted backdrops sit on top of these; the gradients show until the pictures exist. */
+.stage[data-bg='triassic'] { background: linear-gradient(#f3d9a4 0 42%, #b9683c 42% 100%); }
+.stage[data-bg='jurassic'] { background: linear-gradient(#bfe3ea 0 42%, #5d8f4e 42% 100%); }
+.stage[data-bg='cretaceous'] { background: linear-gradient(#ffd9b0 0 42%, #7c9a54 42% 100%); }
+.stage .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.item { position: absolute; cursor: grab; touch-action: none; -webkit-user-drag: none; }
+.item.selected { outline: 3px dashed var(--paper); outline-offset: 4px; border-radius: 8px; }
+.tools { display: flex; gap: 10px; justify-content: center; visibility: hidden; }
+.tools.on { visibility: visible; }
+.tools button { font-size: 1.4rem; }
+.tray { display: flex; gap: 8px; overflow-x: auto; padding: 4px 8px 6px; touch-action: pan-x; }
+.tray button {
+  flex: none;
+  width: 84px;
+  height: 64px;
+  padding: 6px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--paper);
+  cursor: pointer;
+}
+.tray img { width: 100%; height: 100%; object-fit: contain; }
+
 @media (prefers-reduced-motion: reduce) {
   .card, .face { transition: none; }
 }
