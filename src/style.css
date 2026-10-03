@@ -89,7 +89,9 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 .front h2 { font-size: clamp(1.6rem, 6vw, 2.4rem); line-height: 1.1; }
 .tag { margin-top: 6px; color: var(--muted); font-weight: 600; }
 
-.art { position: relative; flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; }
+/* One cell that is exactly as big as the box. With the default "auto" track, the row grows to the picture's own
+   height, and a tall picture in a wide box (Triceratops on a tablet) spills over the name below it. */
+.art { position: relative; flex: 1; min-height: 0; width: 100%; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); place-items: center; }
 .art > * { grid-area: 1 / 1; }
 .art img { width: 100%; height: 100%; object-fit: contain; }
 .art-missing { font-size: clamp(5rem, 30vw, 11rem); opacity: 0.25; }
