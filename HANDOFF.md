@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge och alla bilder live. Kvar: offline, ljud, uttal
-nextAction: Bygg offline och installation (BACKLOG P1 punkt 7)
+currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge, offline och alla bilder live. Kvar: ljud, uttal
+nextAction: Bygg ljuden (BACKLOG P1 punkt 6)
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -62,11 +62,25 @@ reviewedAt: 2026-10-03
 - **Inte verifierat:** riktigt finger. Ett långt tryck på telefon kan ge markering eller meny i vissa webbläsare, spärrat i CSS och med `contextmenu`, men inte provat på enhet.
 - **Känt:** slås "alla kort öppna" av igen ligger favoriter och scendjur som blev låsta kvar. I favoritlistan leder de då till utmaningen.
 
+## 2026-10-03: offline och installation
+
+- **Byggt:** `src/sw.js` (service worker), `public/manifest.webmanifest`, ikoner i `public/icons/` och `public/favicon.png` (gjorda av `tools/make-icons.py` ur T. rex-bilden). Inget nytt beroende.
+- **Så fungerar versionsbytet:** `vite.config.ts` stämplar varje bygge med en tid (`__BUILD__`) och skriver `dist/sw.js` med stämpeln och listan över alla filer i `dist/` överst. Ny deploy ger alltså en ny `sw.js`, webbläsaren ser att filen ändrats, sparar allt på nytt under ett nytt cachenamn (`dinodeck-<stämpel>`) och tar bort det gamla.
+  - **Sidan (`index.html`) hämtas från nätet först**, med sparad kopia som reserv efter 4 sekunder eller utan nät. Därför syns en ny version redan vid första laddningen efter deploy, inte vid andra.
+  - **Allt annat hämtas ur cachen först.** Skript och stilmall har namn som ändras med innehållet. Bilder och ljud har fasta namn och byts när den nya service workern har sparat klart, alltså vid laddningen efter.
+  - Versionen står längst ned i föräldraläget (byggtid, svensk tid).
+- **Fälla, kostade en felsökning:** `<script crossorigin>` skickar en `Origin`-rubrik som installationen inte skickade, och en server som svarar `Vary: Origin` (`vite preview` gör det) får då cachen att missa just skript och stilmall. Sidan laddades offline men var tom. Lösning: `ignoreVary: true` i uppslagningen. Syntes bara med servern helt avstängd.
+- **Fälla:** domänen delas med andra appar på buildapp.se. Service workern raderar bara cachar som börjar på `dinodeck-`. Rör aldrig `caches.keys()` utan det filtret.
+- **Fälla för lokala prov:** service workern registreras även mot `vite preview` (inte mot `npm run dev`). Gammalt innehåll i en lokal webbläsare kan alltså komma ur cachen. Sidan själv är alltid färsk när servern är uppe, bilder först efter en laddning till.
+- **Verifierat** lokalt i Chromium: 42 filer sparade, favicon och manifest svarar 200, nytt bygge visas vid första laddningen och gamla cachen tas bort, och med **servern avstängd** laddas kortlek, tidslinje och scen med alla bilder utan konsolfel.
+- **Inte verifierat:** installation på hemskärm på riktig telefon (Android och iOS), Safari.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.
 - `npm test`: typkontroll och tester. Läs exit-koden, inte bara utskriften.
-- `npm run build`: bygger till `dist/`.
+- `npm run build`: bygger till `dist/`, och skriver `dist/sw.js`.
+- `uv run --with pillow tools/make-icons.py`: gör om ikoner och favicon.
 - Push till `main` bygger och lägger ut via `.github/workflows/deploy.yml`.
 
 ## Bildpipeline

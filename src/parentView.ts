@@ -1,8 +1,10 @@
 import type { State } from './state.ts';
-import { t } from './text.ts';
+import { buildTime, t } from './text.ts';
 
 export interface ParentContext {
   state: State;
+  /** ISO time of the build. */
+  build: string;
   /** Each changes the state and saves it; the view then redraws itself. */
   toggleUnlock(): void;
   toggleMute(): void;
@@ -49,6 +51,7 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
       <button type="button" class="row danger" data-act="reset">${t(l, 'reset')}</button>
       <p class="hint" role="status">${note}</p>
       <a class="big" href="#/">${t(l, 'done')}</a>
+      <p class="source">${t(l, 'version')} ${buildTime(l, ctx.build)}</p>
     </section>`;
 
   let armed = false;

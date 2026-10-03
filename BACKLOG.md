@@ -13,14 +13,13 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 4. ✅ **Tidslinje** (2026-10-03).
 5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
 6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.
-7. **Offline** (service worker) och manifest med ikoner.
+7. ✅ **Offline** (service worker), manifest med ikoner och favicon (2026-10-03).
 8. ✅ **Föräldraläge** (2026-10-03).
 
 ## P2
 
 - Portera Sipdecks `promoteDeck` om nästa kort syns hoppa på riktig telefon (markerat `ponytail:` i `src/main.ts`).
 - Palett och typsnitt sätts efter vald bildstil (`src/style.css` är provisorisk).
-- Favicon saknas (404 i konsolen).
 - Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.
 - Uppläsning av kortens texter (v2).
 

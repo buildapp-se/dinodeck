@@ -236,6 +236,7 @@ function render(): void {
     };
     renderParent(view, {
       state,
+      build: __BUILD__,
       toggleUnlock: saved(() => { state.unlockAll = !state.unlockAll; }),
       toggleMute: saved(() => { state.muted = !state.muted; }),
       toggleLang: saved(() => { state.lang = state.lang === 'sv' ? 'en' : 'sv'; }),
@@ -264,5 +265,10 @@ attachHold(
     setTimeout(() => delete parentBtn.dataset.hint, 2500);
   },
 );
+// Offline: the service worker saves the whole app. Not in dev, where it would serve yesterday's code.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => { /* no offline this time, the app still works */ });
+}
+
 window.addEventListener('hashchange', render);
 render();

@@ -62,6 +62,7 @@ const UI = {
   },
   resetDone: { sv: 'Samlingen är nollställd', en: 'The collection is reset' },
   done: { sv: 'Klar', en: 'Done' },
+  version: { sv: 'Version', en: 'Version' },
   allWon: { sv: 'Du har vunnit alla kort!', en: 'You have won every card!' },
 } satisfies Record<string, Record<Lang, string>>;
 
@@ -94,6 +95,10 @@ const locale = (lang: Lang): string => (lang === 'sv' ? 'sv-SE' : 'en-GB');
 
 /** Swedish gets decimal comma and space as thousands separator through the locale. */
 export const num = (lang: Lang, n: number): string => new Intl.NumberFormat(locale(lang)).format(n);
+
+/** The build stamp as a local time, so a parent can see which version the device is running. */
+export const buildTime = (lang: Lang, iso: string): string =>
+  new Date(iso).toLocaleString(locale(lang), { timeZone: 'Europe/Stockholm', dateStyle: 'short', timeStyle: 'short' });
 
 export function weight(lang: Lang, kg: number): string {
   return kg >= 1000 ? `${num(lang, kg / 1000)} ${lang === 'sv' ? 'ton' : 'tonnes'}` : `${num(lang, kg)} kg`;
