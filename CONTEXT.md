@@ -12,13 +12,13 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 | Ålder | 3 till 10 år. Kort barntext överst, längre text under. Uppläsning av texter är v2. |
 | Urval | 30 kända djur. Flygödlor och havsreptiler är med, märkta "inte en dinosaurie". |
 | Låsning | 8 startkort öppna, 22 vinns i utmaningar. Låsta kort visas som silhuett med "Vinn mig". Föräldraläge kan låsa upp allt. |
-| Bläddring | Som Tinder: höger = favorit, vänster = nästa. Inget kort försvinner, det läggs sist. Tryck vänder kortet. |
+| Bläddring | Som Tinder: höger = favorit, vänster = nästa. Inget kort försvinner, det läggs sist. Tryck på djuret ger vrål, tryck på resten av kortet eller vändknappen vänder. Med ljudet av vänder även tryck på djuret. |
 | Scen | Bara öppna eller vunna djur. Tre bakgrunder (trias, jura, krita). Flytta och ändra storlek. Sparas lokalt. |
 | Tidslinje | Vågrät remsa trias, jura, krita, djuren där de levde, "idag"-märke. Tryck öppnar kortet. |
 | Utmaningar | Tre typer: para silhuett, matte, faktafråga från kortet. Nivåer 3 till 5, 6 till 7, 8 till 10, vald med tre knappar vid varje start. 5 rätt vinner ett kort. Fel ger "försök igen", inget straff. |
 | Profiler | En gemensam samling per enhet. Inga profiler. |
 | Föräldraläge | Lås upp allt, nollställ, språk, ljud av. Öppnas med 3 sekunders tryck på kugghjulet uppe till höger. Språkbytet finns bara här. |
-| Ljud | Två per djur: filmvrål när man trycker på djuret, och "så här tror forskare att den lät" på baksidan. Byggs av fria inspelningar av nutida djur, pitchade per art. |
+| Ljud | Två per djur: filmvrål när man trycker på djuret, och "så här tror forskare att den lät" på baksidan. Byggs av fria inspelningar av nutida djur, pitchade efter kroppsvikt. Bara CC0 eller public domain, antecknat per källfil i `audio-src/sources.json`. Parasaurolophus läte är ett syntetiskt horn. |
 | Uttal | Färdiga ljudklipp, 30 namn × 2 språk. Tjänst väljs när steget byggs, efter att villkoren för gratisnivån är lästa. |
 | Fakta | Varje kort har källa i datat. Osäkert (färg, läte, fjädrar) skrivs som "forskare tror". Patrik stickprovar. |
 | Bilder | En frilagd bild per djur. Används på kort, i scen och som silhuett (silhuetten görs i CSS). |

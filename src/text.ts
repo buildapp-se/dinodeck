@@ -22,6 +22,11 @@ const UI = {
   ate: { sv: 'Åt', en: 'Ate' },
   found: { sv: 'Hittad i', en: 'Found in' },
   sound: { sv: 'Hur lät den?', en: 'What did it sound like?' },
+  listen: { sv: 'Lyssna', en: 'Listen' },
+  soundGuess: {
+    sv: 'Ingen har hört djuret på riktigt. Ljudet är en gissning.',
+    en: 'Nobody has ever heard this animal. The sound is a guess.',
+  },
   didYouKnow: { sv: 'Visste du?', en: 'Did you know?' },
   more: { sv: 'Mer att läsa', en: 'Read more' },
   source: { sv: 'Källa', en: 'Source' },

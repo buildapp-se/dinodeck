@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge, offline och alla bilder live. Kvar: ljud, uttal
-nextAction: Bygg ljuden (BACKLOG P1 punkt 6)
+currentGoal: Kortlek, utmaningar, scen, tidslinje, föräldraläge, offline, ljud och alla bilder live. Kvar: uttal
+nextAction: Patrik lyssnar igenom de 60 ljuden. Sedan uttal av namnen (BACKLOG P1 punkt 6)
 blockers: []
 reviewedAt: 2026-10-03
 ---
@@ -75,12 +75,28 @@ reviewedAt: 2026-10-03
 - **Verifierat** lokalt i Chromium: 42 filer sparade, favicon och manifest svarar 200, nytt bygge visas vid första laddningen och gamla cachen tas bort, och med **servern avstängd** laddas kortlek, tidslinje och scen med alla bilder utan konsolfel.
 - **Inte verifierat:** installation på hemskärm på riktig telefon (Android och iOS), Safari.
 
+## 2026-10-03: ljuden
+
+- **Byggt:** 60 ljud i `public/audio/` (`<id>-roar.mp3` och `<id>-call.mp3`, 1,3 MB totalt), `src/sound.ts` (uppspelning), `src/picture.ts` (träffar trycket själva djuret?), `tools/make-sounds.py`.
+- **INTE AVLYSSNAT.** Claude kan inte höra. Ljuden är kontrollerade med mätning (längd, ljudnivå, och att tyngre djur blir djupare i alla 17 jämförbara par), inte med öron. Patrik behöver lyssna igenom dem. Ändra i tabellen `RECIPES` i skriptet och kör om.
+- **Så låter ett djur:** varje ljud är ett recept av ett eller flera lager (källa, vilken stark passage, tonhöjdsknuff, volym). Tonhöjden följer vikten: uppspelningshastighet = (inspelat djurs vikt / dinosauriens vikt) upphöjt till 0,18, mellan 0,45 och 2,2. Längden följer också vikten, 0,9 till 3 sekunder. Vikterna läses ur katalogen.
+- **Källor (9 filer, `audio-src/`, incheckade):** alligator, elefant, lejon, bison, duva, gråtrut, trana, korp, järpe. Alla från Wikimedia Commons, CC0 eller public domain (flera från amerikanska National Park Service och Fish and Wildlife Service). Sida, upphovsperson, licens, kontrollsumma och datum står per fil i `audio-src/sources.json`.
+  - **Licensspärr i skriptet:** det vägrar köra om en källa har annan licens än CC0 eller public domain, eller om filens kontrollsumma inte är den som antecknades när licensen lästes.
+  - **Struts och kasuar** (nämnda i beslutet) finns inte fritt på Commons. xeno-cantos sök-API kräver nyckel sedan version 3, Freesound kräver konto. Ersatta av duva (kuttrar med stängd näbb, som forskarna tror om de stora) och järpe (trummande, till Gallimimus).
+  - Duvan är Commons egen mp3-version av filen: originalet har ett format som `soundfile` inte läser. Antecknat i källistan.
+- **Parasaurolophus** läte är syntetiskt (funktionen `horn`): en lång och en kort ton kring 100 Hz med övertoner, som en trombon. Ingen inspelning, alltså ingen licens.
+- **I appen:** tryck på själva djuret på framsidan ger vrål och ett litet hopp, tryck utanför bilden, på namnet eller på vändknappen vänder. På baksidan och i detaljvyn finns "Lyssna" under "Hur lät den?", med raden "Ingen har hört djuret på riktigt. Ljudet är en gissning." Låsta kort låter inte. Med ljudet av (föräldraläget) försvinner knapparna och tryck på djuret vänder.
+- **Val av Claude:** Web Audio i stället för `<audio>`, eftersom Safari ber om ljudfiler i delar och en fil sparad av service workern inte svarar på det. Ljuden sparas för offline tillsammans med allt annat (102 filer).
+- **Verifierat** i Chromium 390×844 och 1024×768: tryck på djuret spelar rätt fil utan att vända, tryck ovanför bilden och på namnet vänder, "Lyssna" spelar lätet, svep sparar favorit utan ljud, ljud av döljer allt. `npm test`: 13 tester.
+- **Inte verifierat:** hur det låter. Riktig telefon, särskilt iPhone (ljud kräver ett tryck först, och tyst läge kan stänga av Web Audio). Djupa läten kan bli svaga i en telefonhögtalare: alligatorbaserade läten har bara omkring 30 % av energin över 300 Hz.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.
 - `npm test`: typkontroll och tester. Läs exit-koden, inte bara utskriften.
 - `npm run build`: bygger till `dist/`, och skriver `dist/sw.js`.
 - `uv run --with pillow tools/make-icons.py`: gör om ikoner och favicon.
+- `uv run --with soundfile --with numpy tools/make-sounds.py`: bygger om alla 60 ljud. En rad per kontroll, felkod om något ser fel ut.
 - Push till `main` bygger och lägger ut via `.github/workflows/deploy.yml`.
 
 ## Bildpipeline

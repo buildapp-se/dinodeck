@@ -1,5 +1,7 @@
 import './style.css';
 import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
+import { onPicture } from './picture.ts';
+import { play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
@@ -59,6 +61,8 @@ function factsHtml(d: Dino): string {
     <ul>${d.facts.map((f) => `<li>${f[l]}</li>`).join('')}</ul>
     <h3>${t(l, 'sound')}</h3>
     <p>${d.sound[l]}</p>
+    <button type="button" class="chip listen" data-sound="${d.id}-call"><span aria-hidden="true">🔊</span> ${t(l, 'listen')}</button>
+    <p class="guess">${t(l, 'soundGuess')}</p>
     <h3>${t(l, 'more')}</h3>
     <p>${d.long[l]}</p>
     <p class="source">${t(l, 'source')}: <a href="${d.source.url}" target="_blank" rel="noopener">${d.source.label}</a></p>`;
@@ -90,6 +94,7 @@ function buildCard(d: Dino, depth: number): HTMLElement {
       ${artHtml(d)}
       <h2>${d.name}</h2>
       <p class="tag">${when(l, d)}</p>
+      <span class="snd" aria-hidden="true">🔊</span>
       <span class="cue cue-save" aria-hidden="true">♥</span>
       <span class="cue cue-skip" aria-hidden="true">→</span>
     </div>
@@ -99,10 +104,27 @@ function buildCard(d: Dino, depth: number): HTMLElement {
   return card;
 }
 
+/** The film roar, and a small jump so the tap is seen as well as heard. */
+function roar(id: string, picture: HTMLElement): void {
+  play(`audio/${id}-roar.mp3`);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  picture.animate([{ transform: 'none' }, { transform: 'scale(1.07) rotate(-2deg)' }, { transform: 'none' }], 350);
+}
+
 const handlers: DragHandlers = {
-  tap() {
+  tap(at) {
     const card = topCard();
-    if (card && !card.classList.contains('locked')) card.classList.toggle('flipped');
+    if (!card || card.classList.contains('locked')) return;
+    // A tap on the animal itself roars. Anywhere else on the card, the flip button or the keyboard turns it over.
+    const img = at?.target;
+    if (!state.muted && img instanceof HTMLImageElement && img.closest('.front .art') && card.dataset.id) {
+      const box = img.getBoundingClientRect();
+      if (onPicture(box.width, box.height, img.naturalWidth, img.naturalHeight, at!.x - box.left, at!.y - box.top)) {
+        roar(card.dataset.id, img);
+        return;
+      }
+    }
+    card.classList.toggle('flipped');
   },
   swipe(dir) {
     const id = queue[0];
@@ -150,7 +172,7 @@ function renderDeck(): void {
   const fly = (dir: 1 | -1) => { const c = topCard(); if (c) flyOff(c, dir, handlers); };
   view.querySelector('#skip')!.addEventListener('click', () => fly(-1));
   view.querySelector('#save')!.addEventListener('click', () => fly(1));
-  view.querySelector('#flip')!.addEventListener('click', handlers.tap);
+  view.querySelector('#flip')!.addEventListener('click', () => handlers.tap());
 }
 
 function renderFavorites(): void {
@@ -172,6 +194,8 @@ function renderDetail(d: Dino): void {
       ${factsHtml(d)}
       <button type="button" id="fav" class="chip">${isFav ? '♥ ' + t(l, 'remove') : '♡ ' + t(l, 'save')}</button>
     </article>`;
+  const picture = view.querySelector<HTMLElement>('.detail .art img');
+  picture?.addEventListener('click', () => { if (!state.muted) roar(d.id, picture); });
   view.querySelector('#fav')!.addEventListener('click', () => {
     state.favorites = toggleFavorite(state.favorites, d.id);
     saveState(state);
@@ -218,8 +242,14 @@ function renderNav(): void {
     <a href="#/favoriter"${cur('fav')}><span aria-hidden="true">♥</span><span>${t(l, 'favorites')} <b>${state.favorites.length}</b></span></a>`;
 }
 
-function render(): void {
+/** What the whole page shows of the settings: its language, and no sound buttons when sound is off. */
+function applySettings(): void {
   document.documentElement.lang = lang();
+  document.documentElement.classList.toggle('muted', state.muted);
+}
+
+function render(): void {
+  applySettings();
   parentBtn.setAttribute('aria-label', `${t(lang(), 'parent')}: ${t(lang(), 'holdHint')}`);
   const hash = location.hash;
   if (hash === '#/tidslinje' || hash === '#/favoriter') backTo = hash;
@@ -231,7 +261,7 @@ function render(): void {
       change();
       saveState(state);
       queue = freshQueue();
-      document.documentElement.lang = lang();
+      applySettings();
       renderNav();
     };
     renderParent(view, {
@@ -269,6 +299,12 @@ attachHold(
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js').catch(() => { /* no offline this time, the app still works */ });
 }
+
+// Every "listen" button on the page, wherever it was drawn.
+document.addEventListener('click', (e) => {
+  const sound = (e.target as Element).closest<HTMLElement>('[data-sound]')?.dataset.sound;
+  if (sound && !state.muted) play(`audio/${sound}.mp3`);
+});
 
 window.addEventListener('hashchange', render);
 render();

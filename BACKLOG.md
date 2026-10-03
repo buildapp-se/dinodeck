@@ -12,7 +12,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 3. ✅ **Utmaningar och låsta kort** (2026-10-03).
 4. ✅ **Tidslinje** (2026-10-03).
 5. ✅ **Scen** (2026-10-03). Kvar: de tre målade bakgrunderna, test på riktig pekskärm.
-6. **Ljud och uttal.** Tryck på djuret ger vrål, så vändning flyttas då till resten av kortet och knappen. Villkoren för röstsyntes-tjänstens gratisnivå läses innan konto skaffas.
+6. ✅ **Ljud** (2026-10-03), två per djur. **Patrik lyssnar igenom alla 60**: de är byggda och uppmätta men inte avlyssnade. Kvar: **uttal** av namnen, 30 × 2 språk.
 7. ✅ **Offline** (service worker), manifest med ikoner och favicon (2026-10-03).
 8. ✅ **Föräldraläge** (2026-10-03).
 
@@ -22,6 +22,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 - Palett och typsnitt sätts efter vald bildstil (`src/style.css` är provisorisk).
 - Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.
 - Uppläsning av kortens texter (v2).
+- Fria inspelningar av struts och kasuar saknas (stod i beslutet om ljud). Hittas några med CC0 eller public domain: lägg dem i `audio-src/sources.json` och byt ut duva och järpe i recepten.
 
 ## P3
 

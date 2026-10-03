@@ -1,9 +1,16 @@
 // Swipe and tap handling for the top card. Ported from Sipdeck's attachDrag/flyOff,
 // which is proven on real phones: Pointer Events, transform only, 35 % or a flick commits.
 
+export interface TapPoint {
+  /** The element under the finger when it went down. */
+  target: Element;
+  x: number;
+  y: number;
+}
+
 export interface DragHandlers {
-  /** A press that never moved: flip the card. */
-  tap(): void;
+  /** A press that never moved. `at` is where it landed; without it the tap came from the keyboard or a button. */
+  tap(at?: TapPoint): void;
   /** Called the moment the card is committed, before it has finished flying. 1 = right. */
   swipe(dir: 1 | -1): void;
 }
@@ -38,6 +45,8 @@ export function attachDrag(card: HTMLElement, on: DragHandlers): void {
   const threshold = () => card.offsetWidth * 0.35;
   let dragging = false;
   let moved = false;
+  // Kept from pointerdown: once the card has captured the pointer, later events all name the card as target.
+  let downTarget: Element = card;
   let startX = 0, startY = 0, dx = 0, dy = 0, lastX = 0, lastT = 0, vx = 0;
 
   card.addEventListener('keydown', (e) => {
@@ -53,6 +62,7 @@ export function attachDrag(card: HTMLElement, on: DragHandlers): void {
     if (!target.closest('.scroll')) e.preventDefault(); // let the back of the card scroll
     dragging = true;
     moved = false;
+    downTarget = target;
     startX = lastX = e.clientX;
     startY = e.clientY;
     dx = dy = vx = 0;
@@ -85,7 +95,7 @@ export function attachDrag(card: HTMLElement, on: DragHandlers): void {
     showCues(0, 0);
     card.style.transition = '';
     card.style.transform = '';
-    if (!moved && !(e.target as Element).closest('a, button')) on.tap();
+    if (!moved && !(e.target as Element).closest('a, button')) on.tap({ target: downTarget, x: e.clientX, y: e.clientY });
   });
 
   card.addEventListener('pointercancel', () => {
