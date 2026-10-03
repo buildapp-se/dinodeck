@@ -129,6 +129,27 @@ reviewedAt: 2026-10-03
 - **Verifierat** i Chromium 390×844 och 1024×768: barn och djur har samma skala (nio djur mätta), står på samma linje och ryms i rutan. Översikten: tryck, drag, släpp. `npm test`: 16 tester.
 - **Inte verifierat:** riktigt finger på översikten.
 
+## 2026-10-03: omfärgning av kortbilderna
+
+- **Varför:** alla 30 djur blev orange och ockra. Patrik bestämde variation som huvudregel. Färg per djur: `docs/research/dinosaur-colour.md` avsnitt 6. Briefer: `img-src/BRIEF-recolour.md` och `BRIEF-recolour-redo.md`.
+- **Gjort:** 26 djur omfärgade av Codex (`$imagegen` i EDIT-läge med originalet som mål, alltså samma teckning i ny färg). Inte omfärgade: Microraptor, Archaeopteryx, Mosasaurus, Plesiosaurus.
+- **Mappar (`img-src/`, bara på den här datorn):** `v1/` original (rör aldrig), `v2/` första omfärgningen, `v2b/` andra omgången för sju djur, `img-src/<id>.png` det som faktiskt konverterades, `review/` kontaktark.
+- **Omgång 3 kördes aldrig om.** Den avbrutna körningen hade redan genererat alla åtta bilder, det var bara kopieringen till `v2/` som dog av minnesbrist. De hämtades ur `~/.codex/generated_images/` enligt Codex egen slutrapport i `img-src/recolour-run.log`. Läs loggens sista rader innan en avbruten körning görs om.
+- **Andra omgången, sju djur:** allosaurus, argentinosaurus, carnotaurus, diplodocus, plateosaurus, protoceratops, therizinosaurus var fortfarande gyllenbruna. Orsak: briefens ord ("tawny", "sandy", "ochre", "mid brown") landar i samma ton som originalen. Omgörningen förbjöd orange och gult helt och slog över: sju grå djur.
+  - **Valt ur omgång 2 (kallare än researchfilens palett):** argentinosaurus (blek sten, brun sadel), diplodocus (mörk valnöt), plateosaurus (grädde med längsgående ränder), protoceratops (blek, mörk mask och kragkant).
+  - **Behållna ur omgång 1:** allosaurus (grå versionen gick inte att skilja från giganotosaurus), carnotaurus (enda gula med grå prickar), therizinosaurus (brunt stöds av släktingen, grå liknade gallimimus).
+  - Byta tillbaka ett djur: kopiera önskad fil från `v2/` eller `v2b/` till `img-src/<id>.png` och kör `convert-art.py <id>`.
+- **Kontroller (båda skriver en rad per bild och avslutar med fel):**
+  - `uv run --with pillow img-src/check-recolour.py`: kontur mot `v1/` (snitt genom union av de frilagda formerna, gräns 90 %) och kontaktark `img-src/review/sheet.png`. `V2=v2b` eller `V2=.` väljer mapp. Resultat: 26 av 26, lägst 96,4 %.
+  - `uv run --with pillow img-src/check-cards.py`: kortbildens silhuett mot den incheckade, och ark på mörk bakgrund `img-src/review/cards-dark.png`. Resultat: 26 av 26, lägst 94 %, bildstorlek inom 1 %.
+- **Fälla:** måttet "andel orange" i `check-recolour.py` räknar även brunt (samma färgton, bara mörkare). Det duger för att se att något hänt, inte för att godkänna. Ögat avgör.
+- **Fälla:** "inget orange alls" ger grått. Nästa gång: namnge den färg som ska in (blågrå, mossgrön, valnöt), inte den som ska bort.
+- **Granskat av Claude i liten storlek** (380 px per bild): inga tappade horn, plattor, klor eller fjädrar, ingen mark eller bakgrund. Inte granskat i full storlek. Patrik har inte sett bilderna.
+- **Inte gjort:**
+  - **Ikonerna** (`public/icons/`, favicon) är gjorda ur den gamla orange T. rex-bilden. `tools/make-icons.py` gör om dem.
+  - **`heightM`** behöver inte ses över: posen är densamma.
+  - **Versionerade bildnamn.** Bilderna har fasta namn, så en besökare med appen installerad får gamla bilder vid första laddningen efter en deploy och nya vid nästa (se avsnittet om offline). Den riktiga lösningen är att låta Vite ge bilderna innehållshash i namnet: flytta `public/img/` till `src/img/` och hämta adresserna med `import.meta.glob('./img/*.webp', { eager: true, query: '?url', import: 'default' })`. Det rör sju ställen i `src/` och två skript i `tools/`, och gjordes inte här eftersom sessionen bara fick röra bilder och dokument.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.

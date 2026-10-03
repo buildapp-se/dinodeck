@@ -21,6 +21,12 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 - Portera Sipdecks `promoteDeck` om nästa kort syns hoppa på riktig telefon (markerat `ponytail:` i `src/main.ts`).
 - Palett och typsnitt sätts efter vald bildstil (`src/style.css` är provisorisk).
 - Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.
+- **En rad på kortets baksida om att färgen är en gissning** (Patrik 2026-10-03, inte byggd). Samma grepp som raden vid ljudet ("Ingen har hört djuret på riktigt"). Tre nivåer, ett nytt fält per djur i katalogen. Vilken nivå varje djur har står i kolumnen Tag i `docs/research/dinosaur-colour.md` avsnitt 6, texterna i avsnitt 7:
+  - **Känt** (Microraptor, Archaeopteryx): "Forskare har hittat spår av färg i fossilen, så de här färgerna vet vi faktiskt en hel del om." / "Scientists have found traces of colour in the fossils, so we really do know quite a lot about these colours."
+  - **Från släktingar:** "Ingen har hittat färgen hos just det här djuret, men vi vet hur nära släktingar såg ut och har utgått från dem." / "Nobody has found the colour of this animal itself, but we know what close relatives looked like and have used them as a guide."
+  - **Gissning:** "Ingen vet vilken färg det här djuret hade. Färgerna är en gissning som bygger på djur som lever i dag." / "Nobody knows what colour this animal was. The colours are a guess based on animals that are alive today."
+  - Extra rad för Archaeopteryx och Diplodocus, där forskarna är oense: "Här är forskarna inte överens än." / "Scientists do not agree about this one yet."
+  - Fyra djur fick vid omfärgningen en kallare ton än researchfilens palett (se `HANDOFF.md`, omfärgningen). Nivån påverkas inte, alla fyra är redan gissning eller från släktingar.
 - Uppläsning av kortens texter (v2).
 - Fria inspelningar av struts och kasuar saknas (stod i beslutet om ljud). Hittas några med CC0 eller public domain: lägg dem i `audio-src/sources.json` och byt ut duva och järpe i recepten.
 
