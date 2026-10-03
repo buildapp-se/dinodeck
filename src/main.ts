@@ -275,7 +275,7 @@ function render(): void {
   } else if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
-  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state) });
+  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state), roar: (id, el) => { if (!state.muted) roar(id, el); } });
   else if (hash.startsWith('#/tidslinje')) renderTimeline(view, { lang: lang(), dinos: DINOS, isOpen });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();

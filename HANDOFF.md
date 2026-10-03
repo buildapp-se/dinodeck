@@ -36,6 +36,7 @@ reviewedAt: 2026-10-03
 
 - **Byggt** (`src/sceneView.ts`, rutt `#/scen`): välj period, tryck på ett djur i listan för att ställa ut det, dra för att flytta, knappar för större, mindre, vänd och ta bort. Sparas i `state.scene` med lägen som andelar av scenens storlek, så den ser likadan ut på mobil och surfplatta.
 - **Val av Claude:** djur börjar i skalenlig storlek (Diplodocus mycket större än Velociraptor), det som står längre ned ritas framför, högst 20 djur. Bara öppna kort som har bild går att ställa ut.
+- **Ljud i scenen (tillagt senare samma dag):** två snabba tryck på ett utställt djur ger dess vrål. Räknas för hand i `pointerup`, eftersom webbläsarens `dblclick` inte går att lita på för ett finger på något som också dras. Ett tryck markerar bara, drag ger inget ljud, ljud av gäller här också.
 - **Bakgrunder:** färgfält tills `public/img/bg-<period>.webp` finns. Brief: `img-src/BRIEF-bg.md`.
 - **Verifierat** i Chromium 390×844: lägga till, dra, större, vända, byta bakgrund, ta bort, sparat efter omladdning. **Inte verifierat:** riktig pekskärm, surfplatta i liggande läge.
 - **Fälla:** `vite preview` kan ligga kvar på porten efter att den stoppats, och webbläsaren kan visa gammal `index.html`. Ladda med `?v=N` och jämför skriptnamnet mot `dist/assets/` innan ett testresultat tros.
@@ -106,6 +107,14 @@ reviewedAt: 2026-10-03
 - **INTE AVLYSSNAT.** Claude har granskat den fonetiska skriften, inte ljudet. Skriptet kontrollerar att rösten har alla tecken och att längden är rimlig per ljud. Låter ett namn fel: ändra raden i `NAMES` och kör om.
 - Röstmodellerna (177 MB) laddas ned vid första körningen till `audio-src/voices/`, som är gitignorerad.
 - **Verifierat** i Chromium 390×844 och 1024×768: knappen spelar rätt fil på svenska och engelska, på kortets baksida och i detaljvyn, och döljs med ljudet av. Offline sparas nu 162 filer, `dist/` är 6,8 MB.
+
+## 2026-10-03: bilden täckte namnet på bred skärm
+
+- **Fel** (Patrik såg det på Triceratops i detaljvyn): på surfplatta och dator rann bilden ut över namn och uttalsknapp, upp till 226 px (Brachiosaurus). Syntes inte i 390 px bredd, där bilden blir lägre än rutan.
+- **Orsak:** `.art` är ett rutnät, och en rad med standardvärdet `auto` växer med bildens egen höjd i stället för att hålla sig till rutans. `height: 100%` på bilden hjälper då inte.
+- **Rättning:** `grid-template: minmax(0, 1fr) / minmax(0, 1fr)` på `.art`, alltså en cell som är exakt så stor som rutan. Rättat i den delade klassen, så kortlek, favoritrutor, utmaning och detaljvy får samma beteende.
+- **Verifierat** i 390×844 och 1024×768 på sju djur med olika bildformat, plus kortlek, favoritruta och utmaning.
+- **Lärdom:** höga bilder i bred ruta ska alltid provas i 1024, inte bara 390. Batchen mätte överlapp bara i mobilstorlek.
 
 ## Köra
 

@@ -8,6 +8,8 @@ export interface SceneContext {
   open: readonly Dino[];
   scene: Scene;
   save(): void;
+  /** Two quick taps on a placed animal. */
+  roar(id: string, el: HTMLElement): void;
 }
 
 const PERIODS: readonly Period[] = ['triassic', 'jurassic', 'cretaceous'];
@@ -79,10 +81,13 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     let offX = 0;
     let offY = 0;
     let down = false;
+    let moved = false;
+    let lastTap = 0;
     el.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       e.stopPropagation();
       down = true;
+      moved = false;
       selected = item;
       const r = stage.getBoundingClientRect();
       offX = e.clientX - (r.left + item.x * r.width);
@@ -93,6 +98,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     });
     el.addEventListener('pointermove', (e) => {
       if (!down) return;
+      moved = true;
       const r = stage.getBoundingClientRect();
       item.x = clamp((e.clientX - offX - r.left) / r.width, 0, 1);
       item.y = clamp((e.clientY - offY - r.top) / r.height, 0, 1);
@@ -103,6 +109,14 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       down = false;
       ctx.save();
     };
+    // Counted by hand: the browser's own dblclick does not fire reliably for a finger on an element that is also dragged.
+    el.addEventListener('pointerup', (e) => {
+      if (!down || moved) return;
+      if (e.timeStamp - lastTap < 400) {
+        lastTap = 0;
+        ctx.roar(item.id, el);
+      } else lastTap = e.timeStamp;
+    });
     el.addEventListener('pointerup', up);
     el.addEventListener('pointercancel', up);
   };
