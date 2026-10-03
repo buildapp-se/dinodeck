@@ -93,6 +93,8 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 .art > * { grid-area: 1 / 1; }
 .art img { width: 100%; height: 100%; object-fit: contain; }
 .art-missing { font-size: clamp(5rem, 30vw, 11rem); opacity: 0.25; }
+/* The pictures are cut-outs, so the placeholder would show through. A failed <img> is removed, which brings it back. */
+.art:has(img) .art-missing { display: none; }
 
 .cue {
   position: absolute;
