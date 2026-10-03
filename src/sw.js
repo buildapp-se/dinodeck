@@ -8,12 +8,15 @@ const PREFIX = 'dinodeck-';
 const CACHE = PREFIX + VERSION;
 
 self.addEventListener('install', (event) => {
-  // 'reload' skips the browser's own HTTP cache, which may hold ten-minute-old copies from the previous deploy.
+  // Two stale copies have to be avoided. 'reload' skips the browser's own HTTP cache (Cloudflare tells it to keep
+  // files for four hours). The version in the address skips the CDN's copy, which for a file with a fixed name
+  // (a picture, a sound) can be the previous deploy's for about ten minutes. Lookups below ignore the query.
   // addAll is all or nothing: if one file fails, this version is never installed and the old one keeps running.
+  const fresh = (file) => new Request(`${file}?v=${encodeURIComponent(VERSION)}`, { cache: 'reload' });
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.addAll(FILES.map((file) => new Request(file, { cache: 'reload' }))))
+      .then((cache) => cache.addAll(FILES.map(fresh)))
       .then(() => self.skipWaiting()),
   );
 });
@@ -35,7 +38,7 @@ self.addEventListener('fetch', (event) => {
     // The page itself: network first, so a new deploy shows on the very next load. Saved copy when offline or slow.
     event.respondWith(
       fetch(request.url, { cache: 'no-cache', signal: AbortSignal.timeout(4000) }).catch(() =>
-        caches.match('index.html', { cacheName: CACHE }),
+        caches.match('index.html', { cacheName: CACHE, ignoreSearch: true }),
       ),
     );
     return;
