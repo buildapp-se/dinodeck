@@ -54,7 +54,7 @@ const UI = {
   timeline: { sv: 'Tidslinje', en: 'Timeline' },
   today: { sv: 'Idag', en: 'Today' },
   asteroid: { sv: 'Asteroiden slår ned', en: 'The asteroid hits' },
-  myShort: { sv: 'milj. år', en: 'million yrs' },
+  myShort: { sv: 'miljoner år', en: 'million years' },
   closer: {
     sv: 'T. rex levde närmare oss i tid än Stegosaurus.',
     en: 'T. rex lived closer in time to us than to Stegosaurus.',

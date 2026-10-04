@@ -48,8 +48,8 @@ function numberQuestion(rand: Rand, q: Omit<Question, 'options' | 'answer'>, val
   return build(rand, q, { text: same(String(value)) }, [...wrong].map((n) => ({ text: same(String(n)) })));
 }
 
-function count(rand: Rand): Question {
-  const n = int(rand, 1, 9);
+function count(rand: Rand, level: Level): Question {
+  const n = int(rand, 1, level === 'small' ? 5 : 9);
   const [emoji, sv, en] = pick(rand, [
     ['🥚', 'ägg', 'eggs'],
     ['🦴', 'ben', 'bones'],
@@ -147,5 +147,5 @@ export function makeQuestion(
   const canMatch = withImage.length >= 3;
   if (level === 'big') return rand() < 0.5 ? math(rand, level) : fact(rand, target, dinos);
   if (canMatch && rand() < 0.5) return silhouette(rand, withImage);
-  return level === 'small' ? count(rand) : math(rand, level);
+  return level === 'small' ? count(rand, level) : math(rand, level);
 }

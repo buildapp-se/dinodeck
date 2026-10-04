@@ -35,3 +35,29 @@ export function layoutTimeline(dinos: readonly Dino[], pxPerMya: number, itemW: 
     });
   return { items, lanes: laneEnds.length };
 }
+
+/** Fixed number of rows for the compact strip. Never let an animal cross the asteroid marker. */
+export function layoutTimelineCompact(dinos: readonly Dino[], pxPerMya: number, itemW: number, maxLanes: number): { items: Placed[]; lanes: number } {
+  const gap = 6;
+  const items: Placed[] = [];
+  for (const period of ['triassic', 'jurassic', 'cretaceous'] as const) {
+    const starts = Array<number>(maxLanes).fill(Infinity);
+    const leftEdge = xOf(BOUNDS[period][0], pxPerMya);
+    const rightEdge = xOf(BOUNDS[period][1], pxPerMya) - (period === 'cretaceous' ? 8 : 0);
+    for (const d of dinos.filter((animal) => animal.period === period).sort((a, b) => midMya(a) - midMya(b))) {
+      const desired = xOf(midMya(d), pxPerMya);
+      let best: { lane: number; x: number; shift: number } | null = null;
+      for (let lane = 0; lane < maxLanes; lane++) {
+        const x = Math.min(desired, rightEdge - itemW / 2, starts[lane]! - itemW / 2 - gap);
+        if (x - itemW / 2 < leftEdge) continue;
+        const shift = Math.abs(x - desired);
+        if (shift > 60) continue;
+        if (!best || shift < best.shift) best = { lane, x, shift };
+      }
+      if (!best) throw new Error(`Timeline has no room for ${d.id} at ${pxPerMya} px/million years`);
+      starts[best.lane] = best.x - itemW / 2;
+      items.push({ id: d.id, x: best.x, lane: best.lane });
+    }
+  }
+  return { items, lanes: maxLanes };
+}

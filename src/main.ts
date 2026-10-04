@@ -1,6 +1,7 @@
 import './style.css';
 import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
 import { onPicture } from './picture.ts';
+import { icon } from './icons.ts';
 import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { play } from './sound.ts';
 import { DINOS } from './catalog.ts';
@@ -16,6 +17,7 @@ import { dietName, groupNote, num, t, weight, when } from './text.ts';
 const ids = DINOS.map((d) => d.id);
 const byId = new Map(DINOS.map((d) => [d.id, d]));
 const state = loadState(ids, navigator.language.startsWith('sv') ? 'sv' : 'en');
+const markOnboarded = (): void => { if (!state.onboarded) { state.onboarded = true; saveState(state); } };
 const lang = (): Lang => state.lang;
 
 const isOpen = (d: Dino): boolean => d.starter || state.unlockAll || state.won.includes(d.id);
@@ -39,17 +41,17 @@ let parentOpen = false;
 
 function artHtml(d: Dino): string {
   // The placeholder sits behind the image and stays if the image is missing.
-  return `<div class="art"><span class="art-missing" aria-hidden="true">🦕</span><img src="img/${d.id}.webp" alt="" decoding="async"></div>`;
+  return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="img/${d.id}.webp" alt="" decoding="async"></div>`;
 }
 
-function factsHtml(d: Dino): string {
+function factsHtml(d: Dino, compact = false): string {
   const l = lang();
   const note = groupNote(l, d.group);
   const size = `${t(l, 'about')} ${num(l, d.lengthM)} m`;
   return `
-    <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">🔊</button></p>
+    ${compact ? '' : `<p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>`}
     ${note ? `<p class="note">${note}</p>` : ''}
-    <p class="lead">${d.short[l]}</p>
+    ${compact ? '' : `<p class="lead">${d.short[l]}</p>`}
     <dl class="facts">
       <dt>${t(l, 'means')}</dt><dd>${d.meaning[l]}</dd>
       <dt>${t(l, 'lived')}</dt><dd>${when(l, d)}</dd>
@@ -62,7 +64,7 @@ function factsHtml(d: Dino): string {
     <ul>${d.facts.map((f) => `<li>${f[l]}</li>`).join('')}</ul>
     <h3>${t(l, 'sound')}</h3>
     <p>${d.sound[l]}</p>
-    <button type="button" class="chip listen" data-sound="${d.id}-call"><span aria-hidden="true">🔊</span> ${t(l, 'listen')}</button>
+    <button type="button" class="chip listen" data-sound="${d.id}-call">${icon('sound')} ${t(l, 'listen')}</button>
     <p class="guess">${t(l, 'soundGuess')}</p>
     <h3>${t(l, 'more')}</h3>
     <p>${d.long[l]}</p>
@@ -84,8 +86,8 @@ function buildCard(d: Dino, depth: number): HTMLElement {
     card.innerHTML = `
       <div class="face front">
         ${artHtml(d)}
-        <h2>${d.name}</h2>
-        <a class="chip win" href="#/utmaning/${d.id}">🔒 ${t(l, 'winMe')}</a>
+        <h2 lang="la">${d.name}</h2>
+        <a class="chip win" href="#/utmaning/${d.id}">${icon('lock')} ${t(l, 'winMe')}</a>
         <span class="cue cue-skip" aria-hidden="true">→</span>
       </div>`;
     return card;
@@ -93,14 +95,14 @@ function buildCard(d: Dino, depth: number): HTMLElement {
   card.innerHTML = `
     <div class="face front">
       ${artHtml(d)}
-      <h2>${d.name}</h2>
+      <h2 lang="la">${d.name}</h2>
       <p class="tag">${when(l, d)}</p>
-      <span class="snd" aria-hidden="true">🔊</span>
+      <button type="button" class="snd" aria-label="${t(l, 'listen')}">${icon('sound')}</button>
       <span class="cue cue-save" aria-hidden="true">♥</span>
       <span class="cue cue-skip" aria-hidden="true">→</span>
     </div>
     <div class="face back">
-      <div class="scroll"><h2>${d.name}</h2>${factsHtml(d)}</div>
+      <div class="scroll"><h2 lang="la">${d.name}</h2>${factsHtml(d)}</div>
     </div>`;
   return card;
 }
@@ -126,8 +128,10 @@ const handlers: DragHandlers = {
       }
     }
     card.classList.toggle('flipped');
+    markOnboarded();
   },
   swipe(dir) {
+    markOnboarded();
     const id = queue[0];
     const d = id ? byId.get(id) : undefined;
     if (dir > 0 && id && d && isOpen(d) && !state.favorites.includes(id)) {
@@ -157,6 +161,12 @@ function fillDeck(): void {
   if (top) {
     deck.append(top); // the top card paints last, above the rest and above a leaving card's shadow
     attachDrag(top, handlers);
+    if (!state.onboarded) top.classList.add('invite');
+    top.querySelector<HTMLButtonElement>('.snd')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const picture = top.querySelector<HTMLElement>('.front .art img');
+      if (picture && top.dataset.id && !state.muted) roar(top.dataset.id, picture);
+    });
   }
 }
 
@@ -165,9 +175,9 @@ function renderDeck(): void {
   view.innerHTML = `
     <div id="deck" class="deck"></div>
     <div class="controls">
-      <button type="button" id="skip" class="round" aria-label="${t(l, 'next')}">→</button>
-      <button type="button" id="flip" class="round small" aria-label="${t(l, 'flip')}">↻</button>
-      <button type="button" id="save" class="round heart" aria-label="${t(l, 'save')}">♥</button>
+      <button type="button" id="skip" class="round" aria-label="${t(l, 'next')}">${icon('next')}</button>
+      <button type="button" id="flip" class="round small" aria-label="${t(l, 'flip')}">${icon('flip')}</button>
+      <button type="button" id="save" class="round heart" aria-label="${t(l, 'save')}">${icon('heart')}</button>
     </div>`;
   fillDeck();
   const fly = (dir: 1 | -1) => { const c = topCard(); if (c) flyOff(c, dir, handlers); };
@@ -181,7 +191,7 @@ function renderFavorites(): void {
   const favs = state.favorites.map((id) => byId.get(id)).filter((d): d is Dino => d !== undefined);
   view.innerHTML = favs.length
     ? `<ul class="grid">${favs.map((d) => `<li><a class="tile" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>`
-    : `<p class="empty">${t(l, 'noFavorites')}</p>`;
+    : `<div class="empty-favorites"><div class="empty-tile">${icon('heart')}</div><p>${t(l, 'noFavorites')}</p><a class="chip" href="#/">${t(l, 'deck')}</a></div>`;
 }
 
 /** The line under the size comparison. Height is only stated for animals that stand on the ground. */
@@ -201,17 +211,18 @@ function renderDetail(d: Dino): void {
   const isFav = state.favorites.includes(d.id);
   view.innerHTML = `
     <article class="detail">
-      <a class="chip" href="${backTo}">← ${t(l, 'back')}</a>
+      <div class="detail-top"><a class="chip" href="${backTo}">${icon('next')} ${t(l, 'back')}</a><button type="button" id="fav" class="round heart" aria-label="${isFav ? t(l, 'remove') : t(l, 'save')}">${icon('heart')}</button></div>
       ${artHtml(d)}
-      <h2>${d.name}</h2>
+      <h2 lang="la">${d.name}</h2>
+      <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>
+      <p class="lead">${d.short[l]}</p>
       <h3>${t(l, 'howBig')}</h3>
       <div class="scale" aria-hidden="true">
         <img class="scale-dino" src="img/${d.id}.webp" alt="">
         <svg class="scale-child" viewBox="0 0 30 100"><circle cx="15" cy="11" r="10"/><path d="M8 24h14l6 30-5 2-3-14v20l3 36h-7l-1-30-1 30H7l3-36V42L7 56l-5-2z"/></svg>
       </div>
       <p class="scale-note">${sizeNote(d)}</p>
-      ${factsHtml(d)}
-      <button type="button" id="fav" class="chip">${isFav ? '♥ ' + t(l, 'remove') : '♡ ' + t(l, 'save')}</button>
+      ${factsHtml(d, true)}
     </article>`;
   // Size comparison: the picture's height stands for the animal's height, and the child is drawn at the same scale.
   const box = view.querySelector<HTMLElement>('.scale')!;
@@ -242,22 +253,23 @@ function renderChallenge(id: string): void {
   const left = locked();
   const asked = byId.get(id);
   const target = asked && !isOpen(asked) ? asked : left[Math.floor(Math.random() * left.length)];
-  if (!target) {
-    view.innerHTML = `<p class="empty">${t(l, 'allWon')}</p>`;
-    return;
-  }
+  const repeat = !target;
+  const prize = target ?? DINOS[0]!;
   renderLevelPicker(view, {
     lang: l,
     dinos: DINOS,
     matchPool: DINOS.filter(isOpen),
-    target,
+    target: prize,
+    wonCount: state.won.length,
+    repeat,
     artHtml,
     onWin(d) {
-      if (!state.won.includes(d.id)) state.won = [...state.won, d.id];
+      if (!repeat && !state.won.includes(d.id)) state.won = [...state.won, d.id];
       saveState(state);
       queue = [d.id, ...queue.filter((x) => x !== d.id)]; // the new card is on top of the deck
       renderNav();
     },
+    roar(d) { if (!state.muted) play(`audio/${d.id}-roar.mp3`); },
   });
 }
 
@@ -268,11 +280,11 @@ function renderNav(): void {
   const toWin = DINOS.filter((d) => !d.starter).length;
   const cur = (k: string) => (k === here ? ' aria-current="page"' : '');
   nav.innerHTML = `
-    <a href="#/"${cur('deck')}><span aria-hidden="true">🦖</span><span>${t(l, 'deck')}</span></a>
-    <a href="#/utmaning"${cur('play')}><span aria-hidden="true">⭐</span><span>${t(l, 'challenge')} <b>${state.won.length}/${toWin}</b></span></a>
-    <a href="#/scen"${cur('scene')}><span aria-hidden="true">🌋</span><span>${t(l, 'scene')}</span></a>
-    <a href="#/tidslinje"${cur('time')}><span aria-hidden="true">⏳</span><span>${t(l, 'timeline')}</span></a>
-    <a href="#/favoriter"${cur('fav')}><span aria-hidden="true">♥</span><span>${t(l, 'favorites')} <b>${state.favorites.length}</b></span></a>`;
+    <a href="#/"${cur('deck')}><span class="ico">${icon('deck')}</span><span>${t(l, 'deck')}</span></a>
+    <a href="#/utmaning"${cur('play')} aria-label="${t(l, 'challenge')}, ${state.won.length} ${l === 'sv' ? 'av' : 'of'} ${toWin}"><span class="ico">${icon('challenge')}</span><span>${t(l, 'challenge')}</span></a>
+    <a href="#/scen"${cur('scene')}><span class="ico">${icon('scene')}</span><span>${t(l, 'scene')}</span></a>
+    <a href="#/tidslinje"${cur('time')}><span class="ico">${icon('timeline')}</span><span>${t(l, 'timeline')}</span></a>
+    <a href="#/favoriter"${cur('fav')} aria-label="${t(l, 'favorites')}, ${state.favorites.length}"><span class="ico">${icon('heart')}${state.favorites.length ? `<b class="badge">${state.favorites.length}</b>` : ''}</span><span>${t(l, 'favorites')}</span></a>`;
 }
 
 /** What the whole page shows of the settings: its language, and no sound buttons when sound is off. */
@@ -308,7 +320,7 @@ function render(): void {
   } else if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
-  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, save: () => saveState(state), roar: (id, el) => { if (!state.muted) roar(id, el); } });
+  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, selectId: hash.split('/')[2], save: () => saveState(state), roar: (id, el) => { if (!state.muted) roar(id, el); } });
   else if (hash.startsWith('#/tidslinje')) renderTimeline(view, { lang: lang(), dinos: DINOS, isOpen });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();

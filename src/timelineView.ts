@@ -1,6 +1,6 @@
 import type { Dino, Lang, Period } from './dinos.ts';
 import { periodName, t } from './text.ts';
-import { BOUNDS, START_MYA, layoutTimeline, xOf } from './timeline.ts';
+import { BOUNDS, START_MYA, layoutTimelineCompact, xOf } from './timeline.ts';
 
 export interface TimelineContext {
   lang: Lang;
@@ -8,8 +8,6 @@ export interface TimelineContext {
   isOpen(d: Dino): boolean;
 }
 
-const PX_PER_MYA = 20;
-const ITEM_W = 92;
 const PAD = 70; // empty room before the strip starts
 const END = 150; // room for the "today" label after its line
 const PERIODS: readonly Period[] = ['triassic', 'jurassic', 'cretaceous'];
@@ -19,7 +17,17 @@ let keptScroll = -1;
 
 export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
   const l = ctx.lang;
-  const { items, lanes } = layoutTimeline(ctx.dinos, PX_PER_MYA, ITEM_W);
+  const tablet = window.innerWidth >= 900;
+  const ITEM_W = tablet ? 112 : 104;
+  const lanes = tablet && window.innerHeight < 840 ? 4 : 5;
+  let PX_PER_MYA = tablet ? 14 : 18;
+  let items: ReturnType<typeof layoutTimelineCompact>['items'] = [];
+  // Dense catalogues may need a slightly longer strip to retain five readable rows.
+  for (; PX_PER_MYA <= 50; PX_PER_MYA += 2) {
+    try { items = layoutTimelineCompact(ctx.dinos, PX_PER_MYA, ITEM_W, lanes).items; break; }
+    catch { /* try the next scale */ }
+  }
+  if (!items.length) throw new Error('Timeline layout could not fit the catalogue');
   const byId = new Map(ctx.dinos.map((d) => [d.id, d]));
   const x = (mya: number): number => PAD + xOf(mya, PX_PER_MYA);
   const width = x(0) + END;
@@ -55,7 +63,7 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
           ${[250, 200, 150, 100, 50].map((m) => `<span class="tick" style="left:${x(m)}px">${m} ${t(l, 'mya')}</span>`).join('')}
           ${items.map((i) => {
             const d = byId.get(i.id)!;
-            return `<a class="tl-item${ctx.isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}" draggable="false" style="left:${PAD + i.x}px;--lane:${i.lane}"><img src="img/${d.id}.webp" alt="" draggable="false"><span>${d.name}</span></a>`;
+            return `<a class="tl-item${ctx.isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}" draggable="false" style="left:${PAD + i.x}px;--lane:${i.lane}"><img src="img/${d.id}.webp" alt="" draggable="false"><span lang="la">${d.name}</span></a>`;
           }).join('')}
           <span class="mark" style="left:${x(BOUNDS.cretaceous[1])}px"><span aria-hidden="true">☄️</span>${t(l, 'asteroid')}</span>
           <span class="mark" style="left:${x(0)}px"><span aria-hidden="true">🏠</span>${t(l, 'today')}</span>

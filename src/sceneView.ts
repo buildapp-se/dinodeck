@@ -7,6 +7,7 @@ export interface SceneContext {
   /** Only open cards can be placed: winning a card is what brings the animal here. */
   open: readonly Dino[];
   scene: Scene;
+  selectId?: string;
   save(): void;
   /** Two quick taps on a placed animal. */
   roar(id: string, el: HTMLElement): void;
@@ -21,11 +22,17 @@ const startSize = (d: Dino): number => clamp(0.12 + (d.lengthM / 35) * 0.5, MIN_
 export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   const { lang: l, scene } = ctx;
   let selected: SceneItem | null = null;
+  const fromPrize = ctx.open.find((animal) => animal.id === ctx.selectId);
+  if (fromPrize && scene.items.length < MAX_SCENE_ITEMS) {
+    selected = { id: fromPrize.id, x: 0.5, y: 0.7, size: startSize(fromPrize), flip: false };
+    scene.items.push(selected);
+    ctx.save();
+  }
 
   view.innerHTML = `
     <section class="scene">
       <div class="seg" role="group">
-        ${PERIODS.map((p) => `<button type="button" data-bg="${p}">${periodName(l, p)}</button>`).join('')}
+        ${PERIODS.map((p) => `<button type="button" data-bg="${p}"><img src="img/bg-${p}.webp" alt="">${periodName(l, p)}</button>`).join('')}
       </div>
       <div class="stage"></div>
       <div class="tools">
@@ -41,6 +48,12 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
 
   const stage = view.querySelector<HTMLElement>('.stage')!;
   const tools = view.querySelector<HTMLElement>('.tools')!;
+  const frame = () => {
+    const { width, height } = stage.getBoundingClientRect();
+    const worldHeight = Math.max(height, width / 1.5);
+    const worldWidth = worldHeight * 1.5;
+    return { worldWidth, worldHeight, left: (width - worldWidth) / 2, top: (height - worldHeight) / 2 };
+  };
 
   // An animal without a picture cannot be placed, so its tray button goes too.
   // The button is looked up now: by the time this fires, the page-wide handler has already detached the <img>.
@@ -50,9 +63,10 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   });
 
   const place = (el: HTMLElement, item: SceneItem): void => {
-    el.style.left = `${item.x * 100}%`;
-    el.style.top = `${item.y * 100}%`;
-    el.style.width = `${item.size * 100}%`;
+    const f = frame();
+    el.style.left = `${f.left + item.x * f.worldWidth}px`;
+    el.style.top = `${f.top + item.y * f.worldHeight}px`;
+    el.style.width = `${item.size * f.worldWidth}px`;
     el.style.zIndex = String(Math.round(item.y * 100)); // lower on the ground = closer = in front
     el.style.transform = `translate(-50%, -50%) scaleX(${item.flip ? -1 : 1})`;
     el.classList.toggle('selected', item === selected);
@@ -60,6 +74,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
 
   const draw = (): void => {
     stage.dataset.bg = scene.bg;
+    stage.classList.toggle('empty-stage', scene.items.length === 0);
     stage.innerHTML = `<img class="bg" src="img/bg-${scene.bg}.webp" alt="">`;
     for (const item of scene.items) {
       const el = document.createElement('img');
@@ -90,8 +105,9 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       moved = false;
       selected = item;
       const r = stage.getBoundingClientRect();
-      offX = e.clientX - (r.left + item.x * r.width);
-      offY = e.clientY - (r.top + item.y * r.height);
+      const f = frame();
+      offX = e.clientX - (r.left + f.left + item.x * f.worldWidth);
+      offY = e.clientY - (r.top + f.top + item.y * f.worldHeight);
       try { el.setPointerCapture(e.pointerId); } catch { /* capture is nice-to-have */ }
       stage.querySelectorAll('.item').forEach((i) => i.classList.toggle('selected', i === el));
       tools.classList.add('on');
@@ -100,8 +116,9 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       if (!down) return;
       moved = true;
       const r = stage.getBoundingClientRect();
-      item.x = clamp((e.clientX - offX - r.left) / r.width, 0, 1);
-      item.y = clamp((e.clientY - offY - r.top) / r.height, 0, 1);
+      const f = frame();
+      item.x = clamp((e.clientX - offX - r.left - f.left) / f.worldWidth, 0, 1);
+      item.y = clamp((e.clientY - offY - r.top - f.top) / f.worldHeight, 0, 1);
       place(el, item);
     });
     const up = (): void => {
@@ -138,8 +155,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     b.addEventListener('click', () => {
       const d = ctx.open.find((x) => x.id === b.dataset.add);
       if (!d || scene.items.length >= MAX_SCENE_ITEMS) return;
-      // A little scatter so two taps do not stack exactly on top of each other.
-      selected = { id: d.id, x: 0.3 + Math.random() * 0.4, y: 0.62 + Math.random() * 0.2, size: startSize(d), flip: false };
+      selected = { id: d.id, x: 0.5, y: 0.7, size: startSize(d), flip: false };
       scene.items.push(selected);
       ctx.save();
       draw();
@@ -161,4 +177,8 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   });
 
   draw();
+  new ResizeObserver(() => stage.querySelectorAll<HTMLElement>('.item').forEach((el, index) => {
+    const item = scene.items[index];
+    if (item) place(el, item);
+  })).observe(stage);
 }

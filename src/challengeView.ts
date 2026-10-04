@@ -1,6 +1,7 @@
 import { LEVELS, WINS_NEEDED, makeQuestion, type Level, type Option, type Question } from './challenge.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { t } from './text.ts';
+import { icon } from './icons.ts';
 
 export interface ChallengeContext {
   lang: Lang;
@@ -9,8 +10,11 @@ export interface ChallengeContext {
   matchPool: readonly Dino[];
   /** The card being played for. */
   target: Dino;
+  wonCount: number;
+  repeat?: boolean;
   artHtml(d: Dino): string;
   onWin(d: Dino): void;
+  roar(d: Dino): void;
 }
 
 /** Resolves to the ids whose picture actually loads. Missing art is normal until the images are made. */
@@ -25,17 +29,18 @@ function findImages(dinos: readonly Dino[]): Promise<string[]> {
   return Promise.all(dinos.map(probe)).then((ids) => ids.filter((id): id is string => id !== null));
 }
 
-const AGES: Record<Level, string> = { small: '3–5', mid: '6–7', big: '8–10' };
+const AGES: Record<Level, string[]> = { small: ['3', '4', '5'], mid: ['6', '7'], big: ['8', '9', '10'] };
+const stars = (count: number): string => `<div class="progress" aria-label="${count} av ${WINS_NEEDED}">${Array.from({ length: WINS_NEEDED }, (_, i) => `<span class="${i < count ? 'on' : ''}">${icon('challenge')}</span>`).join('')}</div>`;
 
 export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): void {
   const l = ctx.lang;
   view.innerHTML = `
     <section class="challenge">
-      <div class="prize locked">${ctx.artHtml(ctx.target)}</div>
-      <h2>${t(l, 'winThis')} ${ctx.target.name}</h2>
+      <div class="prize${ctx.repeat ? '' : ' locked'}">${ctx.artHtml(ctx.target)}</div>
+      <h2>${ctx.repeat ? t(l, 'allWon') : `${t(l, 'winThis')} ${ctx.target.name}`}</h2>
       <p class="hint">${t(l, 'howOld')}</p>
       <div class="levels">
-        ${LEVELS.map((lv) => `<button type="button" class="big" data-level="${lv}">${AGES[lv]}<small>${t(l, 'years')}</small></button>`).join('')}
+        ${LEVELS.map((lv) => `<button type="button" class="big" data-level="${lv}" aria-label="${AGES[lv][0]} ${l === 'sv' ? 'till' : 'to'} ${AGES[lv].at(-1)} ${t(l, 'years')}"><span class="ages">${AGES[lv].map((age) => `<span>${age}</span>`).join('')}</span><small>${t(l, 'years')}</small></button>`).join('')}
       </div>
     </section>`;
   view.querySelectorAll<HTMLButtonElement>('[data-level]').forEach((btn) =>
@@ -50,14 +55,14 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
   let right = 0;
 
   const optionHtml = (o: Option, i: number): string => {
-    if ('text' in o) return `<button type="button" class="big" data-i="${i}">${o.text[l]}</button>`;
+    if ('text' in o) return `<button type="button" class="big" data-i="${i}">${level === 'small' && /^\d+$/.test(o.text[l]) ? `<span class="answer-dots" aria-hidden="true">${'●'.repeat(Math.min(10, Number(o.text[l])))}</span>` : ''}${o.text[l]}</button>`;
     const d = byId.get(o.dino);
     return d ? `<button type="button" class="big pic" data-i="${i}" aria-label="${d.name}">${ctx.artHtml(d)}</button>` : '';
   };
 
   const showHtml = (q: Question): string => {
     if (!q.show) return '';
-    if ('n' in q.show) return `<p class="count" aria-hidden="true">${q.show.emoji.repeat(q.show.n)}</p>`;
+    if ('n' in q.show) return `<div class="count" aria-hidden="true">${Array.from({ length: q.show.n }, () => `<img src="img/tyrannosaurus-rex.webp" alt="">`).join('')}</div>`;
     const d = byId.get(q.show.silhouette);
     return d ? `<div class="shape locked">${ctx.artHtml(d)}</div>` : '';
   };
@@ -66,9 +71,10 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
     const q = makeQuestion(level, Math.random, ctx.target, ctx.dinos, withImage);
     view.innerHTML = `
       <section class="challenge">
-        <p class="progress" aria-label="${right} / ${WINS_NEEDED}">${'⭐'.repeat(right)}${'☆'.repeat(WINS_NEEDED - right)}</p>
+        <p class="win-count">${ctx.wonCount} / 22</p>
+        ${stars(right)}
         ${showHtml(q)}
-        <h2>${q.prompt[l]}</h2>
+        <h2${level === 'small' ? ' class="visually-hidden"' : ''}>${q.prompt[l]}</h2>
         <p class="hint" id="msg" aria-live="polite">&nbsp;</p>
         <div class="options">${q.options.map(optionHtml).join('')}</div>
       </section>`;
@@ -81,6 +87,8 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
         }
         right++;
         btn.classList.add('right');
+        btn.insertAdjacentHTML('afterbegin', icon('check'));
+        if (right >= WINS_NEEDED) ctx.roar(ctx.target);
         view.querySelectorAll<HTMLButtonElement>('[data-i]').forEach((b) => (b.disabled = true));
         setTimeout(right >= WINS_NEEDED ? won : ask, 700);
       }),
@@ -91,14 +99,15 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
     ctx.onWin(ctx.target);
     view.innerHTML = `
       <section class="challenge">
-        <p class="progress">${'⭐'.repeat(WINS_NEEDED)}</p>
-        <div class="prize">${ctx.artHtml(ctx.target)}</div>
+        ${stars(WINS_NEEDED)}
+        <div class="prize reveal">${ctx.artHtml(ctx.target)}<div class="burst" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 6) * 110)}px;--dy:${Math.round(Math.sin(i * Math.PI / 6) * 110)}px"></span>`).join('')}</div></div>
         <h2>${t(l, 'youWon')} ${ctx.target.name}!</h2>
-        <div class="levels">
-          <a class="big" href="#/dino/${ctx.target.id}">${t(l, 'seeCard')}</a>
-          <a class="big" href="#/utmaning">${t(l, 'oneMore')}</a>
+        <div class="levels win-actions" hidden>
+          <a class="big" href="#/">${l === 'sv' ? 'Till kortleken' : 'To the cards'}</a>
+          <a class="big" href="#/scen/${ctx.target.id}">${l === 'sv' ? 'Ställ ut' : 'Display it'}</a>
         </div>
       </section>`;
+    setTimeout(() => { const actions = view.querySelector<HTMLElement>('.win-actions'); if (actions) actions.hidden = false; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 1100);
   };
 
   ask();

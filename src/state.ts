@@ -49,13 +49,14 @@ export interface State {
   /** Parent mode: every card open without touching what has been won. */
   unlockAll: boolean;
   muted: boolean;
+  onboarded: boolean;
 }
 
 const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {
-  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false };
+  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, onboarded: false };
   if (!raw) return fresh;
   let data: unknown;
   try {
@@ -75,12 +76,13 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
     scene: parseScene(d.scene, knownIds),
     unlockAll: d.unlockAll === true,
     muted: d.muted === true,
+    onboarded: d.onboarded === true,
   };
 }
 
 /** Parent mode's reset: the collection starts over, the device's settings (language, sound) stay. */
 export function resetCollection(state: State): State {
-  return { v: 1, lang: state.lang, muted: state.muted, unlockAll: false, favorites: [], won: [], scene: { bg: 'jurassic', items: [] } };
+  return { v: 1, lang: state.lang, muted: state.muted, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], scene: { bg: 'jurassic', items: [] } };
 }
 
 export function toggleFavorite(favorites: readonly string[], id: string): string[] {

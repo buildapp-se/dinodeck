@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "vite",
     "check": "tsc --noEmit",
-    "test": "tsc --noEmit && node --test \"src/**/*.test.ts\"",
-    "build": "vite build"
+    "test": "tsc --noEmit && node --test --test-isolation=none src/*.test.ts",
+    "build": "vite build --configLoader native"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
