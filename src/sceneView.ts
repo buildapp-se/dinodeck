@@ -67,7 +67,6 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     el.style.left = `${f.left + item.x * f.worldWidth}px`;
     el.style.top = `${f.top + item.y * f.worldHeight}px`;
     el.style.width = `${item.size * f.worldWidth}px`;
-    el.style.zIndex = String(Math.round(item.y * 100)); // lower on the ground = closer = in front
     el.style.transform = `translate(-50%, -50%) scaleX(${item.flip ? -1 : 1})`;
     el.classList.toggle('selected', item === selected);
   };
@@ -165,8 +164,15 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   tools.addEventListener('click', (e) => {
     const tool = (e.target as Element).closest<HTMLElement>('[data-tool]')?.dataset.tool;
     if (!tool || !selected) return;
-    if (tool === 'bigger') selected.size = clamp(selected.size * 1.2, MIN_SIZE, MAX_SIZE);
-    if (tool === 'smaller') selected.size = clamp(selected.size / 1.2, MIN_SIZE, MAX_SIZE);
+    if (tool === 'bigger' || tool === 'smaller') {
+      selected.size = clamp(selected.size * (tool === 'bigger' ? 1.2 : 1 / 1.2), MIN_SIZE, MAX_SIZE);
+      const index = scene.items.indexOf(selected);
+      if (index !== -1) {
+        scene.items.splice(index, 1);
+        if (tool === 'bigger') scene.items.push(selected);
+        else scene.items.unshift(selected);
+      }
+    }
     if (tool === 'flip') selected.flip = !selected.flip;
     if (tool === 'remove') {
       scene.items.splice(scene.items.indexOf(selected), 1);
