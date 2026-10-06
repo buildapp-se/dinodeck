@@ -1,4 +1,4 @@
-import type { Diet, Dino, Group, Lang, Period } from './dinos.ts';
+import type { ColourEvidence, Diet, Dino, Group, Lang, Period } from './dinos.ts';
 
 const UI = {
   deck: { sv: 'Kort', en: 'Cards' },
@@ -28,6 +28,7 @@ const UI = {
     sv: 'Ingen har hört djuret på riktigt. Ljudet är en gissning.',
     en: 'Nobody has ever heard this animal. The sound is a guess.',
   },
+  colour: { sv: 'Vilken färg hade den?', en: 'What colour was it?' },
   howBig: { sv: 'Hur stor var den?', en: 'How big was it?' },
   child: { sv: 'Ett barn', en: 'A child' },
   tall: { sv: 'hög', en: 'tall' },
@@ -97,6 +98,26 @@ const GROUP: Record<Exclude<Group, 'dinosaur'>, Record<Lang, string>> = {
   pterosaur: { sv: 'Flygödla, inte en dinosaurie', en: 'Flying reptile, not a dinosaur' },
   marine: { sv: 'Havsreptil, inte en dinosaurie', en: 'Sea reptile, not a dinosaur' },
 };
+
+const COLOUR: Record<ColourEvidence, Record<Lang, string>> = {
+  known: {
+    sv: 'Forskare har hittat spår av färg i fossilen, så de här färgerna vet vi faktiskt en hel del om.',
+    en: 'Scientists have found traces of colour in the fossils, so we really do know quite a lot about these colours.',
+  },
+  relatives: {
+    sv: 'Ingen har hittat färgen hos just det här djuret, men vi vet hur nära släktingar såg ut och har utgått från dem.',
+    en: 'Nobody has found the colour of this animal itself, but we know what close relatives looked like and have used them as a guide.',
+  },
+  guess: {
+    sv: 'Ingen vet vilken färg det här djuret hade. Färgerna är en gissning som bygger på djur som lever i dag.',
+    en: 'Nobody knows what colour this animal was. The colours are a guess based on animals that are alive today.',
+  },
+};
+const DISPUTED: Record<Lang, string> = { sv: 'Här är forskarna inte överens än.', en: 'Scientists do not agree about this one yet.' };
+
+/** How sure the picture's colours are, with one more sentence where researchers disagree. */
+export const colourNote = (lang: Lang, d: Pick<Dino, 'colour' | 'colourDisputed'>): string =>
+  COLOUR[d.colour][lang] + (d.colourDisputed ? ` ${DISPUTED[lang]}` : '');
 
 export const periodName = (lang: Lang, p: Period): string => PERIOD[p][lang];
 export const dietName = (lang: Lang, d: Diet): string => DIET[d][lang];

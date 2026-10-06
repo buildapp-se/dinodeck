@@ -12,7 +12,7 @@ import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { advance, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
-import { dietName, groupNote, num, t, weight, when } from './text.ts';
+import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
 const byId = new Map(DINOS.map((d) => [d.id, d]));
@@ -66,6 +66,8 @@ function factsHtml(d: Dino, compact = false): string {
     <p>${d.sound[l]}</p>
     <button type="button" class="chip listen" data-sound="${d.id}-call">${icon('sound')} ${t(l, 'listen')}</button>
     <p class="guess">${t(l, 'soundGuess')}</p>
+    <h3>${t(l, 'colour')}</h3>
+    <p class="colour-note">${colourNote(l, d)}</p>
     <h3>${t(l, 'more')}</h3>
     <p>${d.long[l]}</p>
     <p class="source">${t(l, 'source')}: <a href="${d.source.url}" target="_blank" rel="noopener">${d.source.label}</a></p>`;

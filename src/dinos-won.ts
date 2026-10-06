@@ -37,6 +37,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at deep, rumbling sounds like crocodiles make.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('spinosaurus'),
   },
   {
@@ -72,6 +73,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at deep sounds made with its mouth closed.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('allosaurus'),
   },
   {
@@ -107,6 +109,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at deep, rumbling sounds.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('giganotosaurus'),
   },
   {
@@ -142,6 +145,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at deep, muffled sounds.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('carnotaurus'),
   },
   {
@@ -177,6 +181,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at hisses and deep sounds.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('dilophosaurus'),
   },
   {
@@ -212,6 +217,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at hisses and bird-like sounds.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('deinonychus'),
   },
   {
@@ -247,6 +253,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at chirps and squeaks like small birds.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('compsognathus'),
   },
   {
@@ -282,6 +289,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at low, booming sounds like ostriches make.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('gallimimus'),
   },
   {
@@ -317,6 +325,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at bird-like sounds.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('oviraptor'),
   },
   {
@@ -352,6 +361,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at deep, muffled sounds.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('therizinosaurus'),
   },
   {
@@ -387,6 +397,8 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at simple squawks, not song like small birds today.',
     },
     starter: false,
+    colour: 'known',
+    colourDisputed: true,
     source: NHM('archaeopteryx'),
   },
   {
@@ -422,6 +434,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at bird-like squawks.',
     },
     starter: false,
+    colour: 'known',
     source: NHM('microraptor'),
   },
   {
@@ -457,6 +470,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Animals this big often make very deep sounds.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('argentinosaurus'),
   },
   {
@@ -492,6 +506,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Maybe deep sounds, and maybe a crack from its tail.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('apatosaurus'),
   },
   {
@@ -527,6 +542,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at low grunts.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('iguanodon'),
   },
   {
@@ -562,6 +578,7 @@ export const WON: Dino[] = [
       en: 'Here scientists know more than usual: the hollow crest gave a deep, honking sound, a bit like a trombone or a foghorn.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('parasaurolophus'),
   },
   {
@@ -597,6 +614,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Animals that live in herds usually call to each other, so scientists guess at honks and grunts.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('maiasaura'),
   },
   {
@@ -632,6 +650,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at grunts and snorts.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('pachycephalosaurus'),
   },
   {
@@ -667,6 +686,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at grunts and bleats.',
     },
     starter: false,
+    colour: 'relatives',
     source: NHM('protoceratops'),
   },
   {
@@ -702,6 +722,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at low, muffled sounds.',
     },
     starter: false,
+    colour: 'guess',
     source: NHM('plateosaurus'),
   },
   {
@@ -737,6 +758,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Under water it may have made no sounds at all.',
     },
     starter: false,
+    colour: 'relatives',
     source: WIKI('Mosasaurus'),
   },
   {
@@ -772,6 +794,7 @@ export const WON: Dino[] = [
       en: 'Nobody knows for sure. Under water it may have made no sounds at all.',
     },
     starter: false,
+    colour: 'relatives',
     source: WIKI('Plesiosaurus'),
   },
 ];

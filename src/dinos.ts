@@ -3,6 +3,8 @@ export type L = Record<Lang, string>;
 
 export type Group = 'dinosaur' | 'pterosaur' | 'marine';
 export type Period = 'triassic' | 'jurassic' | 'cretaceous';
+/** How much is known about the animal's colour: docs/research/dinosaur-colour.md, section 6. */
+export type ColourEvidence = 'known' | 'relatives' | 'guess';
 export type Diet = 'carnivore' | 'herbivore' | 'piscivore' | 'omnivore';
 
 export interface Dino {
@@ -34,6 +36,10 @@ export interface Dino {
   sound: L;
   /** Open from the start; the rest are won in challenges. */
   starter: boolean;
+  /** What the picture's colours rest on. Shown on the back of the card. */
+  colour: ColourEvidence;
+  /** Researchers disagree about the colour finding: one more line on the card. */
+  colourDisputed?: true;
   source: { label: string; url: string };
 }
 
@@ -81,6 +87,7 @@ export const STARTERS: Dino[] = [
       en: 'Scientists do not think it roared like in the movies. It may have made deep, rumbling sounds with its mouth closed, a bit like a crocodile or an ostrich.',
     },
     starter: true,
+    colour: 'guess',
     source: NHM('tyrannosaurus'),
   },
   {
@@ -119,6 +126,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at low grunts and snorts, like big animals today.',
     },
     starter: true,
+    colour: 'relatives',
     source: NHM('triceratops'),
   },
   {
@@ -157,6 +165,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at low, muffled sounds.',
     },
     starter: true,
+    colour: 'guess',
     source: NHM('stegosaurus'),
   },
   {
@@ -192,6 +201,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Animals this big often make very deep sounds, some so deep that people can barely hear them.',
     },
     starter: true,
+    colour: 'guess',
     source: NHM('brachiosaurus'),
   },
   {
@@ -230,6 +240,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Because it was closely related to birds, scientists guess at hisses and cooing sounds.',
     },
     starter: true,
+    colour: 'relatives',
     source: NHM('velociraptor'),
   },
   {
@@ -268,6 +279,8 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Maybe deep sounds, and maybe a crack from its tail.',
     },
     starter: true,
+    colour: 'guess',
+    colourDisputed: true,
     source: NHM('diplodocus'),
   },
   {
@@ -303,6 +316,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. It had long, twisting passages in its nose that may have made its sounds deeper.',
     },
     starter: true,
+    colour: 'relatives',
     source: NHM('ankylosaurus'),
   },
   {
@@ -342,6 +356,7 @@ export const STARTERS: Dino[] = [
       en: 'Nobody knows for sure. Scientists guess at squawks and beak clacking, a bit like big seabirds.',
     },
     starter: true,
+    colour: 'relatives',
     source: { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Pteranodon' },
   },
 ];
