@@ -2,9 +2,9 @@
 schemaVersion: 1
 status: active
 currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
-nextAction: Patrik lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
+nextAction: Patrik granskar grenen batch/2026-10-06 (färgrad, målarbilder, deploy-rättigheter) och slår ihop den, lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
 blockers: []
-reviewedAt: 2026-10-03
+reviewedAt: 2026-10-06
 ---
 
 # Handoff: Dinodeck
@@ -152,12 +152,32 @@ reviewedAt: 2026-10-03
   - **`heightM`** behöver inte ses över: posen är densamma.
   - **Versionerade bildnamn.** Bilderna har fasta namn, så en besökare med appen installerad får gamla bilder vid första laddningen efter en deploy och nya vid nästa (se avsnittet om offline). Den riktiga lösningen är att låta Vite ge bilderna innehållshash i namnet: flytta `public/img/` till `src/img/` och hämta adresserna med `import.meta.glob('./img/*.webp', { eager: true, query: '?url', import: 'default' })`. Det rör sju ställen i `src/` och två skript i `tools/`, och gjordes inte här eftersom sessionen bara fick röra bilder och dokument.
 
+## 2026-10-06: nattbatch på grenen `batch/2026-10-06`
+
+Tre punkter ur backloggen, byggda och committade på grenen. **Inget är sammanslaget med `main` och inget är utlagt.** Arbetskopia: `C:\dev\.worktrees\batch-2026-10-06\dinodeck`.
+
+- **Färgraden** (`14286bd`): ny rubrik "Vilken färg hade den?" på kortets baksida och i detaljvyn, mellan ljudet och "Mer att läsa". Nivå per djur i fältet `colour` (`known`, `relatives`, `guess`), extra mening via `colourDisputed`. 2 kända, 12 från släktingar, 16 gissning.
+  - **Val av Claude:** rubrikens ordalydelse. Raden syns även med ljudet av (ljudets gissningsrad döljs då, den här inte). Gallimimus räknas som gissning: tabellen säger "Plausible guess (feathers informed by relatives)", och raden handlar om färg.
+  - **Verifierat:** `npm test` (nivåerna jämförs mot tabellen i researchfilen, 22 tester totalt efter batchen). Chromium 390×844 och 1024×768 mot `vite preview`: rätt text på svenska och engelska för alla tre nivåer och båda oeniga djuren, i detaljvyn och på kortets baksida, ingen sidledes scroll.
+- **Rättigheter i `deploy.yml`** (`d5f4d06`): `permissions: {}` på workflow-nivå, `contents: read` på bygget, `pages: write` och `id-token: write` på utläggningen, `persist-credentials: false` vid utcheckningen.
+  - **Verifierat:** `uvx zizmor --offline`: excessive-permissions (2) och artipacked (1) är borta. Kvar: unpinned-uses (4), ny punkt i backloggen.
+  - **Inte verifierat:** att utläggningen går igenom på GitHub. Det syns först när grenen slås ihop med `main`. Uppdelningen är GitHubs egen mall för Pages, men den är inte körd här.
+- **Målarbilder** (`54ddbc8`): knappen "Skriv ut och färglägg" i detaljvyn (ett djur med namn) och en skrivarknapp bredvid periodvalet i scenen (bakgrunden och de utställda djuren på sin plats).
+  - **Så görs konturerna:** `uv run --with pillow tools/make-outlines.py` läser varje bild i `public/img/` och skriver `public/img/line/<samma namn>` (33 filer, ca 560 kB). Skillnaden mellan två oskärpor ger linjerna, bildens frilagda kant ger en sluten ytterkontur. Djuren är vita inuti och genomskinliga utanför, så de täcker bakgrundens linjer i scenen. **Byts en bild ska skriptet köras om**, annars visar målarbilden den gamla teckningen. Testet kontrollerar bara att filen finns.
+  - **Så skrivs det ut:** `src/print.ts` lägger arket i `#print`, sätter klassen `colouring` på `<html>` och anropar webbläsarens utskrift. Utskriftsstilmallen i `src/style.css` döljer allt annat. Klassen tas bort vid `afterprint`, så en vanlig utskrift från webbläsarens meny ger appen som förut.
+  - **Val av Claude:** färdiga filer i stället för att räkna fram konturen i webbläsaren (fungerar offline och lika i alla webbläsare, kostar 560 kB i offlinekopian, `dist/` är nu ca 6,7 MB). Knapparna syns för barnet, inte bara i föräldraläget. Den utskrivna scenen visar hela scenen i 3:2, även det som på en stående telefon ligger utanför bild.
+  - **Verifierat:** `npm test`. Chromium med utskriftsläge påslaget och PDF i A4: bara arket syns, konturfilerna används, lägen och storlekar i scenen stämmer med det sparade, 33 konturfiler finns med i service workerns lista. Claude har tittat på alla 33 konturer i liten storlek och på de två PDF:erna.
+  - **Inte verifierat:** riktig skrivare och papper, utskrift från telefon eller surfplatta (iOS och Android öppnar egna utskriftsdialoger), Safari och Firefox. Bakgrunderna blir täta av små streck på marken: om det är roligt att färglägga avgör Patrik. Tätheten styrs av de tre talen i `backdrop()` i skriptet.
+- **Överhoppat, kräver Patrik:** `promoteDeck` (villkorad av ett hopp som bara syns på riktig telefon), palett och typsnitt (smak), uppläsning av texter (omfång och röst, och ingen har lyssnat på det som redan finns), alternativa bildstilar (nya bilder), struts och kasuar (inga fria inspelningar hittade förra gången, och ett byte ändrar ljud som ingen kan lyssna på i natt).
+- **Pteranodons källa, inte bytt:** American Museum of Natural History har en sida (`amnh.org/explore/news-blogs/pteranodon-longiceps`), men den svarar 403 på både hämtverktyg och `curl`, så innehållet gick inte att kontrollera mot kortet. Öppna den i en webbläsare och jämför innan länken byts.
+
 ## Köra
 
 - `npm run dev`: utvecklingsserver.
 - `npm test`: typkontroll och tester. Läs exit-koden, inte bara utskriften.
 - `npm run build`: bygger till `dist/`, och skriver `dist/sw.js`.
 - `uv run --with pillow tools/make-icons.py`: gör om ikoner och favicon.
+- `uv run --with pillow tools/make-outlines.py`: gör om konturerna till målarbilderna (`public/img/line/`). Körs efter varje bildbyte.
 - `uv run --with soundfile --with numpy tools/make-sounds.py`: bygger om alla 60 läten. En rad per kontroll, felkod om något ser fel ut.
 - `uv run --python 3.12 --with piper-tts --with soundfile --with numpy tools/make-names.py`: bygger om de 60 namnklippen.
 - Push till `main` bygger och lägger ut via `.github/workflows/deploy.yml`.
