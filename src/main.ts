@@ -3,6 +3,7 @@ import { attachDrag, flyOff, type DragHandlers } from './deck.ts';
 import { onPicture } from './picture.ts';
 import { icon } from './icons.ts';
 import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
+import { dinoSheet, printSheet, sceneSheet } from './print.ts';
 import { play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
@@ -218,6 +219,7 @@ function renderDetail(d: Dino): void {
       <h2 lang="la">${d.name}</h2>
       <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>
       <p class="lead">${d.short[l]}</p>
+      <button type="button" id="print-dino" class="chip print-btn">${icon('print')} ${t(l, 'printColour')}</button>
       <h3>${t(l, 'howBig')}</h3>
       <div class="scale" aria-hidden="true">
         <img class="scale-dino" src="img/${d.id}.webp" alt="">
@@ -242,6 +244,7 @@ function renderDetail(d: Dino): void {
   else shape.addEventListener('load', fit);
   const picture = view.querySelector<HTMLElement>('.detail .art img');
   picture?.addEventListener('click', () => { if (!state.muted) roar(d.id, picture); });
+  view.querySelector('#print-dino')!.addEventListener('click', () => void printSheet(dinoSheet(d)));
   view.querySelector('#fav')!.addEventListener('click', () => {
     state.favorites = toggleFavorite(state.favorites, d.id);
     saveState(state);
@@ -322,7 +325,7 @@ function render(): void {
   } else if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
-  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, selectId: hash.split('/')[2], save: () => saveState(state), roar: (id, el) => { if (!state.muted) roar(id, el); } });
+  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, selectId: hash.split('/')[2], save: () => saveState(state), print: () => void printSheet(sceneSheet(state.scene)), roar: (id, el) => { if (!state.muted) roar(id, el); } });
   else if (hash.startsWith('#/tidslinje')) renderTimeline(view, { lang: lang(), dinos: DINOS, isOpen });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();

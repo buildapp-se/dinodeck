@@ -9,6 +9,7 @@ const paths = {
   flip: '<rect x="2.5" y="10" width="8" height="11" rx="2"/><rect x="13.5" y="10" width="8" height="11" rx="2"/><path d="M6.5 7C8 3.5 16 3.5 17.5 7M14.5 6.5l3 .5.5-3"/>',
   next: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  print: '<path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
 } as const;
 

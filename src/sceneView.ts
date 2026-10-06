@@ -1,5 +1,6 @@
 import type { Dino, Lang, Period } from './dinos.ts';
 import { MAX_SCENE_ITEMS, MAX_SIZE, MIN_SIZE, type Scene, type SceneItem } from './state.ts';
+import { icon } from './icons.ts';
 import { periodName, t } from './text.ts';
 
 export interface SceneContext {
@@ -9,6 +10,8 @@ export interface SceneContext {
   scene: Scene;
   selectId?: string;
   save(): void;
+  /** The scene as a colouring page. */
+  print(): void;
   /** Two quick taps on a placed animal. */
   roar(id: string, el: HTMLElement): void;
 }
@@ -33,6 +36,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     <section class="scene">
       <div class="seg" role="group">
         ${PERIODS.map((p) => `<button type="button" data-bg="${p}"><img src="img/bg-${p}.webp" alt="">${periodName(l, p)}</button>`).join('')}
+        <button type="button" class="print-btn" data-print aria-label="${t(l, 'printColour')}">${icon('print')}</button>
       </div>
       <div class="stage"></div>
       <div class="tools">
@@ -160,6 +164,8 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       draw();
     }),
   );
+
+  view.querySelector('[data-print]')!.addEventListener('click', () => ctx.print());
 
   tools.addEventListener('click', (e) => {
     const tool = (e.target as Element).closest<HTMLElement>('[data-tool]')?.dataset.tool;

@@ -29,6 +29,7 @@ const UI = {
     en: 'Nobody has ever heard this animal. The sound is a guess.',
   },
   colour: { sv: 'Vilken färg hade den?', en: 'What colour was it?' },
+  printColour: { sv: 'Skriv ut och färglägg', en: 'Print and colour in' },
   howBig: { sv: 'Hur stor var den?', en: 'How big was it?' },
   child: { sv: 'Ett barn', en: 'A child' },
   tall: { sv: 'hög', en: 'tall' },
