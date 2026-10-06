@@ -192,3 +192,7 @@ Mått (även `heightM`), årtal och fakta i katalogen är avrundade mittvärden 
 Källänkarna: 27 djur pekar på NHM Dino Directory, Pteranodon, Mosasaurus och Plesiosaurus på Wikipedia (de finns inte i NHM:s katalog). Kontrollerade 2026-10-03 genom att djurets namn står i sidans `<title>`.
 
 **Fälla:** nhm.ac.uk svarar HTTP 200 även för sidor som inte finns (titeln blir då "undefined | Natural History Museum"). En statuskod bevisar alltså ingenting där, kontrollera titeln.
+
+## Automated audit batch, 2026-10-06
+
+Cross-project run from elwyn-dash with aifabriken `tools/audit-suite.ts` (headers, npm audit, secrets, Actions, markup, axe at one mobile viewport; TLS and Lighthouse not run). Results are the `(automated)` lines under `## Audits` in CONTEXT.md, findings under `## Granskning 2026-10-06` in BACKLOG.md. Only the local checks ran (no address in the audit inventory): npm audit pass, secrets pass, Actions fail (2 high, 1 medium in `deploy.yml`). No application code or deployment changed. `reviewedAt` was left alone: the goal and next action above were not reviewed.

@@ -41,3 +41,9 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - Svep: klassen för vändning sätts på det levande elementet, och ett kort som flyger iväg får aldrig ritas om.
 - `touch-action: pan-y` ska sitta på själva scrollbehållaren.
 - `img-src/` är gitignorerad: källbilderna finns bara på den här datorn.
+
+## Audits
+- npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
+- Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
+- Actions (automated): 2026-10-06, fail, zizmor 2 high, 1 medium, 0 low (artipacked, excessive-permissions); evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
+
