@@ -2,9 +2,9 @@
 schemaVersion: 1
 status: active
 currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
-nextAction: Patrik granskar grenen batch/2026-10-06 (färgrad, målarbilder, deploy-rättigheter) och slår ihop den, lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
+nextAction: Patrik lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
 blockers: []
-reviewedAt: 2026-10-06
+reviewedAt: 2026-10-07
 ---
 
 # Handoff: Dinodeck
@@ -154,14 +154,14 @@ reviewedAt: 2026-10-06
 
 ## 2026-10-06: nattbatch på grenen `batch/2026-10-06`
 
-Tre punkter ur backloggen, byggda och committade på grenen. **Inget är sammanslaget med `main` och inget är utlagt.** Arbetskopia: `C:\dev\.worktrees\batch-2026-10-06\dinodeck`.
+Tre punkter ur backloggen, byggda och committade på grenen. **Sammanslaget med `main` och utlagt 2026-10-07 på Patriks order.** Arbetskopia: `C:\dev\.worktrees\batch-2026-10-06\dinodeck`.
 
 - **Färgraden** (`14286bd`): ny rubrik "Vilken färg hade den?" på kortets baksida och i detaljvyn, mellan ljudet och "Mer att läsa". Nivå per djur i fältet `colour` (`known`, `relatives`, `guess`), extra mening via `colourDisputed`. 2 kända, 12 från släktingar, 16 gissning.
   - **Val av Claude:** rubrikens ordalydelse. Raden syns även med ljudet av (ljudets gissningsrad döljs då, den här inte). Gallimimus räknas som gissning: tabellen säger "Plausible guess (feathers informed by relatives)", och raden handlar om färg.
   - **Verifierat:** `npm test` (nivåerna jämförs mot tabellen i researchfilen, 22 tester totalt efter batchen). Chromium 390×844 och 1024×768 mot `vite preview`: rätt text på svenska och engelska för alla tre nivåer och båda oeniga djuren, i detaljvyn och på kortets baksida, ingen sidledes scroll.
 - **Rättigheter i `deploy.yml`** (`d5f4d06`): `permissions: {}` på workflow-nivå, `contents: read` på bygget, `pages: write` och `id-token: write` på utläggningen, `persist-credentials: false` vid utcheckningen.
   - **Verifierat:** `uvx zizmor --offline`: excessive-permissions (2) och artipacked (1) är borta. Kvar: unpinned-uses (4), ny punkt i backloggen.
-  - **Inte verifierat:** att utläggningen går igenom på GitHub. Det syns först när grenen slås ihop med `main`. Uppdelningen är GitHubs egen mall för Pages, men den är inte körd här.
+  - **Verifierat 2026-10-07:** utläggningen går igenom på GitHub. Deploy-workflowen gick grön på `main` efter sammanslagningen, med rättigheterna på jobbnivå.
 - **Målarbilder** (`54ddbc8`): knappen "Skriv ut och färglägg" i detaljvyn (ett djur med namn) och en skrivarknapp bredvid periodvalet i scenen (bakgrunden och de utställda djuren på sin plats).
   - **Så görs konturerna:** `uv run --with pillow tools/make-outlines.py` läser varje bild i `public/img/` och skriver `public/img/line/<samma namn>` (33 filer, ca 560 kB). Skillnaden mellan två oskärpor ger linjerna, bildens frilagda kant ger en sluten ytterkontur. Djuren är vita inuti och genomskinliga utanför, så de täcker bakgrundens linjer i scenen. **Byts en bild ska skriptet köras om**, annars visar målarbilden den gamla teckningen. Testet kontrollerar bara att filen finns.
   - **Så skrivs det ut:** `src/print.ts` lägger arket i `#print`, sätter klassen `colouring` på `<html>` och anropar webbläsarens utskrift. Utskriftsstilmallen i `src/style.css` döljer allt annat. Klassen tas bort vid `afterprint`, så en vanlig utskrift från webbläsarens meny ger appen som förut.
