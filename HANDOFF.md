@@ -4,7 +4,7 @@ status: active
 currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
 nextAction: Patrik lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
 blockers: []
-reviewedAt: 2026-10-07
+reviewedAt: 2026-10-17
 ---
 
 # Handoff: Dinodeck
@@ -216,3 +216,7 @@ Källänkarna: 27 djur pekar på NHM Dino Directory, Pteranodon, Mosasaurus och 
 ## Automated audit batch, 2026-10-06
 
 Cross-project run from elwyn-dash with aifabriken `tools/audit-suite.ts` (headers, npm audit, secrets, Actions, markup, axe at one mobile viewport; TLS and Lighthouse not run). Results are the `(automated)` lines under `## Audits` in CONTEXT.md, findings under `## Granskning 2026-10-06` in BACKLOG.md. Only the local checks ran (no address in the audit inventory): npm audit pass, secrets pass, Actions fail (2 high, 1 medium in `deploy.yml`). No application code or deployment changed. `reviewedAt` was left alone: the goal and next action above were not reviewed.
+
+## Beroendeuppdatering 2026-10-17
+
+- vite 8.3.4, @types/node 26.6.5 (bara låsfilen). `npm test` och `npm run build` gröna före och efter, `npm audit` 0. Inte pushat: en push till `main` deployar.
