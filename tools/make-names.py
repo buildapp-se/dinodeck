@@ -68,6 +68,16 @@ NAMES: dict[str, dict[str, str]] = {
     "plateosaurus": {"sv": f"plˌatɛuː{S}", "en": f"plˌatɪə{E}"},
     "mosasaurus": {"sv": f"mˌuːsa{S}", "en": f"mˌəʊzə{E}"},
     "plesiosaurus": {"sv": f"plˌeːsɪuː{S}", "en": f"plˌiːsɪə{E}"},
+    "coelophysis": {"sv": "sˌeːluːfˈyːsɪs", "en": "sˌiːlˈəʊfaɪsɪs"},
+    "herrerasaurus": {"sv": f"hˌɛrɛra{S}", "en": f"hˌɛɹeɪɹˌɑː{E}"},
+    "eoraptor": {"sv": "ˌeːuːrˈaptɔr", "en": "ˌiːəʊɹˈaptə"},
+    "ceratosaurus": {"sv": f"sˌɛratuː{S}", "en": f"sɛɹˌatə{E}"},
+    "kentrosaurus": {"sv": f"kˌɛntruː{S}", "en": f"kˌɛntɹə{E}"},
+    "ichthyosaurus": {"sv": f"ˌɪktyuː{S}", "en": f"ˌɪkθɪə{E}"},
+    "baryonyx": {"sv": "bˌaryˈuːnyks", "en": "bˌaɹiˈɒnɪks"},
+    "styracosaurus": {"sv": f"stˌyrakuː{S}", "en": f"staɪɹˌakə{E}"},
+    "edmontosaurus": {"sv": f"ˌɛdmɔntuː{S}", "en": f"ɛdmˌɒntə{E}"},
+    "quetzalcoatlus": {"sv": "kˌɛtsalkuːˈatlʉs", "en": "kwˌɛtsəlkəʊˈatləs"},
 }
 
 

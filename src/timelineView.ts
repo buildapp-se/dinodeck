@@ -23,8 +23,8 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes
   const lanes = tablet && window.innerHeight < 840 ? 4 : maxLanes;
   let PX_PER_MYA = tablet ? 14 : 18;
   let items: ReturnType<typeof layoutTimelineCompact>['items'] = [];
-  // Dense catalogues may need a slightly longer strip to retain five readable rows.
-  for (; PX_PER_MYA <= 50; PX_PER_MYA += 2) {
+  // The end of the Cretaceous is crowded: a denser catalogue gets a longer strip, never smaller cards.
+  for (; PX_PER_MYA <= 70; PX_PER_MYA += 2) {
     try { items = layoutTimelineCompact(ctx.dinos, PX_PER_MYA, ITEM_W, lanes).items; break; }
     catch { /* try the next scale */ }
   }

@@ -158,6 +158,16 @@ Tags: **Known**, **Informed by relatives**, **Plausible guess**. Nothing below c
 | 28 | Plateosaurus | Yellowish tan with dark brown stripes running along the body, pale throat and belly. | Plausible guess |
 | 29 | Mosasaurus | Near black to dark grey above, fading to pale grey below. Scaly. | Informed by relatives (dark is supported, pale belly is a guess) |
 | 30 | Plesiosaurus | Dark blue-grey above with soft dappling, pale belly, smooth body skin, small scales on the flippers. | Informed by relatives (pigmented skin and texture). Hue: guess |
+| 31 | Coelophysis | Warm grey, bold black stripe from the eye down the neck, rows of small white spots along the back, cream belly. | Plausible guess |
+| 32 | Herrerasaurus | Dark brick red with black rosette spots, pale buff belly. | Plausible guess |
+| 33 | Eoraptor | Soft dove grey, rusty orange face and throat, faint pale spots on the back. | Plausible guess |
+| 34 | Ceratosaurus | Near black with mustard-yellow crossbands over back and tail, orange-red nose horn and eye ridges, pale yellow belly. | Plausible guess |
+| 35 | Kentrosaurus | Warm pinkish grey with darker grey dappling, plates and spikes bone white with black tips. | Plausible guess |
+| 36 | Ichthyosaurus | Deep navy above, sharp change to silvery white below, thin pale line along the flank. | Informed by relatives (ichthyosaur eumelanin; dark versus countershaded is disputed, Lindgren et al. 2014 and 2018). Hue: guess |
+| 37 | Baryonyx | Light grey-green with dark olive saddle blotches, dark eye stripe, white underside. | Plausible guess |
+| 38 | Styracosaurus | Dusky mauve-grey, pale belly, deep orange band at the frill base, cream spikes with dark brown tips. | Informed by relatives (*Psittacosaurus*: countershading, dark face). Frill: guess |
+| 39 | Edmontosaurus | Light greenish grey with a network of large dark slate patches, cream belly. | Plausible guess (mummies keep texture, not pigment) |
+| 40 | Quetzalcoatlus | Cinnamon-buff fuzz, deep brown folded wings, pale beak, red crest with a black edge. | Informed by relatives (*Tupandactylus*: colour varied between body parts). Hue: guess |
 
 Two habitat assumptions used above are **unsourced here, widely stated**: that *Velociraptor* and *Protoceratops* lived in open, arid country (hence sandy tones and the sharp open-habitat countershading for *Protoceratops*).
 

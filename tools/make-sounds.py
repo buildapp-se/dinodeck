@@ -47,6 +47,9 @@ RECIPES: dict[str, dict[str, list | str]] = {
     "allosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", tune=1.05), L("dove", gain=0.4)]},
     "carnotaurus": {"roar": [L("lion", tune=1.15)], "call": [L("alligator", 1), L("dove", gain=0.4)]},
     "dilophosaurus": {"roar": [L("lion", 1), L("raven", gain=0.4)], "call": [L("alligator", 2, tune=1.1)]},
+    "ceratosaurus": {"roar": [L("lion", 1, tune=1.05), L("alligator", gain=0.5)], "call": [L("alligator", 1, tune=1.05)]},
+    "baryonyx": {"roar": [L("lion", tune=1.05), L("alligator", 2, gain=0.5)], "call": [L("alligator", 2)]},
+    "herrerasaurus": {"roar": [L("lion", tune=1.2), L("raven", gain=0.3)], "call": [L("alligator", 2, tune=1.15)]},
     # Long-necked giants: film = elephant, research = very deep sounds.
     "brachiosaurus": {"roar": [L("elephant")], "call": [L("bison")]},
     "diplodocus": {"roar": [L("elephant"), L("bison", gain=0.5)], "call": [L("bison"), L("dove", gain=0.3)]},
@@ -61,9 +64,12 @@ RECIPES: dict[str, dict[str, list | str]] = {
     "therizinosaurus": {"roar": [L("bison", tune=0.95), L("lion", 1, gain=0.4)], "call": [L("dove"), L("alligator", gain=0.3)]},
     "pachycephalosaurus": {"roar": [L("bison")], "call": [L("bison", tune=1.1)]},
     "protoceratops": {"roar": [L("bison", tune=1.1)], "call": [L("bison")]},
+    "kentrosaurus": {"roar": [L("bison", tune=1.05)], "call": [L("bison", tune=1.15)]},
+    "styracosaurus": {"roar": [L("bison"), L("lion", gain=0.3)], "call": [L("bison", tune=1.05)]},
     # Duck-bills: the hollow crest of Parasaurolophus worked like a wind instrument, so that one is synthesised.
     "parasaurolophus": {"roar": [L("elephant")], "call": "horn"},
     "maiasaura": {"roar": [L("elephant", tune=1.1)], "call": [L("elephant"), L("bison", gain=0.5)]},
+    "edmontosaurus": {"roar": [L("elephant", tune=1.05)], "call": [L("bison", tune=0.95)]},
     # Small and feathered: hisses, coos and bird calls.
     "velociraptor": {"roar": [L("crane"), L("raven", gain=0.5)], "call": [L("dove")]},
     "deinonychus": {"roar": [L("crane", 1), L("lion", gain=0.35)], "call": [L("raven"), L("dove", gain=0.4)]},
@@ -72,10 +78,14 @@ RECIPES: dict[str, dict[str, list | str]] = {
     "compsognathus": {"roar": [L("gull", tune=1.3)], "call": [L("gull", 1, tune=1.5)]},
     "archaeopteryx": {"roar": [L("gull", 1, tune=1.2)], "call": [L("raven", 1)]},
     "microraptor": {"roar": [L("raven", tune=1.2)], "call": [L("gull", tune=1.2)]},
+    "coelophysis": {"roar": [L("crane", tune=1.05), L("raven", gain=0.4)], "call": [L("raven", 1, tune=1.1)]},
+    "eoraptor": {"roar": [L("crane", tune=1.25)], "call": [L("dove", tune=1.3)]},
     # Not dinosaurs.
     "pteranodon": {"roar": [L("raven"), L("gull", gain=0.5)], "call": [L("gull", tune=0.9)]},
     "mosasaurus": {"roar": [L("lion", tune=0.9), L("alligator", gain=0.7)], "call": [L("alligator", tune=0.95)]},
     "plesiosaurus": {"roar": [L("alligator", 1), L("lion", gain=0.3)], "call": [L("alligator", 1)]},
+    "ichthyosaurus": {"roar": [L("alligator", 1, tune=1.2)], "call": [L("dove", tune=1.1)]},
+    "quetzalcoatlus": {"roar": [L("crane", tune=0.9), L("raven", gain=0.4)], "call": [L("raven", 1, tune=0.9)]},
 }
 
 

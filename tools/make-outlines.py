@@ -20,6 +20,7 @@ SRC, LINE, OUT = ROOT / "img-src", ROOT / "img-src/line", ROOT / "public/img/lin
 LONGEST = 1200  # about 160 dpi across an A4 page: smooth lines on paper
 KEY = 128  # a grey the cleaned drawing never contains
 
+sys.dont_write_bytecode = True  # importing convert-art.py would leave a __pycache__ in tools/
 spec = importlib.util.spec_from_file_location("convert_art", ROOT / "tools/convert-art.py")
 convert_art = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(convert_art)

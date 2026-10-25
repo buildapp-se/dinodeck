@@ -8,11 +8,12 @@ const ids = (level: string): string[] => DINOS.filter((d) => d.colour === level)
 test('colour evidence follows docs/research/dinosaur-colour.md section 6', () => {
   assert.deepEqual(ids('known'), ['archaeopteryx', 'microraptor']);
   assert.deepEqual(ids('relatives'), [
-    'ankylosaurus', 'apatosaurus', 'compsognathus', 'deinonychus', 'mosasaurus', 'oviraptor',
-    'plesiosaurus', 'protoceratops', 'pteranodon', 'therizinosaurus', 'triceratops', 'velociraptor',
+    'ankylosaurus', 'apatosaurus', 'compsognathus', 'deinonychus', 'ichthyosaurus', 'mosasaurus', 'oviraptor',
+    'plesiosaurus', 'protoceratops', 'pteranodon', 'quetzalcoatlus', 'styracosaurus', 'therizinosaurus', 'triceratops',
+    'velociraptor',
   ]);
-  assert.equal(ids('guess').length, 16);
-  assert.deepEqual(DINOS.filter((d) => d.colourDisputed).map((d) => d.id).sort(), ['archaeopteryx', 'diplodocus']);
+  assert.equal(ids('guess').length, 23);
+  assert.deepEqual(DINOS.filter((d) => d.colourDisputed).map((d) => d.id).sort(), ['archaeopteryx', 'diplodocus', 'ichthyosaurus']);
 });
 
 test('the colour line says how sure it is, and adds the dispute only where there is one', () => {
