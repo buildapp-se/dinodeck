@@ -110,8 +110,8 @@ export const STARTERS: Dino[] = [
       en: 'A plant-eater with three horns and a big bony frill. It lived at the same time as Tyrannosaurus rex.',
     },
     long: {
-      sv: 'Triceratops hade ett av de största huvudena hos något landdjur. Munnen slutade i en näbb som klippte av sega växter, och längre in satt hundratals tänder som malde maten. Hornen och kragen användes troligen både till försvar och för att visa upp sig för andra Triceratops.',
-      en: 'Triceratops had one of the largest heads of any land animal. Its mouth ended in a beak that snipped off tough plants, and further in sat hundreds of teeth that ground up the food. The horns and frill were probably used both for defence and for showing off to other Triceratops.',
+      sv: 'Triceratops hade ett av de största huvudena hos något landdjur. Munnen slutade i en näbb som klippte av sega växter, och längre in satt hundratals tänder som klippte sönder maten som en sax. Hornen och kragen användes troligen både till försvar och för att visa upp sig för andra Triceratops.',
+      en: 'Triceratops had one of the largest heads of any land animal. Its mouth ended in a beak that snipped off tough plants, and further in sat hundreds of teeth that sliced up the food like scissors. The horns and frill were probably used both for defence and for showing off to other Triceratops.',
     },
     facts: [
       { sv: 'Huvudet kunde bli över två meter långt.', en: 'Its head could be over two metres long.' },
@@ -149,8 +149,8 @@ export const STARTERS: Dino[] = [
       en: 'A plant-eater with big plates along its back and four sharp spikes on its tail.',
     },
     long: {
-      sv: 'Stegosaurus gick på fyra ben och bar huvudet lågt, nära marken där den betade. Plattorna på ryggen satt i två rader. Forskare tror att de användes för att visa upp sig och kanske för att hålla lagom kroppsvärme. Svanstaggarna var ett vapen: man har hittat ben från rovdinosaurier med hål som passar taggarna.',
-      en: 'Stegosaurus walked on four legs and carried its head low, close to the ground where it fed. The plates on its back sat in two rows. Scientists think they were used for display and maybe to help control body heat. The tail spikes were a weapon: bones from meat-eating dinosaurs have been found with holes that match the spikes.',
+      sv: 'Stegosaurus gick på fyra ben och bar huvudet lågt, nära marken där den betade. Plattorna på ryggen satt i två rader. Forskare tror att de användes för att visa upp sig och kanske för att hålla lagom kroppsvärme. Svanstaggarna var ett vapen: man har hittat ett ben från en Allosaurus med ett hål som passar en tagg.',
+      en: 'Stegosaurus walked on four legs and carried its head low, close to the ground where it fed. The plates on its back sat in two rows. Scientists think they were used for display and maybe to help control body heat. The tail spikes were a weapon: an Allosaurus bone has been found with a hole that matches a spike.',
     },
     facts: [
       { sv: 'Hjärnan var ungefär lika stor som en lime.', en: 'Its brain was about the size of a lime.' },
@@ -189,11 +189,11 @@ export const STARTERS: Dino[] = [
     },
     long: {
       sv: 'Brachiosaurus hade längre framben än bakben, så ryggen lutade nedåt som på en giraff. Det är därför den heter armödla. Med halsen rakt upp kunde den äta blad som inga andra djur nådde. Den behövde äta enorma mängder växter varje dag.',
-      en: 'Brachiosaurus had longer front legs than back legs, so its back sloped down like a giraffe. That is why it is called arm lizard. With its neck held up it could eat leaves no other animal could reach. It needed to eat huge amounts of plants every day.',
+      en: 'Brachiosaurus had longer front legs than back legs, so its back sloped down like a giraffe\'s. That is why its name means arm lizard. With its neck held up it could eat leaves no other animal could reach. It needed to eat huge amounts of plants every day.',
     },
     facts: [
       { sv: 'Den vägde ungefär lika mycket som sex elefanter.', en: 'It weighed about as much as six elephants.' },
-      { sv: 'Näsborrarna satt högt uppe på huvudet.', en: 'Its nostrils sat high up on its head.' },
+      { sv: 'Den hade en hög båge av ben ovanpå nosen.', en: 'It had a tall arch of bone on top of its snout.' },
       { sv: 'Den svalde bladen hela, utan att tugga.', en: 'It swallowed leaves whole, without chewing.' },
     ],
     sound: {
@@ -233,7 +233,7 @@ export const STARTERS: Dino[] = [
         en: 'One famous fossil shows a Velociraptor in the middle of a fight with a Protoceratops.',
       },
       { sv: 'Den hade fjädrar men kunde inte flyga.', en: 'It had feathers but could not fly.' },
-      { sv: 'Fåglar är dinosauriernas nu levande släktingar.', en: 'Birds are the living relatives of dinosaurs.' },
+      { sv: 'Fåglar är faktiskt dinosaurier, de enda som finns kvar i dag.', en: 'Birds actually are dinosaurs, the only ones still around today.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Eftersom den var nära släkt med fåglar gissar forskare på väsningar och kuttrande ljud.',
@@ -269,8 +269,8 @@ export const STARTERS: Dino[] = [
     facts: [
       { sv: 'Svansen hade omkring 80 ben.', en: 'Its tail had around 80 bones.' },
       {
-        sv: 'Forskare tror att svansen kunde smälla som en piska.',
-        en: 'Scientists think its tail could crack like a whip.',
+        sv: 'En del forskare tror att svansen kunde smälla som en piska.',
+        en: 'Some scientists think its tail could crack like a whip.',
       },
       { sv: 'Den bytte ut sina tänder ungefär en gång i månaden.', en: 'It replaced its teeth about once a month.' },
     ],
@@ -323,7 +323,7 @@ export const STARTERS: Dino[] = [
     id: 'pteranodon',
     name: 'Pteranodon',
     pronounce: { sv: 'te-RA-no-don', en: 'teh-RAN-oh-don' },
-    meaning: { sv: 'Vinge utan tänder', en: 'Wing without teeth' },
+    meaning: { sv: 'Tandlös vinge', en: 'Toothless wing' },
     group: 'pterosaur',
     period: 'cretaceous',
     fromMya: 86,
@@ -332,11 +332,11 @@ export const STARTERS: Dino[] = [
     heightM: 4,
     wingspan: true,
     weightKg: 25,
-    sizeLike: { sv: 'Vingar breda som en liten bil är lång', en: 'Wings as wide as a small car is long' },
+    sizeLike: { sv: 'Vingar bredare än en bil är lång', en: 'Wings wider than a car is long' },
     diet: 'piscivore',
     found: { sv: 'USA', en: 'USA' },
     short: {
-      sv: 'En flygödla som fångade fisk över havet. Den var ingen dinosaurie, men levde samtidigt som dem.',
+      sv: 'En flygödla som fångade fisk över havet. Den var ingen dinosaurie, men levde samtidigt som dinosaurierna.',
       en: 'A flying reptile that caught fish over the sea. It was not a dinosaur, but it lived alongside them.',
     },
     long: {

@@ -42,8 +42,8 @@ const UI = {
   more: { sv: 'Mer att läsa', en: 'Read more' },
   source: { sv: 'Källa', en: 'Source' },
   scene: { sv: 'Scen', en: 'Scene' },
-  bigger: { sv: 'Större och framför', en: 'Bigger and in front' },
-  smaller: { sv: 'Mindre och bakom', en: 'Smaller and behind' },
+  bigger: { sv: 'Större och närmare', en: 'Bigger and closer' },
+  smaller: { sv: 'Mindre och längre bort', en: 'Smaller and further away' },
   turn: { sv: 'Vänd åt andra hållet', en: 'Turn around' },
   takeAway: { sv: 'Ta bort', en: 'Remove' },
   challenge: { sv: 'Utmaning', en: 'Challenge' },
@@ -56,7 +56,7 @@ const UI = {
   seeCard: { sv: 'Visa kortet', en: 'See the card' },
   oneMore: { sv: 'En till', en: 'One more' },
   timeline: { sv: 'Tidslinje', en: 'Timeline' },
-  today: { sv: 'Idag', en: 'Today' },
+  today: { sv: 'I dag', en: 'Today' },
   asteroid: { sv: 'Asteroiden slår ned', en: 'The asteroid hits' },
   myShort: { sv: 'miljoner år', en: 'million years' },
   closer: {
@@ -73,10 +73,10 @@ const UI = {
   off: { sv: 'Av', en: 'Off' },
   reset: { sv: 'Nollställ samlingen', en: 'Reset the collection' },
   resetSure: {
-    sv: 'Tryck igen för att ta bort vunna kort, favoriter och scen',
-    en: 'Tap again to remove won cards, favourites and scene',
+    sv: 'Tryck igen för att ta bort vunna kort, favoriter och scenen',
+    en: 'Tap again to remove won cards, favourites and the scene',
   },
-  resetDone: { sv: 'Samlingen är nollställd', en: 'The collection is reset' },
+  resetDone: { sv: 'Samlingen är nollställd', en: 'The collection has been reset' },
   done: { sv: 'Klar', en: 'Done' },
   version: { sv: 'Version', en: 'Version' },
   allWon: { sv: 'Du har vunnit alla kort!', en: 'You have won every card!' },
@@ -141,5 +141,5 @@ export function weight(lang: Lang, kg: number): string {
 }
 
 export function when(lang: Lang, d: Dino): string {
-  return `${periodName(lang, d.period)}, ${d.fromMya} ${lang === 'sv' ? 'till' : 'to'} ${d.toMya} ${t(lang, 'mya')}`;
+  return `${periodName(lang, d.period)}, ${lang === 'sv' ? 'för ' : ''}${d.fromMya} ${lang === 'sv' ? 'till' : 'to'} ${d.toMya} ${t(lang, 'mya')}`;
 }

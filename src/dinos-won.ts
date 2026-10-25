@@ -28,7 +28,7 @@ export const WON: Dino[] = [
       en: 'Spinosaurus is one of the longest meat-eating dinosaurs known. Its snout was long and narrow like a crocodile\'s, with straight teeth good for gripping slippery fish. The sail on its back was held up by long spines from its backbone. Scientists do not agree on how much it swam and how much it waded.',
     },
     facts: [
-      { sv: 'Taggarna i seglet kunde bli längre än en vuxen människa.', en: 'The spines in its sail could be taller than a grown-up.' },
+      { sv: 'Taggarna i seglet kunde bli nästan lika långa som en vuxen människa.', en: 'The spines in its sail could be almost as tall as a grown-up.' },
       { sv: 'De första fossilen förstördes i ett krig, så forskarna fick börja om.', en: 'The first fossils were destroyed in a war, so scientists had to start again.' },
       { sv: 'Svansen var platt som en paddel.', en: 'Its tail was flat like a paddle.' },
     ],
@@ -66,7 +66,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Den hade tre fingrar på varje hand.', en: 'It had three fingers on each hand.' },
       { sv: 'Den hade små horn ovanför ögonen.', en: 'It had small horns above its eyes.' },
-      { sv: 'Den levde nästan 90 miljoner år före Tyrannosaurus rex.', en: 'It lived almost 90 million years before Tyrannosaurus rex.' },
+      { sv: 'Den levde omkring 80 miljoner år före Tyrannosaurus rex.', en: 'It lived about 80 million years before Tyrannosaurus rex.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på djupa ljud med stängd mun.',
@@ -101,7 +101,7 @@ export const WON: Dino[] = [
     },
     facts: [
       { sv: 'Den hittades av en man som letade fossil på fritiden.', en: 'It was found by a man who hunted fossils as a hobby.' },
-      { sv: 'Skallen var längre än en vuxen människa.', en: 'Its skull was longer than a grown-up is tall.' },
+      { sv: 'Skallen var ungefär lika lång som en vuxen människa är lång.', en: 'Its skull was about as long as a grown-up is tall.' },
       { sv: 'Den hade tre fingrar på varje hand.', en: 'It had three fingers on each hand.' },
     ],
     sound: {
@@ -160,7 +160,7 @@ export const WON: Dino[] = [
     lengthM: 6,
     heightM: 2,
     weightKg: 400,
-    sizeLike: { sv: 'Lång som en bil, tung som en häst', en: 'As long as a car, as heavy as a horse' },
+    sizeLike: { sv: 'Längre än en bil, tung som en häst', en: 'Longer than a car, as heavy as a horse' },
     diet: 'carnivore',
     found: { sv: 'USA', en: 'USA' },
     short: {
@@ -204,11 +204,11 @@ export const WON: Dino[] = [
       en: 'A fast, feathered hunter with a big claw on each foot.',
     },
     long: {
-      sv: 'Deinonychus var större släkting till Velociraptor. Det är egentligen den som filmernas "raptorer" liknar i storlek. När den upptäcktes på 1960-talet ändrade den hur forskare såg på dinosaurier: inte tröga ödlor, utan snabba och aktiva djur som var släkt med fåglar.',
+      sv: 'Deinonychus var en större släkting till Velociraptor. Det är egentligen den som filmernas ”raptorer” liknar i storlek. När den upptäcktes på 1960-talet ändrade den hur forskare såg på dinosaurier: inte tröga ödlor, utan snabba och aktiva djur som var släkt med fåglar.',
       en: 'Deinonychus was a bigger relative of Velociraptor. It is really the one that film "raptors" match in size. When it was discovered in the 1960s it changed how scientists saw dinosaurs: not slow lizards, but fast and active animals related to birds.',
     },
     facts: [
-      { sv: 'Klon på foten var lika lång som en hand.', en: 'The claw on its foot was as long as a hand.' },
+      { sv: 'Klon på foten var lika lång som ett barns hand.', en: "The claw on its foot was as long as a child's hand." },
       { sv: 'Filmernas raptorer är lika stora som Deinonychus.', en: 'Film raptors are the size of Deinonychus.' },
       { sv: 'Svansen var stel och hjälpte den hålla balansen.', en: 'Its tail was stiff and helped it keep its balance.' },
     ],
@@ -240,8 +240,8 @@ export const WON: Dino[] = [
       en: 'One of the smallest dinosaurs. It hunted lizards and insects.',
     },
     long: {
-      sv: 'Compsognathus var länge den minsta dinosaurie man kände till. Den sprang på två långa bakben och fångade små djur. I magen på ett av fossilen ligger en hel liten ödla, så forskarna vet precis vad den åt.',
-      en: 'For a long time Compsognathus was the smallest dinosaur known. It ran on two long back legs and caught small animals. Inside the stomach of one fossil lies a whole small lizard, so scientists know exactly what it ate.',
+      sv: 'Compsognathus var länge den minsta dinosaurie man kände till. Den sprang på två långa bakben och fångade små djur. I magen på ett av fossilen ligger en hel liten ödla, så forskarna vet vad den hade ätit.',
+      en: 'For a long time Compsognathus was the smallest dinosaur known. It ran on two long back legs and caught small animals. Inside the stomach of one fossil lies a whole small lizard, so scientists know what it had eaten.',
     },
     facts: [
       { sv: 'Den vägde ungefär som en katt.', en: 'It weighed about as much as a cat.' },
@@ -304,7 +304,7 @@ export const WON: Dino[] = [
     lengthM: 1.8,
     heightM: 1,
     weightKg: 30,
-    sizeLike: { sv: 'Stor som en stor hund', en: 'The size of a big dog' },
+    sizeLike: { sv: 'Som en stor hund', en: 'The size of a big dog' },
     diet: 'omnivore',
     found: { sv: 'Mongoliet', en: 'Mongolia' },
     short: {
@@ -312,7 +312,7 @@ export const WON: Dino[] = [
       en: 'A feathered dinosaur with a beak. Its name means egg thief, but that was a mistake.',
     },
     long: {
-      sv: 'Oviraptor hittades ovanpå ett bo med ägg, och forskarna trodde att den stal dem. Senare hittade man nära släktingar som satt på likadana bon med vingarna utbredda över äggen, precis som ruvande fåglar. Äggen var alltså dess egna. Namnet fick ändå stå kvar.',
+      sv: 'Oviraptor hittades ovanpå ett bo med ägg, och forskarna trodde att den stal dem. Senare hittade man nära släktingar som satt på likadana bon med armarna utbredda över äggen, precis som ruvande fåglar. Äggen var alltså dess egna. Namnet fick ändå stå kvar.',
       en: 'Oviraptor was found on top of a nest of eggs, and scientists thought it was stealing them. Later, close relatives were found sitting on the same kind of nests with their arms spread over the eggs, just like brooding birds. So the eggs were its own. The name stayed anyway.',
     },
     facts: [
@@ -388,9 +388,9 @@ export const WON: Dino[] = [
       en: 'Archaeopteryx had feathers and wings like a bird, but also teeth, claws on its wings and a long bony tail, like a dinosaur. It was found in the 1860s and became one of the most important fossils ever, because it shows that birds come from dinosaurs.',
     },
     facts: [
-      { sv: 'Den hade tänder i näbben.', en: 'It had teeth in its jaws.' },
+      { sv: 'Den hade tänder i munnen, inte en näbb som dagens fåglar.', en: "It had teeth in its jaws, not a beak like today's birds." },
       { sv: 'Den hade klor på vingarna.', en: 'It had claws on its wings.' },
-      { sv: 'Fossilen är så fina att varje fjäder syns.', en: 'The fossils are so fine that every feather shows.' },
+      { sv: 'Fossilen är så fina att fjädrarna syns tydligt.', en: 'The fossils are so fine that the feathers show clearly.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på enkla skrin, inte sång som hos dagens småfåglar.',
@@ -427,7 +427,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Den hade fyra vingar.', en: 'It had four wings.' },
       { sv: 'Forskare vet att den var svart och glänsande.', en: 'Scientists know it was black and shiny.' },
-      { sv: 'Fossil har hittats med fisk, fågel och ödla i magen.', en: 'Fossils have been found with fish, bird and lizard in the stomach.' },
+      { sv: 'Olika fossil har hittats med en fisk, en fågel eller en ödla i magen.', en: 'Different fossils have been found with a fish, a bird or a lizard in the stomach.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på skrin som hos fåglar.',
@@ -457,13 +457,13 @@ export const WON: Dino[] = [
       en: 'One of the biggest animals ever to walk on land.',
     },
     long: {
-      sv: 'Av Argentinosaurus har man bara hittat några få ben, men de är enorma: en enda ryggkota är högre än ett barn. Därför är längden och vikten uppskattningar, och olika forskare får olika svar. Ungarna kläcktes ur ägg stora som fotbollar och växte mycket fort.',
-      en: 'Only a few bones of Argentinosaurus have been found, but they are enormous: a single back bone is taller than a child. That is why its length and weight are estimates, and different scientists get different answers. The babies hatched from eggs the size of footballs and grew very fast.',
+      sv: 'Av Argentinosaurus har man bara hittat några få ben, men de är enorma: en enda ryggkota är högre än ett barn. Därför är längden och vikten uppskattningar, och olika forskare får olika svar. Ungarna hos dess släktingar kläcktes ur ägg stora som grapefrukter och växte mycket fort.',
+      en: 'Only a few bones of Argentinosaurus have been found, but they are enormous: a single back bone is taller than a child. That is why its length and weight are estimates, and different scientists get different answers. Its relatives\' babies hatched from eggs the size of grapefruits and grew very fast.',
     },
     facts: [
       { sv: 'Den vägde ungefär som tio elefanter.', en: 'It weighed about as much as ten elephants.' },
       { sv: 'En enda ryggkota är högre än ett barn.', en: 'A single back bone is taller than a child.' },
-      { sv: 'Den hittades av en bonde som trodde att benet var en stock.', en: 'It was found by a farmer who thought the bone was a log.' },
+      { sv: 'Den hittades av en bonde som trodde att benet var förstenat trä.', en: 'It was found by a farmer who thought the bone was petrified wood.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Så stora djur gör ofta mycket djupa ljud.',
@@ -569,7 +569,7 @@ export const WON: Dino[] = [
       en: 'The crest of Parasaurolophus was a tube running from its nose, up over its head and back again. When the animal blew air through the tube it made a deep sound, like a trombone. Scientists have built models of the crest and played back what it may have sounded like. That makes it one of the few dinosaurs whose call we know something about.',
     },
     facts: [
-      { sv: 'Kammen kunde bli längre än en vuxen människa.', en: 'Its crest could be longer than a grown-up is tall.' },
+      { sv: 'Kammen kunde bli ungefär en meter lång.', en: 'Its crest could be about a metre long.' },
       { sv: 'Kammen var ihålig som ett blåsinstrument.', en: 'The crest was hollow like a wind instrument.' },
       { sv: 'Den hade hundratals tänder som malde växter.', en: 'It had hundreds of teeth that ground up plants.' },
     ],
@@ -585,7 +585,7 @@ export const WON: Dino[] = [
     id: 'maiasaura',
     name: 'Maiasaura',
     pronounce: { sv: 'ma-ja-SAU-ra', en: 'MY-ah-SORE-ah' },
-    meaning: { sv: 'God mamma-ödla', en: 'Good mother lizard' },
+    meaning: { sv: 'God mammaödla', en: 'Good mother lizard' },
     group: 'dinosaur',
     period: 'cretaceous',
     fromMya: 80,
@@ -601,11 +601,11 @@ export const WON: Dino[] = [
       en: 'A plant-eater that built nests and looked after its babies.',
     },
     long: {
-      sv: 'Maiasaura hittades tillsammans med bon, ägg och ungar i olika åldrar. Ungarnas ben var för svaga för att gå när de kläcktes, men tänderna var slitna. Det betyder att föräldrarna kom med mat till boet. Bona låg tätt ihop, som i en fågelkoloni, och djuren levde i stora flockar.',
-      en: 'Maiasaura was found together with nests, eggs and young of different ages. The babies\' legs were too weak to walk when they hatched, but their teeth were worn. That means the parents brought food to the nest. The nests lay close together, like in a bird colony, and the animals lived in large herds.',
+      sv: 'Maiasaura hittades tillsammans med bon, ägg och ungar i olika åldrar. Ungarnas ben var för svaga för att gå när de kläcktes, men tänderna var slitna. Därför tror forskare att föräldrarna kom med mat till boet. Bona låg tätt ihop, som i en fågelkoloni, och djuren levde i stora flockar.',
+      en: 'Maiasaura was found together with nests, eggs and young of different ages. The babies\' legs were too weak to walk when they hatched, but their teeth were worn. So scientists think the parents brought food to the nest. The nests lay close together, like in a bird colony, and the animals lived in large herds.',
     },
     facts: [
-      { sv: 'Föräldrarna kom med mat till ungarna i boet.', en: 'The parents brought food to the babies in the nest.' },
+      { sv: 'Forskare tror att föräldrarna kom med mat till ungarna i boet.', en: 'Scientists think the parents brought food to the babies in the nest.' },
       { sv: 'En flock kunde ha tusentals djur.', en: 'A herd could have thousands of animals.' },
       { sv: 'Ett Maiasaura-ben har varit med i rymden.', en: 'A Maiasaura bone has been to space.' },
     ],
@@ -664,7 +664,7 @@ export const WON: Dino[] = [
     toMya: 71,
     lengthM: 1.8,
     heightM: 0.8,
-    weightKg: 180,
+    weightKg: 85,
     sizeLike: { sv: 'Stor som ett får', en: 'The size of a sheep' },
     diet: 'herbivore',
     found: { sv: 'Mongoliet och Kina', en: 'Mongolia and China' },
@@ -713,7 +713,7 @@ export const WON: Dino[] = [
       en: 'Plateosaurus lived in the Triassic, when dinosaurs were new on Earth. It walked on two legs and had a long neck for reaching plants high up. It is an early relative of giants like Diplodocus and Brachiosaurus. So many skeletons have been found in Germany that it is one of the best-known dinosaurs.',
     },
     facts: [
-      { sv: 'Den levde nästan 150 miljoner år före Tyrannosaurus rex.', en: 'It lived almost 150 million years before Tyrannosaurus rex.' },
+      { sv: 'Den levde omkring 140 miljoner år före Tyrannosaurus rex.', en: 'It lived about 140 million years before Tyrannosaurus rex.' },
       { sv: 'Den gick på två ben, inte fyra.', en: 'It walked on two legs, not four.' },
       { sv: 'Över hundra skelett har hittats.', en: 'Over a hundred skeletons have been found.' },
     ],
@@ -765,7 +765,7 @@ export const WON: Dino[] = [
     id: 'plesiosaurus',
     name: 'Plesiosaurus',
     pronounce: { sv: 'ple-si-o-SAU-rus', en: 'PLEE-see-oh-SORE-us' },
-    meaning: { sv: 'Nästan en ödla', en: 'Near to lizard' },
+    meaning: { sv: 'Nästan en ödla', en: 'Almost a lizard' },
     group: 'marine',
     period: 'jurassic',
     fromMya: 199,
@@ -781,13 +781,13 @@ export const WON: Dino[] = [
       en: 'A sea reptile with a long neck and four flippers. It was not a dinosaur.',
     },
     long: {
-      sv: 'Plesiosaurus simmade genom att "flyga" under vattnet med sina fyra fenor, ungefär som en havssköldpadda. Med den långa halsen och de vassa tänderna fångade den fisk och bläckfisk. Det första hela skelettet hittades 1823 av Mary Anning, en av de första stora fossiljägarna.',
+      sv: 'Plesiosaurus simmade genom att ”flyga” under vattnet med sina fyra fenor, ungefär som en havssköldpadda. Med den långa halsen och de vassa tänderna fångade den fisk och bläckfisk. Det första hela skelettet hittades 1823 av Mary Anning, en av de första stora fossiljägarna.',
       en: 'Plesiosaurus swam by "flying" under water with its four flippers, a bit like a sea turtle. With its long neck and sharp teeth it caught fish and squid. The first complete skeleton was found in 1823 by Mary Anning, one of the first great fossil hunters.',
     },
     facts: [
       { sv: 'Den hittades av Mary Anning år 1823.', en: 'It was found by Mary Anning in 1823.' },
       { sv: 'Den simmade med fyra fenor.', en: 'It swam with four flippers.' },
-      { sv: 'Den födde levande ungar i havet.', en: 'It gave birth to live young in the sea.' },
+      { sv: 'Forskare tror att den födde levande ungar, som en nära släkting gjorde.', en: 'Scientists think it gave birth to live young, as a close relative did.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Under vatten gjorde den kanske inga ljud alls.',
@@ -817,8 +817,8 @@ export const WON: Dino[] = [
       en: 'A slim, fast meat-eater from the time when dinosaurs were new. It was long but weighed no more than a child.',
     },
     long: {
-      sv: 'Coelophysis var en av de första rovdinosaurierna. Benen var ihåliga, och det är därför den heter ihålig form. Det gjorde kroppen lätt, så den kunde springa fort när den jagade insekter och små kräldjur. På den tiden var dinosaurierna inte de största djuren: stora krokodilliknande kräldjur bestämde. Man trodde länge att Coelophysis åt sina egna ungar, men benen i magen visade sig komma från en liten krokodilsläkting.',
-      en: 'Coelophysis was one of the first meat-eating dinosaurs. Its bones were hollow, which is why it is called hollow form. That made its body light, so it could run fast when it hunted insects and small reptiles. At that time dinosaurs were not the biggest animals: large crocodile-like reptiles were in charge. People long thought Coelophysis ate its own babies, but the bones in its belly turned out to come from a small crocodile relative.',
+      sv: 'Coelophysis var en av de första rovdinosaurierna. Skelettets ben var ihåliga, och det är därför namnet betyder ihålig form. Det gjorde kroppen lätt, så den kunde springa fort när den jagade insekter och små kräldjur. På den tiden var dinosaurierna inte de största djuren: stora krokodilliknande kräldjur bestämde. Man trodde länge att Coelophysis åt sina egna ungar, men benen i magen visade sig komma från en liten krokodilsläkting.',
+      en: 'Coelophysis was one of the first meat-eating dinosaurs. Its bones were hollow, which is why its name means hollow form. That made its body light, so it could run fast when it hunted insects and small reptiles. At that time dinosaurs were not the biggest animals: large crocodile-like reptiles were in charge. People long thought Coelophysis ate its own babies, but the bones in its belly turned out to come from a small crocodile relative.',
     },
     facts: [
       { sv: 'Hundratals skelett har hittats tillsammans på ett och samma ställe i USA.', en: 'Hundreds of skeletons have been found together in one single place in the USA.' },
@@ -917,7 +917,7 @@ export const WON: Dino[] = [
     lengthM: 6.5,
     heightM: 2.2,
     weightKg: 1000,
-    sizeLike: { sv: 'Nästan lika lång som två bilar', en: 'Almost as long as two cars' },
+    sizeLike: { sv: 'Längre än en bil, tung som en liten bil', en: 'Longer than a car, as heavy as a small car' },
     diet: 'carnivore',
     found: { sv: 'USA och Portugal', en: 'USA and Portugal' },
     short: {
@@ -993,7 +993,7 @@ export const WON: Dino[] = [
     diet: 'piscivore',
     found: { sv: 'England, Tyskland, Belgien och Portugal', en: 'England, Germany, Belgium and Portugal' },
     short: {
-      sv: 'Ett havsdjur som såg ut som en delfin. Det var ingen dinosaurie, men levde samtidigt som dem.',
+      sv: 'Ett havsdjur som såg ut som en delfin. Det var ingen dinosaurie, men levde samtidigt som dinosaurierna.',
       en: 'A sea animal that looked like a dolphin. It was not a dinosaur, but it lived alongside them.',
     },
     long: {
@@ -1021,8 +1021,8 @@ export const WON: Dino[] = [
     meaning: { sv: 'Tung klo', en: 'Heavy claw' },
     group: 'dinosaur',
     period: 'cretaceous',
-    fromMya: 130,
-    toMya: 125,
+    fromMya: 126,
+    toMya: 122,
     lengthM: 9,
     heightM: 3,
     weightKg: 2000,
@@ -1038,7 +1038,7 @@ export const WON: Dino[] = [
       en: 'Baryonyx was related to Spinosaurus and had the same long, narrow snout with many pointed teeth. It may have stood on river banks or waded in shallow water and caught fish with its claws. In the stomach of the first skeleton scientists found fish scales and bones from a young relative of Iguanodon. It was the first time anyone could show that a meat-eating dinosaur ate fish.',
     },
     facts: [
-      { sv: 'Kloen på tummen var ungefär 31 centimeter lång, längre än en linjal.', en: 'The claw on its thumb was about 31 centimetres long, longer than a ruler.' },
+      { sv: 'Klon på tummen var ungefär 31 centimeter lång, längre än en linjal.', en: 'The claw on its thumb was about 31 centimetres long, longer than a ruler.' },
       { sv: 'Det första skelettet hittades av en rörmokare som letade fossil i en lergrop i England.', en: 'The first skeleton was found by a plumber looking for fossils in a clay pit in England.' },
       { sv: 'Skelettet finns i dag på Natural History Museum i London.', en: 'The skeleton is now at the Natural History Museum in London.' },
     ],
@@ -1054,7 +1054,7 @@ export const WON: Dino[] = [
     id: 'styracosaurus',
     name: 'Styracosaurus',
     pronounce: { sv: 'sty-ra-ko-SAU-rus', en: 'sty-RAK-oh-SORE-us' },
-    meaning: { sv: 'Spjutödla', en: 'Spiked lizard' },
+    meaning: { sv: 'Taggig ödla', en: 'Spiked lizard' },
     group: 'dinosaur',
     period: 'cretaceous',
     fromMya: 76,
@@ -1126,7 +1126,7 @@ export const WON: Dino[] = [
     id: 'quetzalcoatlus',
     name: 'Quetzalcoatlus',
     pronounce: { sv: 'ket-sal-ko-AT-lus', en: 'KWET-sal-koh-AT-lus' },
-    meaning: { sv: 'Uppkallad efter aztekernas ormgud Quetzalcoatl', en: 'Named after the Aztec serpent god Quetzalcoatl' },
+    meaning: { sv: 'Fjäderklädd orm (en aztekisk gud)', en: 'Feathered serpent (an Aztec god)' },
     group: 'pterosaur',
     period: 'cretaceous',
     fromMya: 67,
@@ -1139,7 +1139,7 @@ export const WON: Dino[] = [
     diet: 'carnivore',
     found: { sv: 'USA', en: 'USA' },
     short: {
-      sv: 'Ett av de största flygande djuren som någonsin funnits. Det var ingen dinosaurie, men levde samtidigt som dem.',
+      sv: 'Ett av de största flygande djuren som någonsin funnits. Det var ingen dinosaurie, men levde samtidigt som dinosaurierna.',
       en: 'One of the largest flying animals that ever lived. It was not a dinosaur, but it lived alongside them.',
     },
     long: {
@@ -1148,7 +1148,7 @@ export const WON: Dino[] = [
     },
     facts: [
       { sv: 'Den är uppkallad efter en gud hos aztekerna, ett folk som levde i Mexiko.', en: 'It is named after a god of the Aztecs, a people who lived in Mexico.' },
-      { sv: 'Kroppen var täckt av ett tunt lager hårliknande fjun.', en: 'Its body was covered in a thin coat of hair-like fuzz.' },
+      { sv: 'Kroppen var troligen täckt av ett tunt lager hårliknande fjun.', en: 'Its body was probably covered in a thin coat of hair-like fuzz.' },
       { sv: 'Det första fossilet var ett vingben som en student hittade i Texas år 1971.', en: 'The first fossil was a wing bone that a student found in Texas in 1971.' },
     ],
     sound: {
