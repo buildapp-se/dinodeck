@@ -242,3 +242,10 @@ Allt på `main`, utlagt. Commits `e70909b` till `bce5181`.
   - **Val av Claude:** Ichthyosaurus fick `colourDisputed` (två pigmentstudier säger olika). Baryonyx datering 130 till 125 miljoner år behölls, nyare datering kan vara 126 till 121.
   - **Risk:** tre tvåbenta triasdjur (Coelophysis, Herrerasaurus, Eoraptor) och Compsognathus kan vara svåra att skilja i silhuettfrågan.
   - **Inte verifierat:** ljuden och uttalet (ingen har lyssnat), Eoraptors fingrar och Kentrosaurus taggpar är inte helt rätt enligt Codex egen granskning, syns knappt i kortstorlek.
+
+### Kväll 2026-10-25: Patriks fynd
+
+- **Dubbla ljud:** recepten blandade två inspelningar (Diplodocus elefant + bison m.fl.), det hördes som två djur. Nu en röst per ljud, `make-sounds.py` stoppar annars. Ett avsnitt med paus i hördes också som två läten: `longest_call` behåller bara det längsta. Fem fågelläten blev för korta och fick annan källa. 80 ljud, 128/128 tyngre-är-djupare. Inte avlyssnat.
+- **Ta bort alla favoriter:** smal och längst ner (`.row.danger` från föräldraläget vann på specificitet). CSS-ändringen hamnade i ljudcommiten `48d6c95`.
+- **T. rex-meningen** (kort och tidslinje) betydde bara "T. rex levde senare". Nu: "Det är kortare tid mellan T. rex och oss än mellan T. rex och Stegosaurus."
+- **Pteranodon:** tappen bakom höften (såg ut som en penis) borttagen av Codex i bild och målarbild, original i `img-src/v3/`.
