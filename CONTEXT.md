@@ -46,4 +46,5 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Actions (automated): 2026-10-06, fail, zizmor 2 high, 1 medium, 0 low (artipacked, excessive-permissions); evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
+- Database: 2026-10-25, none, localStorage
 
