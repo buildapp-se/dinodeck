@@ -400,7 +400,7 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 }
 .mini-gaps span + span { border-color: var(--paper); }
 .mini-note { font-size: 0.9rem; font-weight: 700; text-align: center; }
-.strip { position: relative; flex: 1; min-height: 400px; overflow-x: auto; overflow-y: hidden; touch-action: pan-x; cursor: grab; user-select: none; }
+.strip { position: relative; flex: 1; min-height: 320px; overflow-x: auto; overflow-y: hidden; touch-action: pan-x; cursor: grab; user-select: none; }
 .track { position: absolute; top: 0; bottom: 0; left: 0; }
 .band { position: absolute; top: 0; bottom: 30px; padding: 6px 12px; box-shadow: inset 2px 0 rgb(0 0 0 / 0.25); }
 .band b { position: sticky; left: 12px; font-size: 1.2rem; color: var(--ink); }
@@ -582,7 +582,7 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .strip { scrollbar-width: none; }
 .band { bottom: 0; }
 .tick { bottom: 6px; font-size: .875rem; color: var(--ink); border-left-color: var(--ink); }
-.tl-item { top: calc(38px + 102px * var(--lane)); width: 104px; height: 96px; margin-left: -52px; padding: 4px 4px 6px; border-radius: 14px; font-size: .8125rem; line-height: 1.15; font-weight: 700; box-shadow: var(--shadow-btn); }
+.tl-item { --row: min(102px, (100% - 70px) / var(--lanes)); top: calc(38px + var(--row) * var(--lane)); width: 104px; height: calc(var(--row) - 6px); margin-left: -52px; padding: 4px 4px 6px; border-radius: 14px; font-size: .8125rem; line-height: 1.15; font-weight: 700; box-shadow: var(--shadow-btn); }
 .tl-item span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow: hidden; overflow-wrap: anywhere; }
 .mark { bottom: 0; color: var(--ink); border-left-color: var(--ink); }
 .hold { width: 48px; height: 48px; padding: 0; border-radius: 50%; display: grid; place-items: center; background: var(--page-2); color: var(--ink); font-size: 0; }
@@ -601,7 +601,7 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .row.danger { margin-top: 32px; background: transparent; color: var(--heart); box-shadow: inset 0 0 0 2px var(--heart); }
 .row.danger.confirm { background: var(--heart); color: #fff; }
 .parent .big { min-height: 56px; font-size: 1.25rem; }
-@media (min-width: 900px) { .tl-item { top: calc(38px + 110px * var(--lane)); width: 112px; height: 104px; margin-left: -56px; } }
+@media (min-width: 900px) { .tl-item { --row: min(110px, (100% - 70px) / var(--lanes)); width: 112px; margin-left: -56px; } }
 @media (orientation: portrait) {
   .scene .stage { flex: 1; aspect-ratio: auto; max-height: none; min-height: 320px; }
   .scene .tray { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2,80px); gap: 8px; }

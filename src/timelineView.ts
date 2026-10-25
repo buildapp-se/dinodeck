@@ -15,11 +15,12 @@ const PERIODS: readonly Period[] = ['triassic', 'jurassic', 'cretaceous'];
 // Kept between visits, so coming back from a card lands where the child was.
 let keptScroll = -1;
 
-export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
+export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes = 5): void {
   const l = ctx.lang;
   const tablet = window.innerWidth >= 900;
   const ITEM_W = tablet ? 112 : 104;
-  const lanes = tablet && window.innerHeight < 840 ? 4 : 5;
+  const ROW = tablet ? 110 : 102; // lane pitch in style.css
+  const lanes = tablet && window.innerHeight < 840 ? 4 : maxLanes;
   let PX_PER_MYA = tablet ? 14 : 18;
   let items: ReturnType<typeof layoutTimelineCompact>['items'] = [];
   // Dense catalogues may need a slightly longer strip to retain five readable rows.
@@ -72,6 +73,9 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext): void {
     </section>`;
 
   const strip = view.querySelector<HTMLElement>('.strip')!;
+  // A short phone screen (browser bars showing) cannot hold five rows: use four on a longer strip.
+  // 70 = band label above the rows plus the year ticks below them, as in style.css.
+  if (lanes > 4 && strip.clientHeight - 70 < lanes * ROW) return renderTimeline(view, ctx, 4);
   const box = view.querySelector<HTMLElement>('.mini-view')!;
   const showWhere = (): void => {
     box.style.left = `${(strip.scrollLeft / width) * 100}%`;
