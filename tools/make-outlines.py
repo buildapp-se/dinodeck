@@ -1,61 +1,85 @@
-"""Line drawings for colouring in, taken out of the finished paintings.
+"""Colouring pages from the line drawings Codex redrew from each painting.
 
-Reads every picture in public/img/ and writes public/img/line/<same name>.
-Animals: black lines, white body, see-through outside, so an animal covers the backdrop behind it.
+img-src/line/<name>.png (black lines on white, same canvas as img-src/<name>.png)
+  -> public/img/line/<name>.webp
+Animals: black lines, white body, see-through outside, cropped exactly like the card picture,
+so an animal covers the backdrop behind it and stands where the painted one stood in the scene.
 Backdrops: black lines on white.
 
-Run with: uv run --with pillow tools/make-outlines.py
-Prints one line per picture and exits with an error if a drawing looks empty or flooded.
+Run with: uv run --with pillow tools/make-outlines.py [name ...]
+Prints one line per picture and exits with an error if a drawing is empty, flooded or leaks.
 """
+import importlib.util
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
-IMG = Path(__file__).resolve().parent.parent / "public/img"
-OUT = IMG / "line"
+ROOT = Path(__file__).resolve().parent.parent
+SRC, LINE, OUT = ROOT / "img-src", ROOT / "img-src/line", ROOT / "public/img/line"
+LONGEST = 1200  # about 160 dpi across an A4 page: smooth lines on paper
+KEY = 128  # a grey the cleaned drawing never contains
 
-
-def lines(grey: Image.Image, fine: float, coarse: float, cut: int) -> Image.Image:
-    """Where the painting is darker than its surroundings: 0 is line, 255 is paper.
-    The difference of two blurs follows drawn edges and ignores brush texture finer than `fine`."""
-    darker = ImageChops.subtract(grey.filter(ImageFilter.GaussianBlur(coarse)), grey.filter(ImageFilter.GaussianBlur(fine)))
-    return darker.point(lambda v: 0 if v > cut else 255)
-
-
-def animal(src: Image.Image) -> Image.Image:
-    alpha = src.getchannel("A")
-    grey = Image.alpha_composite(Image.new("RGBA", src.size, "white"), src).convert("L")
-    solid = alpha.point(lambda v: 255 if v > 128 else 0)
-    grown = solid.filter(ImageFilter.MaxFilter(7))
-    # The edge of the cut-out is always drawn, so every shape is closed even where the painting fades out.
-    contour = ImageChops.subtract(grown, solid)
-    ink = ImageChops.darker(lines(grey, 2, 5, 7), contour.point(lambda v: 255 - v))
-    out = Image.merge("RGBA", (ink, ink, ink, grown))
-    return out
+spec = importlib.util.spec_from_file_location("convert_art", ROOT / "tools/convert-art.py")
+convert_art = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(convert_art)
 
 
-def backdrop(src: Image.Image) -> Image.Image:
-    # Coarser than the animals: a landscape full of small strokes is no fun to colour.
-    return lines(src.convert("L"), 3, 8, 5).convert("RGB")
+def ink(drawing: Image.Image, weight: int) -> Image.Image:
+    """Thicker, darker lines with soft edges: 0 is ink, 255 is paper. Codex draws thinner than asked."""
+    grey = drawing.convert("L").filter(ImageFilter.MinFilter(weight))
+    return grey.point(lambda v: 0 if v < 110 else 255 if v > 210 else round((v - 110) * 2.55))
+
+
+def animal(name: str) -> tuple[Image.Image, str | None]:
+    lines = ink(Image.open(LINE / f"{name}.png"), 3)
+    painted = convert_art.cut_out(Image.open(SRC / f"{name}.png")).getchannel("A").point(lambda v: 255 if v > 128 else 0)
+    # Everything the paper reaches from the border is outside. A gap in the outline lets it in.
+    flood = lines.point(lambda v: 255 if v > 200 else 0)
+    w, h = flood.size
+    for xy in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]:
+        if flood.getpixel(xy) == 255:
+            ImageDraw.floodfill(flood, xy, KEY)
+    inside = flood.point(lambda v: 0 if v == KEY else 255)
+    # A bolder outer contour reads best on paper and gives the shape a clear edge to colour up to.
+    contour = ImageChops.subtract(inside, inside.filter(ImageFilter.MinFilter(7)))
+    lines = ImageChops.darker(lines, ImageChops.invert(contour))
+    fill = sum(inside.histogram()[255:]) / max(1, sum(painted.histogram()[255:]))
+    out = Image.merge("RGBA", (lines, lines, lines, inside))
+    box = painted.getbbox()
+    out = out.crop(box)
+    scale = LONGEST / max(out.size)
+    out = out.resize((round(out.width * scale), round(out.height * scale)), Image.Resampling.LANCZOS)
+    # A leak empties the body; a drawing that grew past the painting would sit wrong in the scene.
+    problem = None if 0.85 < fill < 1.2 else f"filled area is {fill:.0%} of the painting's"
+    return out, problem
+
+
+def backdrop(name: str) -> tuple[Image.Image, str | None]:
+    return ink(Image.open(LINE / f"{name}.png"), 3).convert("RGB"), None
 
 
 def main() -> int:
     OUT.mkdir(exist_ok=True)
+    names = sys.argv[1:] or sorted(p.stem for p in (ROOT / "public/img").glob("*.webp"))
     bad = 0
-    for path in sorted(IMG.glob("*.webp")):
-        src = Image.open(path)
-        is_bg = path.stem.startswith("bg-")
-        out = backdrop(src) if is_bg else animal(src.convert("RGBA"))
-        out.save(OUT / path.name, lossless=True, method=6)
-        # Share of the drawn area that is ink. A real drawing sits well inside these limits.
-        ink = out.convert("L").point(lambda v: 255 if v < 128 else 0)
+    for name in names:
+        if not (LINE / f"{name}.png").exists():
+            print(f"FAIL {name}: img-src/line/{name}.png missing")
+            bad += 1
+            continue
+        out, problem = backdrop(name) if name.startswith("bg-") else animal(name)
+        out.save(OUT / f"{name}.webp", lossless=True, method=6)
+        # Share of the drawn area that is ink. The 33 drawings of 2026-10-25 lie between 17 % and 35 %
+        # (slim and feathered animals highest, since the share is of their own small area).
+        dark = out.convert("L").point(lambda v: 255 if v < 128 else 0)
         area = out.getchannel("A").point(lambda v: 255 if v else 0) if out.mode == "RGBA" else Image.new("L", out.size, 255)
-        share = sum(ImageChops.multiply(ink, area).histogram()[255:]) / max(1, area.histogram()[255])
-        # The 33 drawings reviewed 2026-10-06 lie between 16 % and 46 %.
-        ok = 0.08 < share < 0.6
-        bad += not ok
-        print(f"{'ok  ' if ok else 'FAIL'} {path.stem}: {share:.0%} ink, {(OUT / path.name).stat().st_size // 1024} kB")
+        share = sum(ImageChops.multiply(dark, area).histogram()[255:]) / max(1, area.histogram()[255])
+        if not problem and not 0.05 < share < 0.4:
+            problem = f"{share:.0%} ink"
+        bad += problem is not None
+        size = (OUT / f"{name}.webp").stat().st_size // 1024
+        print(f"FAIL {name}: {problem}" if problem else f"ok   {name}: {share:.0%} ink, {size} kB")
     return 1 if bad else 0
 
 
