@@ -192,5 +192,6 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
 
   draw();
   // Redraw rather than re-place by index: a picture that failed to load is removed, which would shift the indexes.
-  new ResizeObserver(() => draw()).observe(stage);
+  const watch = new ResizeObserver(() => (stage.isConnected ? draw() : watch.disconnect()));
+  watch.observe(stage);
 }

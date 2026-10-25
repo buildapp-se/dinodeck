@@ -232,7 +232,7 @@ export const STARTERS: Dino[] = [
         sv: 'Ett berömt fossil visar en Velociraptor mitt i en strid med en Protoceratops.',
         en: 'One famous fossil shows a Velociraptor in the middle of a fight with a Protoceratops.',
       },
-      { sv: 'Den hade fjädrar men kunde inte flyga.', en: 'It had feathers but could not fly.' },
+      { sv: 'Den levde i en öken med sanddyner.', en: 'It lived in a desert full of sand dunes.' },
       { sv: 'Fåglar är faktiskt dinosaurier, de enda som finns kvar i dag.', en: 'Birds actually are dinosaurs, the only ones still around today.' },
     ],
     sound: {
@@ -307,7 +307,7 @@ export const STARTERS: Dino[] = [
       en: 'Ankylosaurus was covered in bony plates set in its skin, even on its eyelids. The tail club was made of bones that had grown together. A swing from it could probably break an attacker\'s legs. It walked low on four short legs and ate plants near the ground.',
     },
     facts: [
-      { sv: 'Den hade pansar även på ögonlocken.', en: 'It had armour even on its eyelids.' },
+      { sv: 'Den var den största av alla pansardinosaurier.', en: 'It was the biggest of all armoured dinosaurs.' },
       { sv: 'Svansklubban kunde väga lika mycket som ett barn.', en: 'Its tail club could weigh as much as a child.' },
       { sv: 'Den levde samtidigt som Tyrannosaurus rex.', en: 'It lived at the same time as Tyrannosaurus rex.' },
     ],
@@ -345,7 +345,7 @@ export const STARTERS: Dino[] = [
     },
     facts: [
       { sv: 'Varje vinge hölls uppe av ett enda långt finger.', en: 'Each wing was held up by one long finger.' },
-      { sv: 'Den hade inga tänder alls.', en: 'It had no teeth at all.' },
+      { sv: 'Man har hittat fiskben i magen på en Pteranodon.', en: 'Fish bones have been found in the stomach of a Pteranodon.' },
       {
         sv: 'Fossilen hittas mitt i USA, där det en gång låg ett hav.',
         en: 'Its fossils are found in the middle of the USA, where there was once a sea.',

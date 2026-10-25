@@ -52,7 +52,7 @@ export interface State {
   onboarded: boolean;
 }
 
-const KEY = 'dinodeck';
+export const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {

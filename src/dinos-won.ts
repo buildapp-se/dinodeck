@@ -64,7 +64,7 @@ export const WON: Dino[] = [
       en: 'Allosaurus lived long before Tyrannosaurus rex and was the most common large meat-eater of its time. It had three fingers with strong claws on each hand and small horns above its eyes. An Allosaurus bone has been found with a hole that fits a Stegosaurus tail spike.',
     },
     facts: [
-      { sv: 'Den hade tre fingrar på varje hand.', en: 'It had three fingers on each hand.' },
+      { sv: 'I ett enda stenbrott i Utah har man hittat ben från över 40 Allosaurus.', en: 'Bones of more than 40 Allosaurus have been found in a single quarry in Utah.' },
       { sv: 'Den hade små horn ovanför ögonen.', en: 'It had small horns above its eyes.' },
       { sv: 'Den levde omkring 80 miljoner år före Tyrannosaurus rex.', en: 'It lived about 80 million years before Tyrannosaurus rex.' },
     ],
@@ -102,7 +102,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Den hittades av en man som letade fossil på fritiden.', en: 'It was found by a man who hunted fossils as a hobby.' },
       { sv: 'Skallen var ungefär lika lång som en vuxen människa är lång.', en: 'Its skull was about as long as a grown-up is tall.' },
-      { sv: 'Den hade tre fingrar på varje hand.', en: 'It had three fingers on each hand.' },
+      { sv: 'Den och Tyrannosaurus rex träffades aldrig: de levde på olika kontinenter och i olika tider.', en: 'It and T. rex never met: they lived on different continents at different times.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på djupa, mullrande ljud.',
@@ -173,7 +173,7 @@ export const WON: Dino[] = [
     },
     facts: [
       { sv: 'Den sprutade inte gift. Det är påhittat för film.', en: 'It did not spit venom. That was made up for a film.' },
-      { sv: 'Den hade ingen krage runt halsen.', en: 'It had no frill around its neck.' },
+      { sv: 'Den hittades i Arizona på 1940-talet, på mark där navajofolket bor.', en: 'It was found in Arizona in the 1940s, on Navajo land.' },
       { sv: 'Den levde över 100 miljoner år före Tyrannosaurus rex.', en: 'It lived over 100 million years before Tyrannosaurus rex.' },
     ],
     sound: {
@@ -317,8 +317,8 @@ export const WON: Dino[] = [
     },
     facts: [
       { sv: 'Den var ingen äggtjuv. Den vaktade sina egna ägg.', en: 'It was no egg thief. It was guarding its own eggs.' },
-      { sv: 'Den hade näbb men inga tänder.', en: 'It had a beak but no teeth.' },
-      { sv: 'Släktingar har hittats ruvande på sina bon.', en: 'Relatives have been found brooding on their nests.' },
+      { sv: 'Äggen hos dess släktingar var blågröna.', en: 'Its relatives laid blue-green eggs.' },
+      { sv: 'Den hittades i Mongoliet år 1923.', en: 'It was found in Mongolia in 1923.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på fågelliknande ljud.',
@@ -607,7 +607,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Forskare tror att föräldrarna kom med mat till ungarna i boet.', en: 'Scientists think the parents brought food to the babies in the nest.' },
       { sv: 'En flock kunde ha tusentals djur.', en: 'A herd could have thousands of animals.' },
-      { sv: 'Ett Maiasaura-ben har varit med i rymden.', en: 'A Maiasaura bone has been to space.' },
+      { sv: 'Ett Maiasaura-ben blev år 1985 det första dinosauriebenet i rymden.', en: 'In 1985 a Maiasaura bone became the first dinosaur bone in space.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Djur som lever i flock brukar ropa till varandra, så forskare gissar på tutande och brummande ljud.',
@@ -714,7 +714,7 @@ export const WON: Dino[] = [
     },
     facts: [
       { sv: 'Den levde omkring 140 miljoner år före Tyrannosaurus rex.', en: 'It lived about 140 million years before Tyrannosaurus rex.' },
-      { sv: 'Den gick på två ben, inte fyra.', en: 'It walked on two legs, not four.' },
+      { sv: 'Ett Plateosaurus-ben har hittats djupt under Nordsjön, vid en norsk oljeplattform.', en: 'A Plateosaurus bone has been found deep under the North Sea, at a Norwegian oil platform.' },
       { sv: 'Över hundra skelett har hittats.', en: 'Over a hundred skeletons have been found.' },
     ],
     sound: {
@@ -1003,7 +1003,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Mary Anning och hennes bror hittade Ichthyosaurus-fossil i England för över 200 år sedan.', en: 'Mary Anning and her brother found Ichthyosaurus fossils in England more than 200 years ago.' },
       { sv: 'Ett äkta fossil låg länge på ett museum och troddes vara en kopia i gips.', en: 'A real fossil sat in a museum for years because people thought it was a plaster copy.' },
-      { sv: 'Man har hittat rester av fisk och bläckfiskliknande djur i magen.', en: 'Remains of fish and squid-like animals have been found in its stomach.' },
+      { sv: 'Fisködlor fanns i haven i över 150 miljoner år.', en: 'Ichthyosaurs lived in the seas for over 150 million years.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare vet inte ens om den gjorde några ljud alls under vattnet.',
@@ -1040,7 +1040,7 @@ export const WON: Dino[] = [
     facts: [
       { sv: 'Klon på tummen var ungefär 31 centimeter lång, längre än en linjal.', en: 'The claw on its thumb was about 31 centimetres long, longer than a ruler.' },
       { sv: 'Det första skelettet hittades av en rörmokare som letade fossil i en lergrop i England.', en: 'The first skeleton was found by a plumber looking for fossils in a clay pit in England.' },
-      { sv: 'Skelettet finns i dag på Natural History Museum i London.', en: 'The skeleton is now at the Natural History Museum in London.' },
+      { sv: 'Nosen liknade en gavials, en krokodil som äter fisk.', en: 'Its snout was like a gharial\'s, a fish-eating crocodile.' },
     ],
     sound: {
       sv: 'Ingen vet säkert. Forskare gissar på låga, väsande ljud.',

@@ -50,7 +50,7 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
       <a class="big" href="#/">${t(l, 'done')}</a>
       <button type="button" class="row danger" data-act="reset">${t(l, 'reset')}</button>
       <p class="hint" role="status">${note}</p>
-      <p class="source">${t(l, 'version')} ${buildTime(l, ctx.build)}</p>
+      <p class="source"><a href="integritet.html">${t(l, 'privacy')}</a> · ${t(l, 'version')} ${buildTime(l, ctx.build)}</p>
     </section>`;
 
   let armed = false;

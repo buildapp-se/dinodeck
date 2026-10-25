@@ -12,7 +12,7 @@ import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { advance, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { KEY, advance, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
@@ -72,7 +72,9 @@ function fitScale(root: ParentNode, d: Dino): void {
     child.style.width = `${u * CHILD_M * CHILD_ASPECT}px`;
   };
   // A card is built before it is in the page, so the box has no size yet: fit when it gets one.
-  new ResizeObserver(fit).observe(box);
+  // Disconnected once the card is gone (a removed box reports one last size change).
+  const watch = new ResizeObserver(() => (box.isConnected ? fit() : watch.disconnect()));
+  watch.observe(box);
   shape.addEventListener('load', fit);
 }
 
@@ -102,7 +104,7 @@ function factsHtml(d: Dino, compact = false): string {
     <p class="colour-note">${colourNote(l, d)}</p>
     <h3>${t(l, 'more')}</h3>
     <p>${d.long[l]}</p>
-    <p class="source">${t(l, 'source')}: <a href="${d.source.url}" target="_blank" rel="noopener">${d.source.label}</a></p>`;
+    <p class="source">${t(l, 'source')}: <button type="button" class="link" data-gate="${d.source.url}">${d.source.label}</button></p>`;
 }
 
 function buildCard(d: Dino, depth: number): HTMLElement {
@@ -182,6 +184,11 @@ const handlers: DragHandlers = {
 const topCard = (): HTMLElement | null => view.querySelector<HTMLElement>('.card[data-depth="0"]:not([data-leaving])');
 
 /** Rebuilds the stack under any card that is still flying away. Never touches a leaving card. */
+// Set while a keyboard user is on the deck, so focus moves to the next card instead of falling to the page.
+let keyboardOnDeck = false;
+view.addEventListener('focusin', (e) => { keyboardOnDeck = (e.target as Element).classList.contains('card') && (e.target as Element).matches(':focus-visible'); });
+view.addEventListener('pointerdown', () => { keyboardOnDeck = false; });
+
 function fillDeck(): void {
   const deck = view.querySelector<HTMLElement>('#deck');
   if (!deck) return;
@@ -195,6 +202,7 @@ function fillDeck(): void {
   const top = topCard();
   if (top) {
     deck.append(top); // the top card paints last, above the rest and above a leaving card's shadow
+    if (keyboardOnDeck) top.focus({ preventScroll: true }); // the card that had focus just flew off
     attachDrag(top, handlers);
     if (!state.onboarded) top.classList.add('invite');
     top.querySelector<HTMLButtonElement>('.snd')?.addEventListener('click', (e) => {
@@ -331,6 +339,7 @@ function renderNav(): void {
 /** What the whole page shows of the settings: its language, and no sound buttons when sound is off. */
 function applySettings(): void {
   document.documentElement.lang = lang();
+  document.title = t(lang(), 'title');
   document.documentElement.classList.toggle('muted', state.muted);
 }
 
@@ -393,6 +402,48 @@ document.addEventListener('click', (e) => {
 });
 
 window.addEventListener('hashchange', render);
+// The app open twice (a browser tab and the installed app): take the other copy's saves instead of overwriting them.
+window.addEventListener('storage', (e) => {
+  if (e.key !== KEY) return;
+  Object.assign(state, loadState(ids, state.lang));
+  applySettings();
+  render();
+});
+// Links out of the app go through an adult question (app stores' rule for children's apps).
+document.addEventListener('click', (e) => {
+  const link = (e.target as Element).closest<HTMLElement>('[data-gate]');
+  if (link) parentGate(link.dataset.gate!);
+});
+
+function parentGate(url: string): void {
+  const l = lang();
+  const a = 6 + Math.floor(Math.random() * 4);
+  const b = 6 + Math.floor(Math.random() * 4);
+  const dialog = document.createElement('dialog');
+  dialog.className = 'gate';
+  dialog.innerHTML = `
+    <form method="dialog">
+      <p>${t(l, 'gateAsk')}</p>
+      <label>${a} × ${b} = <input name="answer" inputmode="numeric" autocomplete="off" size="3" required></label>
+      <p class="hint" aria-live="polite"></p>
+      <div class="gate-actions">
+        <button type="button" class="chip" value="cancel">${t(l, 'cancel')}</button>
+        <button class="chip" value="ok">${t(l, 'open')}</button>
+      </div>
+    </form>`;
+  document.body.append(dialog);
+  const form = dialog.querySelector('form')!;
+  dialog.querySelector<HTMLButtonElement>('[value=cancel]')!.addEventListener('click', () => dialog.close());
+  form.addEventListener('submit', (e) => {
+    if (Number(form.answer.value) === a * b) { window.open(url, '_blank', 'noopener'); return; }
+    e.preventDefault();
+    form.answer.value = '';
+    dialog.querySelector('.hint')!.textContent = t(l, 'tryAgain');
+  });
+  dialog.addEventListener('close', () => dialog.remove());
+  dialog.showModal();
+}
+
 nav.addEventListener('click', (e) => {
   const link = (e.target as Element).closest('a');
   if (link && link.getAttribute('href') === location.hash) render();
