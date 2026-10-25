@@ -45,14 +45,17 @@ def animal(name: str) -> tuple[Image.Image, str | None]:
     # A bolder outer contour reads best on paper and gives the shape a clear edge to colour up to.
     contour = ImageChops.subtract(inside, inside.filter(ImageFilter.MinFilter(7)))
     lines = ImageChops.darker(lines, ImageChops.invert(contour))
-    fill = sum(inside.histogram()[255:]) / max(1, sum(painted.histogram()[255:]))
+    # How densely each silhouette fills its own box: a redrawing may be smaller than the painting, a leak is emptier.
+    p, d = painted.getbbox(), inside.getbbox()
+    density = lambda mask, b: sum(mask.histogram()[255:]) / max(1, (b[2] - b[0]) * (b[3] - b[1]))
+    fill = density(inside, d) / density(painted, p)
     out = Image.merge("RGBA", (lines, lines, lines, inside))
-    box = painted.getbbox()
-    out = out.crop(box)
+    # The drawing's own box: the redrawn lines never sit exactly on the painting, and its box cut tail tips flat.
+    out = out.crop(d)
     scale = LONGEST / max(out.size)
     out = out.resize((round(out.width * scale), round(out.height * scale)), Image.Resampling.LANCZOS)
     # A leak empties the body; a drawing that grew past the painting would sit wrong in the scene.
-    problem = None if 0.85 < fill < 1.2 else f"filled area is {fill:.0%} of the painting's"
+    problem = None if 0.85 < fill < 1.2 else f"silhouette fills its box {fill:.0%} as densely as the painting's"
     return out, problem
 
 

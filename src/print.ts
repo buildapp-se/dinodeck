@@ -31,6 +31,10 @@ export async function printSheet(html: string): Promise<void> {
   sheet.innerHTML = html;
   // A drawing that fails to load is left out: the rest still prints.
   await Promise.all([...sheet.querySelectorAll('img')].map((img) => img.decode().catch(() => img.remove())));
+  // Portrait when the animal prints bigger that way (Brachiosaurus): the space under the name, in mm, either way round.
+  const art = sheet.querySelector<HTMLImageElement>('.print-dino');
+  const fits = (w: number, h: number): number => (art ? Math.min(w / art.naturalWidth, h / art.naturalHeight) : 0);
+  sheet.classList.toggle('tall', fits(186, 251) > fits(273, 164));
   document.documentElement.classList.add('colouring');
   window.print();
 }
