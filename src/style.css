@@ -249,7 +249,10 @@ h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 .big small { display: block; font-size: 0.9rem; font-weight: 600; opacity: 0.8; }
 .big.pic { background: #fff; box-shadow: inset 0 0 0 3px var(--bg); height: 130px; }
 .big.pic .art { height: 100%; }
-.big:disabled { opacity: 0.35; }
+.big:disabled { opacity: 1; background: var(--page-2); color: var(--muted); box-shadow: none; }
+.big.pic:disabled { background: #fff; opacity: .4; }
+.big.wrong { animation: shake 300ms; }
+@keyframes shake { 25% { translate: -6px; } 75% { translate: 6px; } }
 .big.right { background: #3f9d5a; opacity: 1; }
 .big.pic.right { background: #d9f2df; }
 
@@ -489,7 +492,8 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .front h2 { font-size: clamp(1.75rem, 7vw, 2.5rem); line-height: 1.05; font-weight: 700; text-wrap: balance; overflow-wrap: anywhere; }
 .art-missing { width: 120px; height: 120px; display: grid; place-items: center; border-radius: 24px; background: var(--page-2); opacity: 1; }
 .art-missing svg { width: 60px; height: 60px; color: var(--forest); }
-.scroll { padding: 24px 24px 32px; scrollbar-width: thin; scrollbar-color: rgb(46 42 32 / .25) transparent; }
+.scroll { padding: 24px 24px 32px; scrollbar-width: none; mask-image: linear-gradient(#000 calc(100% - 28px), transparent); }
+.scroll::-webkit-scrollbar { display: none; }
 .say { font-style: normal; }
 .say-btn, .snd { display: inline-grid; place-items: center; background: var(--forest); color: var(--card); }
 .say-btn svg, .listen svg { width: 22px; height: 22px; }
@@ -507,7 +511,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .round { display: grid; place-items: center; background: var(--card); box-shadow: var(--shadow-btn); }
 .round svg { width: 32px; height: 32px; }
 .round.small svg { width: 26px; height: 26px; }
-.round:active { transition: transform var(--t-tap); }
+/* Every button gives under the finger, and springs back as smoothly as it went down. */
+:is(.round, .chip, .big, .tile, .tray button, .seg button, .row) { transition: transform var(--t-tap) var(--ease-out), background-color 160ms; }
+:is(.chip, .big, .tile, .tray button, .seg button, .row):not(:disabled):active { transform: scale(.96); }
 .chip.win { display: inline-flex; align-items: center; gap: 7px; background: var(--ochre); }
 .chip.win svg { width: 20px; height: 20px; }
 .tile { background: var(--card); box-shadow: var(--shadow-btn); }
@@ -542,7 +548,8 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .challenge h2 { font-size: clamp(1.75rem, 7vw, 2.5rem); line-height: 1.05; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .win-count { color: var(--muted); font-size: .875rem; font-weight: 700; }
-.big .ages { display: flex; gap: 6px; font-size: 1.75rem; }
+.big .ages { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 8px; font-size: clamp(1.25rem, 5vw, 1.75rem); }
+.big .ages span { white-space: nowrap; }
 .progress { display: flex; justify-content: center; gap: 8px; margin: 8px 0; }
 .progress span { display: grid; place-items: center; }
 .progress svg { width: 36px; height: 36px; fill: none; stroke: var(--muted); }
@@ -557,8 +564,15 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 @keyframes reveal { from { filter: brightness(0); opacity: .4; scale: .8; } 60% { filter: brightness(0); opacity: 1; } to { filter: brightness(1); scale: 1; } }
 .prize.reveal { position: relative; }
 .burst { position: absolute; inset: 50%; pointer-events: none; }
-.burst span { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--ochre); animation: burst 500ms 600ms ease-out both; }
-@keyframes burst { from { translate: 0 0; opacity: 1; } to { translate: var(--dx) var(--dy); opacity: 0; } }
+.burst span { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--ochre); animation: burst 800ms 450ms cubic-bezier(.15,.7,.3,1) both; }
+.burst span:nth-child(3n+1) { background: var(--heart); }
+.burst span:nth-child(3n+2) { background: var(--forest); width: 9px; height: 9px; }
+@keyframes burst { 0% { translate: 0 0; scale: 1; opacity: 1; } 70% { opacity: 1; } to { translate: var(--dx) calc(var(--dy) + 48px); scale: .3; opacity: 0; } }
+.prize.reveal::before { content: ''; position: absolute; inset: -10%; background: radial-gradient(closest-side, rgb(227 164 60 / .35), transparent); animation: glow 900ms 400ms var(--ease-out) both; }
+@keyframes glow { from { opacity: 0; scale: .6; } }
+.win-actions { margin-top: 20px; }
+.win-actions .primary { grid-column: 1 / -1; min-height: 72px; background: var(--ochre); color: var(--ink); }
+.win-actions .secondary { background: var(--page-2); color: var(--ink); }
 .win-actions[hidden] { display: none; }
 .big { background: var(--forest); color: var(--card); font-weight: 700; }
 .big small { font-size: .9375rem; font-weight: 400; opacity: 1; }
@@ -616,8 +630,55 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 @media (orientation: portrait) {
   .scene .stage { flex: 1; aspect-ratio: auto; max-height: none; min-height: 160px; }
   .scene .tray { flex: none; display: grid; grid-auto-flow: column; grid-template-rows: repeat(2,80px); gap: 8px; }
-  .challenge { margin: auto auto 24px; }
 }
+/* A phone on its side: the nav becomes a rail on the left, the card is sized by height and the buttons stand beside it. */
+@media (orientation: landscape) and (max-height: 540px) {
+  body { display: grid; grid-template: "nav view" minmax(0, 1fr) / auto minmax(0, 1fr); height: 100dvh; }
+  .top { position: fixed; z-index: 4; top: max(8px, env(safe-area-inset-top)); left: calc(env(safe-area-inset-left) + 18px); padding: 0; }
+  .top h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .nav { grid-area: nav; grid-template-columns: none; grid-auto-rows: minmax(0, 1fr); width: calc(84px + env(safe-area-inset-left)); padding: calc(max(8px, env(safe-area-inset-top)) + 56px) 4px max(8px, env(safe-area-inset-bottom)) env(safe-area-inset-left); }
+  .nav a { min-height: 0; }
+  #view { grid-area: view; padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) 0; }
+  #view:has(> .deck) { flex-direction: row; align-items: center; justify-content: center; gap: 24px; }
+  .deck { flex: none; margin: 0; height: calc(100% - 48px); width: auto; aspect-ratio: 4 / 3; max-width: calc(100% - 136px); }
+  .controls { flex-direction: column; gap: 14px; padding: 0; }
+  .scene { display: grid; grid-template: "seg tray" auto "stage tray" minmax(0, 1fr) / minmax(0, 1fr) 212px; gap: 8px 12px; width: 100%; padding: 8px 12px; }
+  .scene .seg { grid-area: seg; }
+  .scene .stage { grid-area: stage; height: 100%; width: auto; max-width: 100%; max-height: none; aspect-ratio: 3 / 2; justify-self: center; }
+  .scene .tray { grid-area: tray; display: grid; grid-template-columns: repeat(2, 96px); grid-auto-rows: 80px; align-content: start; overflow: hidden auto; touch-action: pan-y; padding: 4px 4px 16px; mask-image: linear-gradient(transparent, #000 12px, #000 calc(100% - 16px), transparent); }
+  .scene .tools { left: calc((100% - 212px) / 2); top: 60px; }
+  .scene .stage.empty-stage::after { content: '→'; left: auto; right: 12px; bottom: 45%; }
+  .strip { min-height: 0; }
+  .mini-gaps, .mini-note { display: none; }
+  .timeline { padding: 8px 0 0; }
+  .challenge { padding: 10px 16px 14px; }
+  .challenge h2 { font-size: 1.6rem; margin-top: 2px; }
+  .progress { margin: 2px 0; }
+  .progress svg { width: 28px; height: 28px; }
+  .prize, .shape { height: 30vh; }
+  .options, .levels { margin-top: 8px; }
+  .big { min-height: 64px; }
+  .big.pic { height: 96px; }
+  .win-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 10px; }
+  .win-actions .primary { grid-column: auto; min-height: 64px; }
+}
+/* Tablets and computers: a card shaped like a card, not like whatever space is left. */
+@media (min-width: 700px) and (min-height: 600px) {
+  .deck { flex: none; width: min(560px, calc((100dvh - 300px) * .75)); aspect-ratio: 3 / 4; margin: auto auto 0; }
+  .controls { margin-bottom: auto; }
+}
+@media (min-width: 1100px) {
+  .nav { justify-content: center; grid-template-columns: repeat(5, 120px); }
+  .grid { width: 100%; max-width: 1100px; margin: 0 auto; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}
+/* Moving between views: a short fade, the header and nav stay put. */
+.nav { view-transition-name: nav; }
+.top { view-transition-name: top; }
+::view-transition-old(root) { animation: 160ms ease-out both vt-out; }
+::view-transition-new(root) { animation: 240ms var(--ease-out) both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; translate: 0 12px; } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
 /* Colouring pages: only the sheet built by src/print.ts reaches the paper. */
 .print-btn { display: inline-flex; align-items: center; gap: 8px; }
 .print-btn svg { width: 22px; height: 22px; flex: none; }

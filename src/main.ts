@@ -8,6 +8,7 @@ import { play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
+import type { Level } from './challenge.ts';
 import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
@@ -193,12 +194,17 @@ function fillDeck(): void {
   const deck = view.querySelector<HTMLElement>('#deck');
   if (!deck) return;
   deck.querySelectorAll('.card:not([data-leaving])').forEach((c) => c.remove());
-  // ponytail: the stack is rebuilt, not promoted in place, so the next card does not animate
-  // from depth 1 to 0. Port Sipdeck's promoteDeck if that snap shows on a real device.
   queue.slice(0, 3).reverse().forEach((id, i, shown) => {
     const d = byId.get(id);
     if (d) deck.prepend(buildCard(d, shown.length - 1 - i));
   });
+  // The stack is rebuilt, so each card slides up from the place one step further back instead of snapping.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    deck.querySelectorAll<HTMLElement>('.card:not([data-leaving])').forEach((c) => {
+      const back = Number(c.dataset.depth) + 1;
+      c.animate([{ transform: `translateY(${back * 12}px) scale(${1 - back * 0.05})`, opacity: back > 2 ? 0 : 1 }, {}], { duration: 280, easing: 'cubic-bezier(.2,.9,.3,1)' });
+    });
+  }
   const top = topCard();
   if (top) {
     deck.append(top); // the top card paints last, above the rest and above a leaving card's shadow
@@ -295,7 +301,7 @@ function renderDetail(d: Dino): void {
 }
 
 /** `id` is the card asked for with "Vinn mig"; without it a random locked card is the prize. */
-function renderChallenge(id: string): void {
+function renderChallenge(id: string, level?: Level): void {
   const l = lang();
   const notWon = (d: Dino): boolean => !d.starter && !state.won.includes(d.id);
   const left = DINOS.filter(notWon);
@@ -311,7 +317,12 @@ function renderChallenge(id: string): void {
     target: prize,
     wonCount: state.won.length,
     repeat,
+    level,
     artHtml,
+    oneMore(lv) {
+      history.replaceState(null, '', '#/utmaning');
+      renderChallenge('', lv);
+    },
     onWin(d) {
       if (!repeat && !state.won.includes(d.id)) state.won = [...state.won, d.id];
       saveState(state);
@@ -349,6 +360,7 @@ function render(): void {
   const hash = location.hash;
   if (hash === '#/tidslinje' || hash === '#/favoriter') backTo = hash;
   if (hash !== '#/foralder') parentOpen = false;
+  view.scrollTop = 0; // a long favourites list scrolled down would open the next view halfway down
   const dino = hash.startsWith('#/dino/') ? byId.get(hash.slice('#/dino/'.length)) : undefined;
   if (parentOpen) {
     // Any of the four can change which cards are open or what the page says: rebuild the deck order and the navigation.
@@ -401,7 +413,7 @@ document.addEventListener('click', (e) => {
   if (sound && !state.muted) play(`audio/${sound}.mp3`);
 });
 
-window.addEventListener('hashchange', render);
+window.addEventListener('hashchange', () => (document.startViewTransition ? void document.startViewTransition(render) : render()));
 // The app open twice (a browser tab and the installed app): take the other copy's saves instead of overwriting them.
 window.addEventListener('storage', (e) => {
   if (e.key !== KEY) return;

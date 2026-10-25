@@ -12,7 +12,10 @@ export interface ChallengeContext {
   target: Dino;
   wonCount: number;
   repeat?: boolean;
+  /** Set by "One more": play straight away at the level just played. */
+  level?: Level;
   artHtml(d: Dino): string;
+  oneMore(level: Level): void;
   onWin(d: Dino): void;
   roar(d: Dino): void;
 }
@@ -32,7 +35,11 @@ function findImages(dinos: readonly Dino[]): Promise<string[]> {
 const AGES: Record<Level, string[]> = { small: ['3', '4', '5'], mid: ['6', '7'], big: ['8', '9', '10'] };
 const stars = (count: number, l: Lang): string => `<div class="progress" aria-label="${count} ${l === 'sv' ? 'av' : 'of'} ${WINS_NEEDED}">${Array.from({ length: WINS_NEEDED }, (_, i) => `<span class="${i < count ? 'on' : ''}">${icon('challenge')}</span>`).join('')}</div>`;
 
+// Short buzzes where the device has them (Android); iPhones ignore this.
+const buzz = (pattern: number | number[]): void => { try { navigator.vibrate?.(pattern); } catch { /* not allowed here */ } };
+
 export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): void {
+  if (ctx.level) return void play(view, ctx, ctx.level);
   const l = ctx.lang;
   view.innerHTML = `
     <section class="challenge">
@@ -88,13 +95,15 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
       btn.addEventListener('click', () => {
         if (Number(btn.dataset.i) !== q.answer) {
           btn.disabled = true;
+          btn.classList.add('wrong');
+          buzz([10, 40, 10]);
           view.querySelector('#msg')!.textContent = t(l, 'tryAgain');
           return;
         }
         right++;
         btn.classList.add('right');
         btn.insertAdjacentHTML('afterbegin', icon('check'));
-        if (right >= WINS_NEEDED) ctx.roar(ctx.target);
+        buzz(15);
         view.querySelectorAll<HTMLButtonElement>('[data-i]').forEach((b) => (b.disabled = true));
         setTimeout(right >= WINS_NEEDED ? won : ask, 700);
       }),
@@ -104,16 +113,20 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
   const won = (): void => {
     ctx.onWin(ctx.target); // earned even if the child already left
     if (gone()) return;
+    // The roar comes with the colour, not before the card is shown.
+    setTimeout(() => { if (!gone()) { ctx.roar(ctx.target); buzz([30, 50, 60]); } }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400);
     view.innerHTML = `
       <section class="challenge">
         ${stars(WINS_NEEDED, l)}
-        <div class="prize reveal">${ctx.artHtml(ctx.target)}<div class="burst" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 6) * 110)}px;--dy:${Math.round(Math.sin(i * Math.PI / 6) * 110)}px"></span>`).join('')}</div></div>
+        <div class="prize reveal">${ctx.artHtml(ctx.target)}<div class="burst" aria-hidden="true">${Array.from({ length: 24 }, (_, i) => { const r = i % 2 ? 80 : 140; return `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 12) * r)}px;--dy:${Math.round(Math.sin(i * Math.PI / 12) * r)}px"></span>`; }).join('')}</div></div>
         <h2>${t(l, 'youWon')} ${ctx.target.name}!</h2>
         <div class="levels win-actions" hidden>
-          <a class="big" href="#/">${l === 'sv' ? 'Till kortleken' : 'To the cards'}</a>
-          <a class="big" href="#/scen/${ctx.target.id}">${l === 'sv' ? 'Ställ ut' : 'Display it'}</a>
+          <a class="big primary" href="#/scen/${ctx.target.id}">${l === 'sv' ? 'Ställ ut' : 'Display it'}</a>
+          <button type="button" class="big again">${t(l, 'oneMore')}</button>
+          <a class="big secondary" href="#/">${l === 'sv' ? 'Till kortleken' : 'To the cards'}</a>
         </div>
       </section>`;
+    view.querySelector('.again')!.addEventListener('click', () => ctx.oneMore(level));
     setTimeout(() => { const actions = view.querySelector<HTMLElement>('.win-actions'); if (actions) actions.hidden = false; }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 1100);
   };
 

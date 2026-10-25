@@ -17,7 +17,7 @@ let keptScroll = -1;
 
 export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes = 5): void {
   const l = ctx.lang;
-  const tablet = window.innerWidth >= 900;
+  const tablet = window.innerWidth >= 900 && window.innerHeight >= 600; // a phone on its side is wide but short
   const ITEM_W = tablet ? 112 : 104;
   const ROW = tablet ? 110 : 102; // lane pitch in style.css
   const lanes = tablet && window.innerHeight < 840 ? 4 : maxLanes;

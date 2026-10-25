@@ -25,8 +25,9 @@ export function flyOff(card: HTMLElement, dir: 1 | -1, on: DragHandlers, dy = 0,
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   // A drag keeps the finger's speed; buttons and keys get a fixed 320 ms.
   const ms = reduced ? 0 : vx ? Math.max(180, Math.min(360, Math.abs(x - dx) / Math.max(Math.abs(vx), 0.8))) : 320;
-  card.style.transition = `transform ${Math.round(ms)}ms ease-in`;
-  card.style.transform = `translate(${x}px, ${dy * 0.4}px) rotate(${dir * 18}deg)`;
+  // A flick keeps its speed from the first frame; ease-in would make the card hesitate after the finger let go.
+  card.style.transition = `transform ${Math.round(ms)}ms ${vx ? 'cubic-bezier(.2,.6,.4,1)' : 'cubic-bezier(.4,0,.2,1)'}`;
+  card.style.transform = `translate(${x}px, ${dy * 0.4}px) rotate(${dir * Math.min(30, 12 + Math.abs(vx) * 10)}deg)`;
   on.swipe(dir);
   // transitionend never fires at 0 ms or in a hidden tab, so a timer is the backstop.
   const finish = () => card.remove();

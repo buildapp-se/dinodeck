@@ -160,7 +160,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     b.addEventListener('click', () => {
       const d = ctx.open.find((x) => x.id === b.dataset.add);
       if (!d || scene.items.length >= MAX_SCENE_ITEMS) return;
-      selected = { id: d.id, x: 0.5, y: 0.7, size: startSize(d), flip: false };
+      selected = { id: d.id, x: 0.5 + ((scene.items.length % 5) - 2) * 0.12, y: 0.7, size: startSize(d), flip: false };
       scene.items.push(selected);
       ctx.save();
       draw();
