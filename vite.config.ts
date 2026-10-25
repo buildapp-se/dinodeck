@@ -1,10 +1,11 @@
+import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { defineConfig, type Plugin } from 'vite';
 
 // One stamp per build: shown in parent mode and used as the service worker's cache version.
 const BUILD = new Date().toISOString();
 
-/** Writes dist/sw.js: src/sw.js with the build stamp and the list of every built file put on top. */
+/** Writes dist/sw.js: src/sw.js with the build stamp and every built file with a hash of its content put on top. */
 function serviceWorker(): Plugin {
   return {
     name: 'dinodeck-sw',
@@ -14,7 +15,8 @@ function serviceWorker(): Plugin {
         .filter((f) => statSync(`dist/${f}`).isFile())
         .map((f) => f.replaceAll('\\', '/'))
         .filter((f) => f !== 'sw.js')
-        .sort();
+        .sort()
+        .map((f) => [f, createHash('sha1').update(readFileSync(`dist/${f}`)).digest('hex').slice(0, 10)]);
       const head = `const VERSION = ${JSON.stringify(BUILD)};\nconst FILES = ${JSON.stringify(files)};\n`;
       writeFileSync('dist/sw.js', head + readFileSync('src/sw.js', 'utf8'));
     },

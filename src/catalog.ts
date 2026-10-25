@@ -1,5 +1,5 @@
 import { STARTERS, type Dino } from './dinos.ts';
 import { WON } from './dinos-won.ts';
 
-/** All 30 animals: the 8 starters first, then the 22 that are won. */
+/** The 8 starters first, then the animals that are won in challenges. */
 export const DINOS: Dino[] = [...STARTERS, ...WON];

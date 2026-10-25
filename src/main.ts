@@ -225,14 +225,17 @@ function renderFavorites(): void {
   const l = lang();
   const favs = state.favorites.map((id) => byId.get(id)).filter((d): d is Dino => d !== undefined);
   view.innerHTML = favs.length
-    ? `<ul class="grid">${favs.map((d) => `<li><a class="tile" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>
+    ? `<ul class="grid">${favs.map((d) => `<li><a class="tile${isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>
       <button type="button" id="clear-favs" class="row danger clear-favs">${t(l, 'clearFavs')}</button>`
     : `<div class="empty-favorites"><div class="empty-tile">${icon('heart')}</div><p>${t(l, 'noFavorites')}</p><a class="chip" href="#/">${t(l, 'deck')}</a></div>`;
   const clear = view.querySelector<HTMLButtonElement>('#clear-favs');
   let armed = 0;
+  let armedAt = 0;
   // Two taps, like the reset in parent mode: a child taps things to see what happens.
   clear?.addEventListener('click', () => {
+    if (armed && performance.now() - armedAt < 600) return; // a double tap is one tap
     if (!armed) {
+      armedAt = performance.now();
       clear.textContent = t(l, 'clearFavsSure');
       clear.classList.add('confirm');
       armed = window.setTimeout(() => { armed = 0; clear.textContent = t(l, 'clearFavs'); clear.classList.remove('confirm'); }, 4000);
@@ -279,17 +282,20 @@ function renderDetail(d: Dino): void {
     state.favorites = toggleFavorite(state.favorites, d.id);
     saveState(state);
     render();
+    view.querySelector<HTMLElement>('#fav')?.focus(); // the page is rebuilt: keep keyboard and screen reader on the heart
   });
 }
 
 /** `id` is the card asked for with "Vinn mig"; without it a random locked card is the prize. */
 function renderChallenge(id: string): void {
   const l = lang();
-  const left = locked();
+  const notWon = (d: Dino): boolean => !d.starter && !state.won.includes(d.id);
+  const left = DINOS.filter(notWon);
   const asked = byId.get(id);
-  const target = asked && !isOpen(asked) ? asked : left[Math.floor(Math.random() * left.length)];
+  const target = asked && notWon(asked) ? asked : left[Math.floor(Math.random() * left.length)];
   const repeat = !target;
-  const prize = target ?? DINOS[0]!;
+  const open = DINOS.filter(isOpen);
+  const prize = target ?? open[Math.floor(Math.random() * open.length)]!;
   renderLevelPicker(view, {
     lang: l,
     dinos: DINOS,
@@ -387,4 +393,19 @@ document.addEventListener('click', (e) => {
 });
 
 window.addEventListener('hashchange', render);
+nav.addEventListener('click', (e) => {
+  const link = (e.target as Element).closest('a');
+  if (link && link.getAttribute('href') === location.hash) render();
+});
 render();
+// The timeline picks phone or tablet sizes and its row count once per render: redo it when a tablet is turned.
+// Width only: a phone's address bar showing and hiding changes the height while scrolling.
+let width = innerWidth;
+let turning = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(turning);
+  turning = window.setTimeout(() => {
+    if (innerWidth !== width && location.hash.startsWith('#/tidslinje')) render();
+    width = innerWidth;
+  }, 200);
+});

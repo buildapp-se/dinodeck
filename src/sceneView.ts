@@ -31,6 +31,8 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     scene.items.push(selected);
     ctx.save();
   }
+  // Forget the id once it is placed, or Back, reload or a relaunch on this address adds another copy.
+  if (ctx.selectId) history.replaceState(null, '', '#/scen');
 
   view.innerHTML = `
     <section class="scene">
@@ -189,8 +191,6 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   });
 
   draw();
-  new ResizeObserver(() => stage.querySelectorAll<HTMLElement>('.item').forEach((el, index) => {
-    const item = scene.items[index];
-    if (item) place(el, item);
-  })).observe(stage);
+  // Redraw rather than re-place by index: a picture that failed to load is removed, which would shift the indexes.
+  new ResizeObserver(() => draw()).observe(stage);
 }

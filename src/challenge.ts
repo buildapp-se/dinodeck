@@ -12,7 +12,7 @@ export interface Question {
   kind: 'count' | 'math' | 'silhouette' | 'fact';
   prompt: L;
   /** Things to count, or the id of the animal shown as a dark shape. */
-  show?: { emoji: string; n: number } | { silhouette: string };
+  show?: { n: number } | { silhouette: string };
   options: Option[];
   answer: number;
 }
@@ -20,7 +20,6 @@ export interface Question {
 export type Rand = () => number;
 
 const int = (rand: Rand, lo: number, hi: number): number => lo + Math.floor(rand() * (hi - lo + 1));
-const pick = <T>(rand: Rand, xs: readonly T[]): T => xs[Math.floor(rand() * xs.length)] as T;
 
 export function shuffle<T>(rand: Rand, xs: readonly T[]): T[] {
   const out = [...xs];
@@ -50,14 +49,9 @@ function numberQuestion(rand: Rand, q: Omit<Question, 'options' | 'answer'>, val
 
 function count(rand: Rand, level: Level): Question {
   const n = int(rand, 1, level === 'small' ? 5 : 9);
-  const [emoji, sv, en] = pick(rand, [
-    ['🥚', 'ägg', 'eggs'],
-    ['🦴', 'ben', 'bones'],
-    ['🌿', 'blad', 'leaves'],
-  ] as const);
   return numberQuestion(
     rand,
-    { kind: 'count', prompt: { sv: `Hur många ${sv}?`, en: `How many ${en}?` }, show: { emoji, n } },
+    { kind: 'count', prompt: { sv: 'Hur många T. rex?', en: 'How many T. rexes?' }, show: { n } },
     n,
   );
 }
@@ -101,7 +95,8 @@ const label = (f: (lang: 'sv' | 'en') => string): L => ({ sv: f('sv'), en: f('en
 function fact(rand: Rand, target: Dino, dinos: readonly Dino[]): Question {
   const type = int(rand, 0, 2);
   if (type === 0) {
-    const wrong = shuffle(rand, DIETS.filter((d) => d !== target.diet)).slice(0, 2);
+    const meat: readonly Diet[] = ['carnivore', 'piscivore'];
+    const wrong = shuffle(rand, DIETS.filter((d) => d !== target.diet && !(meat.includes(d) && meat.includes(target.diet)))).slice(0, 2);
     return build(
       rand,
       { kind: 'fact', prompt: { sv: `Vad åt ${target.name}?`, en: `What did ${target.name} eat?` } },

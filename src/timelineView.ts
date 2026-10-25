@@ -61,7 +61,7 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes
       <div class="strip">
         <div class="track" style="width:${width}px;--lanes:${lanes}">
           ${PERIODS.map((p) => `<div class="band" data-bg="${p}" style="left:${x(BOUNDS[p][0])}px;width:${x(BOUNDS[p][1]) - x(BOUNDS[p][0])}px"><b>${periodName(l, p)}</b></div>`).join('')}
-          ${[250, 200, 150, 100, 50].map((m) => `<span class="tick" style="left:${x(m)}px">${m} ${t(l, 'mya')}</span>`).join('')}
+          ${[250, 200, 150, 100, 50].map((m) => `<span class="tick" style="left:${x(m)}px">${l === 'sv' ? 'för ' : ''}${m} ${t(l, 'mya')}</span>`).join('')}
           ${items.map((i) => {
             const d = byId.get(i.id)!;
             return `<a class="tl-item${ctx.isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}" draggable="false" style="left:${PAD + i.x}px;--lane:${i.lane}"><img src="img/${d.id}.webp" alt="" draggable="false"><span lang="la">${d.name}</span></a>`;
@@ -82,7 +82,7 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes
     box.style.width = `${Math.min(100, (strip.clientWidth / width) * 100)}%`;
   };
   // First visit opens on the oldest animal, not on the empty start of the Triassic.
-  strip.scrollLeft = keptScroll >= 0 ? keptScroll : PAD + (items[0]?.x ?? 0) - ITEM_W;
+  strip.scrollLeft = keptScroll >= 0 ? keptScroll : PAD + (items.length ? Math.min(...items.map((i) => i.x)) : 0) - ITEM_W;
   strip.addEventListener('scroll', () => { keptScroll = strip.scrollLeft; showWhere(); }, { passive: true });
   showWhere();
 

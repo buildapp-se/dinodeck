@@ -30,7 +30,7 @@ function findImages(dinos: readonly Dino[]): Promise<string[]> {
 }
 
 const AGES: Record<Level, string[]> = { small: ['3', '4', '5'], mid: ['6', '7'], big: ['8', '9', '10'] };
-const stars = (count: number): string => `<div class="progress" aria-label="${count} av ${WINS_NEEDED}">${Array.from({ length: WINS_NEEDED }, (_, i) => `<span class="${i < count ? 'on' : ''}">${icon('challenge')}</span>`).join('')}</div>`;
+const stars = (count: number, l: Lang): string => `<div class="progress" aria-label="${count} ${l === 'sv' ? 'av' : 'of'} ${WINS_NEEDED}">${Array.from({ length: WINS_NEEDED }, (_, i) => `<span class="${i < count ? 'on' : ''}">${icon('challenge')}</span>`).join('')}</div>`;
 
 export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): void {
   const l = ctx.lang;
@@ -49,7 +49,12 @@ export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): voi
 }
 
 async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Promise<void> {
+  // The child can leave mid-game: the image probe and the 700 ms pauses must not draw over the next view.
+  const here = location.hash;
+  const gone = (): boolean => location.hash !== here;
   const withImage = await findImages(ctx.matchPool);
+  if (gone()) return;
+  const toWin = ctx.dinos.filter((d) => !d.starter).length;
   const byId = new Map(ctx.dinos.map((d) => [d.id, d]));
   const l = ctx.lang;
   let right = 0;
@@ -68,11 +73,12 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
   };
 
   const ask = (): void => {
+    if (gone()) return;
     const q = makeQuestion(level, Math.random, ctx.target, ctx.dinos, withImage);
     view.innerHTML = `
       <section class="challenge">
-        <p class="win-count">${ctx.wonCount} / 22</p>
-        ${stars(right)}
+        <p class="win-count">${ctx.wonCount} / ${toWin}</p>
+        ${stars(right, l)}
         ${showHtml(q)}
         <h2${level === 'small' ? ' class="visually-hidden"' : ''}>${q.prompt[l]}</h2>
         <p class="hint" id="msg" aria-live="polite">&nbsp;</p>
@@ -96,10 +102,11 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
   };
 
   const won = (): void => {
-    ctx.onWin(ctx.target);
+    ctx.onWin(ctx.target); // earned even if the child already left
+    if (gone()) return;
     view.innerHTML = `
       <section class="challenge">
-        ${stars(WINS_NEEDED)}
+        ${stars(WINS_NEEDED, l)}
         <div class="prize reveal">${ctx.artHtml(ctx.target)}<div class="burst" aria-hidden="true">${Array.from({ length: 12 }, (_, i) => `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 6) * 110)}px;--dy:${Math.round(Math.sin(i * Math.PI / 6) * 110)}px"></span>`).join('')}</div></div>
         <h2>${t(l, 'youWon')} ${ctx.target.name}!</h2>
         <div class="levels win-actions" hidden>
