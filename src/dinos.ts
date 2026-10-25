@@ -77,7 +77,7 @@ export const STARTERS: Dino[] = [
     facts: [
       { sv: 'Tänderna kunde bli lika långa som en banan.', en: 'Its teeth could be as long as a banana.' },
       {
-        sv: 'Den levde närmare oss i tid än Stegosaurus levde den.',
+        sv: 'Det är kortare tid mellan T. rex och oss än mellan T. rex och Stegosaurus.',
         en: 'It lived closer in time to us than to Stegosaurus.',
       },
       { sv: 'Den hade bara två fingrar på varje hand.', en: 'It had only two fingers on each hand.' },

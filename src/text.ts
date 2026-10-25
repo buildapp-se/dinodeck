@@ -60,7 +60,7 @@ const UI = {
   asteroid: { sv: 'Asteroiden slår ned', en: 'The asteroid hits' },
   myShort: { sv: 'miljoner år', en: 'million years' },
   closer: {
-    sv: 'T. rex levde närmare oss i tid än Stegosaurus.',
+    sv: 'Det är kortare tid mellan T. rex och oss än mellan T. rex och Stegosaurus.',
     en: 'T. rex lived closer in time to us than to Stegosaurus.',
   },
   parent: { sv: 'Föräldraläge', en: 'Parent mode' },
