@@ -45,6 +45,37 @@ function artHtml(d: Dino): string {
   return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="img/${d.id}.webp" alt="" decoding="async"></div>`;
 }
 
+/** Animal as a dark shape beside a child, same scale. Sized by fitScale once it is in the page. */
+function scaleHtml(d: Dino): string {
+  const l = lang();
+  return `
+    <h3>${t(l, 'howBig')}</h3>
+    <div class="scale" aria-hidden="true">
+      <img class="scale-dino" src="img/${d.id}.webp" alt="">
+      <svg class="scale-child" viewBox="0 0 30 100"><circle cx="15" cy="11" r="10"/><path d="M8 24h14l6 30-5 2-3-14v20l3 36h-7l-1-30-1 30H7l3-36V42L7 56l-5-2z"/></svg>
+    </div>
+    <p class="scale-note">${sizeNote(d)}</p>`;
+}
+
+/** The picture's height stands for the animal's height, and the child is drawn at the same scale. */
+function fitScale(root: ParentNode, d: Dino): void {
+  const box = root.querySelector<HTMLElement>('.scale');
+  if (!box) return;
+  const shape = box.querySelector<HTMLImageElement>('.scale-dino')!;
+  const child = box.querySelector<SVGElement>('.scale-child')!;
+  const fit = (): void => {
+    if (!shape.naturalHeight || !box.clientWidth) return;
+    const widthM = (d.heightM * shape.naturalWidth) / shape.naturalHeight;
+    const u = pxPerMetre(box.clientWidth, box.clientHeight, widthM, d.heightM, 10);
+    shape.style.height = `${u * d.heightM}px`;
+    child.style.height = `${u * CHILD_M}px`;
+    child.style.width = `${u * CHILD_M * CHILD_ASPECT}px`;
+  };
+  // A card is built before it is in the page, so the box has no size yet: fit when it gets one.
+  new ResizeObserver(fit).observe(box);
+  shape.addEventListener('load', fit);
+}
+
 function factsHtml(d: Dino, compact = false): string {
   const l = lang();
   const note = groupNote(l, d.group);
@@ -52,7 +83,7 @@ function factsHtml(d: Dino, compact = false): string {
   return `
     ${compact ? '' : `<p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>`}
     ${note ? `<p class="note">${note}</p>` : ''}
-    ${compact ? '' : `<p class="lead">${d.short[l]}</p>`}
+    ${compact ? '' : `<p class="lead">${d.short[l]}</p>${scaleHtml(d)}`}
     <dl class="facts">
       <dt>${t(l, 'means')}</dt><dd>${d.meaning[l]}</dd>
       <dt>${t(l, 'lived')}</dt><dd>${when(l, d)}</dd>
@@ -107,6 +138,7 @@ function buildCard(d: Dino, depth: number): HTMLElement {
     <div class="face back">
       <div class="scroll"><h2 lang="la">${d.name}</h2>${factsHtml(d)}</div>
     </div>`;
+  fitScale(card, d);
   return card;
 }
 
@@ -193,8 +225,24 @@ function renderFavorites(): void {
   const l = lang();
   const favs = state.favorites.map((id) => byId.get(id)).filter((d): d is Dino => d !== undefined);
   view.innerHTML = favs.length
-    ? `<ul class="grid">${favs.map((d) => `<li><a class="tile" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>`
+    ? `<ul class="grid">${favs.map((d) => `<li><a class="tile" href="#/dino/${d.id}">${artHtml(d)}<span>${d.name}</span></a></li>`).join('')}</ul>
+      <button type="button" id="clear-favs" class="row danger clear-favs">${t(l, 'clearFavs')}</button>`
     : `<div class="empty-favorites"><div class="empty-tile">${icon('heart')}</div><p>${t(l, 'noFavorites')}</p><a class="chip" href="#/">${t(l, 'deck')}</a></div>`;
+  const clear = view.querySelector<HTMLButtonElement>('#clear-favs');
+  let armed = 0;
+  // Two taps, like the reset in parent mode: a child taps things to see what happens.
+  clear?.addEventListener('click', () => {
+    if (!armed) {
+      clear.textContent = t(l, 'clearFavsSure');
+      clear.classList.add('confirm');
+      armed = window.setTimeout(() => { armed = 0; clear.textContent = t(l, 'clearFavs'); clear.classList.remove('confirm'); }, 4000);
+      return;
+    }
+    clearTimeout(armed);
+    state.favorites = [];
+    saveState(state);
+    render();
+  });
 }
 
 /** The line under the size comparison. Height is only stated for animals that stand on the ground. */
@@ -214,34 +262,16 @@ function renderDetail(d: Dino): void {
   const isFav = state.favorites.includes(d.id);
   view.innerHTML = `
     <article class="detail">
-      <div class="detail-top"><a class="chip" href="${backTo}">${icon('next')} ${t(l, 'back')}</a><button type="button" id="fav" class="round heart" aria-label="${isFav ? t(l, 'remove') : t(l, 'save')}">${icon('heart')}</button></div>
+      <div class="detail-top"><a class="chip" href="${backTo}">${icon('next')} ${t(l, 'back')}</a><button type="button" id="fav" class="round heart${isFav ? ' on' : ''}" aria-pressed="${isFav}" aria-label="${t(l, 'favourite')}">${icon('heart')}</button></div>
       ${artHtml(d)}
       <h2 lang="la">${d.name}</h2>
       <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>
       <p class="lead">${d.short[l]}</p>
       <button type="button" id="print-dino" class="chip print-btn">${icon('print')} ${t(l, 'printColour')}</button>
-      <h3>${t(l, 'howBig')}</h3>
-      <div class="scale" aria-hidden="true">
-        <img class="scale-dino" src="img/${d.id}.webp" alt="">
-        <svg class="scale-child" viewBox="0 0 30 100"><circle cx="15" cy="11" r="10"/><path d="M8 24h14l6 30-5 2-3-14v20l3 36h-7l-1-30-1 30H7l3-36V42L7 56l-5-2z"/></svg>
-      </div>
-      <p class="scale-note">${sizeNote(d)}</p>
+      ${scaleHtml(d)}
       ${factsHtml(d, true)}
     </article>`;
-  // Size comparison: the picture's height stands for the animal's height, and the child is drawn at the same scale.
-  const box = view.querySelector<HTMLElement>('.scale')!;
-  const shape = box.querySelector<HTMLImageElement>('.scale-dino')!;
-  const child = box.querySelector<SVGElement>('.scale-child')!;
-  const fit = (): void => {
-    if (!shape.naturalHeight) return;
-    const widthM = (d.heightM * shape.naturalWidth) / shape.naturalHeight;
-    const u = pxPerMetre(box.clientWidth, box.clientHeight, widthM, d.heightM, 10);
-    shape.style.height = `${u * d.heightM}px`;
-    child.style.height = `${u * CHILD_M}px`;
-    child.style.width = `${u * CHILD_M * CHILD_ASPECT}px`;
-  };
-  if (shape.complete) fit();
-  else shape.addEventListener('load', fit);
+  fitScale(view, d);
   const picture = view.querySelector<HTMLElement>('.detail .art img');
   picture?.addEventListener('click', () => { if (!state.muted) roar(d.id, picture); });
   view.querySelector('#print-dino')!.addEventListener('click', () => void printSheet(dinoSheet(d)));
