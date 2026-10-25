@@ -34,58 +34,57 @@ MAX_BYTES = 90_000
 # Rumble, wind and hum below the animal's own voice, cut per source (Hz).
 HIGH_PASS = {"alligator": 40, "elephant": 80, "lion": 40, "bison": 40, "dove": 150, "gull": 600, "crane": 300, "raven": 400, "grouse": 30}
 
-# One layer is (source, which loud passage of it, pitch nudge, volume). The first layer is the main voice.
-# Never layer the elephant under another voice: it already weighs four tonnes, so the weight rule barely lowers it,
-# and its trumpet (most energy above 1 kHz, 1.6 s long) is heard as a separate squeak that stops mid-roar.
+# A voice is (source, which loud passage of it, pitch nudge, volume). One voice per sound: two recordings mixed
+# are heard as two animals at once (Patrik, 2026-10-03 the T. rex squeak, 2026-10-25 Diplodocus). main() refuses more.
 # "roar" is what a film would do. "call" follows the card's own text under "What did it sound like?".
 L = lambda src, nth=0, tune=1.0, gain=1.0: (src, nth, tune, gain)
 RECIPES: dict[str, dict[str, list | str]] = {
     # Big meat-eaters: film = big cat, research = closed-mouth rumble like a crocodile (and a dove, far down).
-    "tyrannosaurus-rex": {"roar": [L("lion"), L("alligator", gain=0.6)], "call": [L("alligator"), L("dove", gain=0.5)]},
-    "giganotosaurus": {"roar": [L("lion", 1), L("alligator", gain=0.5)], "call": [L("alligator", 1)]},
-    "spinosaurus": {"roar": [L("lion", tune=1.1), L("alligator", 1, gain=0.6)], "call": [L("alligator", 2)]},
-    "allosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", tune=1.05), L("dove", gain=0.4)]},
-    "carnotaurus": {"roar": [L("lion", tune=1.15)], "call": [L("alligator", 1), L("dove", gain=0.4)]},
-    "dilophosaurus": {"roar": [L("lion", 1), L("raven", gain=0.4)], "call": [L("alligator", 2, tune=1.1)]},
-    "ceratosaurus": {"roar": [L("lion", 1, tune=1.05), L("alligator", gain=0.5)], "call": [L("alligator", 1, tune=1.05)]},
-    "baryonyx": {"roar": [L("lion", tune=1.05), L("alligator", 2, gain=0.5)], "call": [L("alligator", 2)]},
-    "herrerasaurus": {"roar": [L("lion", tune=1.2), L("raven", gain=0.3)], "call": [L("alligator", 2, tune=1.15)]},
+    "tyrannosaurus-rex": {"roar": [L("lion")], "call": [L("alligator")]},
+    "giganotosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", 1)]},
+    "spinosaurus": {"roar": [L("lion", tune=1.1)], "call": [L("alligator", 2)]},
+    "allosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", tune=1.05)]},
+    "carnotaurus": {"roar": [L("lion", tune=1.15)], "call": [L("alligator", 1)]},
+    "dilophosaurus": {"roar": [L("lion", 1)], "call": [L("alligator", 2, tune=1.1)]},
+    "ceratosaurus": {"roar": [L("lion", 1, tune=1.05)], "call": [L("alligator", 1, tune=1.05)]},
+    "baryonyx": {"roar": [L("lion", tune=1.05)], "call": [L("alligator", 2)]},
+    "herrerasaurus": {"roar": [L("lion", tune=1.2)], "call": [L("alligator", 2, tune=1.15)]},
     # Long-necked giants: film = elephant, research = very deep sounds.
     "brachiosaurus": {"roar": [L("elephant")], "call": [L("bison")]},
-    "diplodocus": {"roar": [L("elephant"), L("bison", gain=0.5)], "call": [L("bison"), L("dove", gain=0.3)]},
-    "argentinosaurus": {"roar": [L("elephant"), L("alligator", gain=0.5)], "call": [L("bison", tune=0.95), L("alligator", gain=0.4)]},
-    "apatosaurus": {"roar": [L("elephant", tune=0.95), L("lion", gain=0.3)], "call": [L("bison", tune=1.05)]},
-    "plateosaurus": {"roar": [L("elephant"), L("bison", gain=0.4)], "call": [L("alligator", 2)]},
+    "diplodocus": {"roar": [L("elephant")], "call": [L("bison")]},
+    "argentinosaurus": {"roar": [L("elephant")], "call": [L("bison", tune=0.95)]},
+    "apatosaurus": {"roar": [L("elephant", tune=0.95)], "call": [L("bison", tune=1.05)]},
+    "plateosaurus": {"roar": [L("elephant")], "call": [L("alligator", 2)]},
     # Plant-eaters with horns, plates and armour: low grunts and snorts.
-    "triceratops": {"roar": [L("bison"), L("lion", gain=0.4)], "call": [L("bison"), L("alligator", gain=0.4)]},
+    "triceratops": {"roar": [L("bison")], "call": [L("bison")]},
     "stegosaurus": {"roar": [L("bison", tune=0.9)], "call": [L("alligator")]},
-    "ankylosaurus": {"roar": [L("bison"), L("alligator", gain=0.5)], "call": [L("alligator", 1), L("bison", gain=0.4)]},
-    "iguanodon": {"roar": [L("elephant"), L("bison", gain=0.5)], "call": [L("bison")]},
-    "therizinosaurus": {"roar": [L("bison", tune=0.95), L("lion", 1, gain=0.4)], "call": [L("dove"), L("alligator", gain=0.3)]},
+    "ankylosaurus": {"roar": [L("bison")], "call": [L("alligator", 1)]},
+    "iguanodon": {"roar": [L("elephant")], "call": [L("bison")]},
+    "therizinosaurus": {"roar": [L("bison", tune=0.95)], "call": [L("dove")]},
     "pachycephalosaurus": {"roar": [L("bison")], "call": [L("bison", tune=1.1)]},
     "protoceratops": {"roar": [L("bison", tune=1.1)], "call": [L("bison")]},
     "kentrosaurus": {"roar": [L("bison", tune=1.05)], "call": [L("bison", tune=1.15)]},
-    "styracosaurus": {"roar": [L("bison"), L("lion", gain=0.3)], "call": [L("bison", tune=1.05)]},
+    "styracosaurus": {"roar": [L("bison")], "call": [L("bison", tune=1.05)]},
     # Duck-bills: the hollow crest of Parasaurolophus worked like a wind instrument, so that one is synthesised.
     "parasaurolophus": {"roar": [L("elephant")], "call": "horn"},
-    "maiasaura": {"roar": [L("elephant", tune=1.1)], "call": [L("elephant"), L("bison", gain=0.5)]},
+    "maiasaura": {"roar": [L("elephant", tune=1.1)], "call": [L("elephant")]},
     "edmontosaurus": {"roar": [L("elephant", tune=1.05)], "call": [L("bison", tune=0.95)]},
     # Small and feathered: hisses, coos and bird calls.
-    "velociraptor": {"roar": [L("crane"), L("raven", gain=0.5)], "call": [L("dove")]},
-    "deinonychus": {"roar": [L("crane", 1), L("lion", gain=0.35)], "call": [L("raven"), L("dove", gain=0.4)]},
+    "velociraptor": {"roar": [L("crane")], "call": [L("dove")]},
+    "deinonychus": {"roar": [L("crane", 1)], "call": [L("dove", 1)]},
     "oviraptor": {"roar": [L("crane", tune=1.1)], "call": [L("dove", 1, tune=1.2)]},
     "gallimimus": {"roar": [L("crane", 1)], "call": [L("grouse")]},
     "compsognathus": {"roar": [L("gull", tune=1.3)], "call": [L("gull", 1, tune=1.5)]},
-    "archaeopteryx": {"roar": [L("gull", 1, tune=1.2)], "call": [L("raven", 1)]},
+    "archaeopteryx": {"roar": [L("gull", 1, tune=1.2)], "call": [L("dove", tune=1.4)]},
     "microraptor": {"roar": [L("raven", tune=1.2)], "call": [L("gull", tune=1.2)]},
-    "coelophysis": {"roar": [L("crane", tune=1.05), L("raven", gain=0.4)], "call": [L("raven", 1, tune=1.1)]},
+    "coelophysis": {"roar": [L("crane", tune=1.05)], "call": [L("crane", 1, tune=1.1)]},
     "eoraptor": {"roar": [L("crane", tune=1.25)], "call": [L("dove", tune=1.3)]},
     # Not dinosaurs.
-    "pteranodon": {"roar": [L("raven"), L("gull", gain=0.5)], "call": [L("gull", tune=0.9)]},
-    "mosasaurus": {"roar": [L("lion", tune=0.9), L("alligator", gain=0.7)], "call": [L("alligator", tune=0.95)]},
-    "plesiosaurus": {"roar": [L("alligator", 1), L("lion", gain=0.3)], "call": [L("alligator", 1)]},
+    "pteranodon": {"roar": [L("gull", 1)], "call": [L("gull", tune=0.9)]},
+    "mosasaurus": {"roar": [L("lion", tune=0.9)], "call": [L("alligator", tune=0.95)]},
+    "plesiosaurus": {"roar": [L("alligator", 1)], "call": [L("alligator", 1)]},
     "ichthyosaurus": {"roar": [L("alligator", 1, tune=1.2)], "call": [L("dove", tune=1.1)]},
-    "quetzalcoatlus": {"roar": [L("crane", tune=0.9), L("raven", gain=0.4)], "call": [L("raven", 1, tune=0.9)]},
+    "quetzalcoatlus": {"roar": [L("crane", tune=0.9)], "call": [L("grouse")]},
 }
 
 
@@ -171,11 +170,30 @@ def build(recipe: list | str, kg: float, sources: dict) -> np.ndarray:
         return finish(horn())
     # Heavier animals call for longer: 1 kg about a second, 10 tonnes about three.
     seconds = min(3.0, max(0.9, 0.9 + 0.5 * math.log10(kg)))
-    layers = [gain * pitched(sources[src], kg, seconds, nth, tune) / (np.abs(sources[src][0]).max() or 1) for src, nth, tune, gain in recipe]
-    mix = np.zeros(max(len(layer) for layer in layers))
-    for layer in layers:
-        mix[: len(layer)] += layer
-    return finish(mix)
+    (src, nth, tune, gain), = recipe
+    return finish(longest_call(gain * pitched(sources[src], kg, seconds, nth, tune)))
+
+
+def longest_call(y: np.ndarray, gap: float = 0.3) -> np.ndarray:
+    """A loud passage can hold two calls, and a pause between them is heard as two sounds: keep the longest one."""
+    hop = SR // 100
+    env = np.array([np.sqrt(np.mean(y[i:i + hop] ** 2)) for i in range(0, len(y) - hop + 1, hop)])
+    loud = env > env.max() * 0.1  # within 20 dB of the peak
+    calls, start, quiet = [], None, 0
+    for i, on in enumerate(loud):
+        if on:
+            start = i if start is None else start
+            quiet = 0
+        elif start is not None:
+            quiet += 1
+            if quiet * hop >= gap * SR:
+                calls.append((start, i - quiet + 1))
+                start, quiet = None, 0
+    if start is not None:
+        calls.append((start, len(loud) - quiet))
+    a, b = max(calls, key=lambda c: c[1] - c[0])
+    lead, tail = int(0.03 * SR), int(0.1 * SR)  # a little before and after, for the fades
+    return y[max(0, a * hop - lead): b * hop + tail]
 
 
 def centroid(y: np.ndarray) -> float:
@@ -195,6 +213,8 @@ def main() -> None:
     made: dict[tuple[str, str], np.ndarray] = {}
     for dino, recipe in RECIPES.items():
         for kind in ("roar", "call"):
+            if recipe[kind] != "horn" and len(recipe[kind]) != 1:
+                sys.exit(f"FAIL {dino} {kind}: one voice per sound, not {len(recipe[kind])}")
             y = build(recipe[kind], kg[dino], sources)
             path = OUT / f"{dino}-{kind}.mp3"
             sf.write(path, y, SR, format="MP3")
