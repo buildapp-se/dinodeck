@@ -38,6 +38,21 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 - ✅ **Skriv ut för att färglägga** (konturerna omgjorda 2026-10-25 som rena linjeteckningar av Codex, se `HANDOFF.md`) (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Konturerna gick att ta fram ur de färdiga bilderna (`tools/make-outlines.py`), inga nya bilder från Codex behövdes. **Patrik tittar på en utskrift**: konturerna är granskade av Claude på skärm, inte på papper. Ursprunglig beskrivning: två delar: (1) den egna scenen som målarbild, med bakgrund och utställda djur som konturer, (2) enskilda dinosaurier som målarbild. Kräver konturversioner (svartvit linjeteckning) av djur och bakgrunder: nya bilder från Codex, eller prova först om de går att ta fram ur de färdiga bilderna. Utskrift via webbläsarens egen utskriftsfunktion och en utskriftsstilmall.
 - **Alternativa bildstilar som går att välja i appen**, till exempel söta dinosaurier. Patrik 2026-10-03: "mycket senare". Stilrunda 2 (`img-src/style-round/sheet2.png`) har sju kandidater. Kräver en bilduppsättning per stil och ett val i inställningarna.
 
+## Appbutiker (granskning 2026-10-25)
+
+Rekommenderad väg: Capacitor med `dist/` inbakat, för båda butikerna (fungerar helt offline, ingen adressrad, ingen analys från sajten). TWA för Play går, men laddar live-sajten och dess analys.
+
+- [ ] `[P1]` Beslut: släppa i butikerna, och i så fall Capacitor eller TWA. Kräver Google-utvecklarkonto (stängt test med 12 testare i 14 dagar för nya personliga konton) och Apple Developer Program (kostar).
+- [ ] `[P1]` Cloudflare Web Analytics på buildapp.se injicerar ett tredjepartsskript. Stäng av för `/dinodeck/*` eller gå via Capacitor. Apple 1.3 Kids.
+- [ ] `[P1]` Källänken på kortets baksida (`src/main.ts`, `target="_blank"`): visa som text i appversionen, eller lägg bakom en föräldraspärr (vuxenuppgift, inte bara håll in).
+- [ ] `[P1]` Integritetspolicy för Dinodeck (ingen data samlas, bara localStorage), länkad från föräldraläget.
+- [ ] `[P2]` Capacitor: spegla sparat läge till `@capacitor/preferences` (iOS kan rensa webbvyns lagring vid lite utrymme).
+- [ ] `[P2]` Manifest: `id`, `orientation`, `categories`, `screenshots`. Ikoner 1024×1024 (App Store) och 512×512, featuregrafik 1024×500, skärmdumpar.
+- [ ] `[P2]` Telefon på tvären (844×390): kortet krymper till 108 px, tidslinjens remsa och scenens bricka hamnar bakom menyn. Låsa stående på telefon i appversionen, eller egen liggande layout.
+- [ ] `[P2]` Barn som inte läser: upplästa frågor ("Vem är det?", "Hur många?") och korta rätt/fel-ljud. Piper finns redan.
+- [ ] `[P3]` Innehåll: upprepade fakta mellan kort (samtidigt som T. rex ×4, papegojnäbb ×3, malande tänder ×3), ca 20 fakta som bara upprepar kortets egen text. Coelophysis kannibalrad (motbevisad i texten) för 4-åringar?
+- [ ] `[P3]` Sidtitel och metabeskrivning stannar på svenska i engelskt läge.
+
 ## Granskning 2026-10-06
 
 Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, npm audit, secrets, Actions, markup, axe). Mätvärdena står som `(automated)`-rader under `## Audits` i CONTEXT.md.

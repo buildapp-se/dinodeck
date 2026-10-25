@@ -249,3 +249,21 @@ Allt på `main`, utlagt. Commits `e70909b` till `bce5181`.
 - **Ta bort alla favoriter:** smal och längst ner (`.row.danger` från föräldraläget vann på specificitet). CSS-ändringen hamnade i ljudcommiten `48d6c95`.
 - **T. rex-meningen** (kort och tidslinje) betydde bara "T. rex levde senare". Nu: "Det är kortare tid mellan T. rex och oss än mellan T. rex och Stegosaurus."
 - **Pteranodon:** tappen bakom höften (såg ut som en penis) borttagen av Codex i bild och målarbild, original i `img-src/v3/`.
+
+### Granskning med fyra agenter, 2026-10-25 kväll
+
+Buggjakt i webbläsare, kodgranskning, innehåll och språk, appbutiker och barn-UX. Rättat och live (`80587e7`, `3b27d9e`), verifierat i webbläsare:
+
+- **Utmaningen** ritade över nästa vy om barnet tryckte i menyn inom 700 ms (fastnade, eller vinstskärmen över kortleken). Räknaren visade "/ 22" fast 32 ska vinnas. Med alla kort vunna "vanns" alltid T. rex, och med "Alla kort öppna" sa den "Du har vunnit alla". Nav-tryck på sidan som redan visas ritar nu om (vinstskärmen, sedan Utmaning, gjorde förut ingenting).
+- **Scenen** fick en ny kopia vid bakåt eller omladdning av `#/scen/<id>`. På 360×640 låg brickan bakom menyn och verktygsraden ovanpå det nya djuret: verktygen sitter nu i scenens överkant, scenen krymper i stället för brickan.
+- **Service workern** sparar varje fil under sin innehållshash och kopierar oförändrade filer från förra cachen. En deploy laddade förut ner alla 262 filer (11 MB) på varje enhet; vid prov 2. `AbortSignal.timeout` (Safari 16) bytt mot `AbortController`, 5xx på sidan ger sparad kopia.
+- **Ljud:** senaste trycket vinner (förut kunde ett långsamt ljud klippa ett nytt), högst 24 avkodade ljud i minnet.
+- **Tidslinjen** öppnar på äldsta djuret (förut 650 px förbi Eoraptor), ritas om när en surfplatta vrids.
+- **Övrigt:** långa namn i svarsknappar bryts (Parasaurolophus gick utanför 360 px), fisk räknas som kött i "Vad åt?", räknefrågan frågar "Hur många T. rex?" som bilden visar, dubbeltryck räknas inte som bekräftelse på "Ta bort alla favoriter", låsta favoriter visas som silhuett, fokus stannar på hjärtat, storleksbilden hoppar inte (CLS 0,44).
+- **Innehåll:** ca 40 rättelser i fakta och språk, bl.a. Triceratops tänder klippte (malde inte), Brachiosaurus näsborrar, Archaeopteryx hade ingen näbb, inga kända Argentinosaurus-ägg, Baryonyx 126 till 122 milj. år, Protoceratops 85 kg (läten omgjorda), "för 68 till 66 miljoner år sedan", Quetzalcoatlus betyder fjäderklädd orm.
+
+**Inte rättat, kräver Patrik** (står i BACKLOG under Appbutiker):
+- Cloudflare Web Analytics laddar `static.cloudflareinsights.com/beacon.min.js` på live-sajten (verifierat 2026-10-25). Inga kakor, men tredjepartsanalys stoppar Apples Kids-kategori. Ändras i Cloudflare-zonen buildapp.se, som delas med andra projekt.
+- Källänken på kortets baksida går ut ur appen utan föräldraspärr.
+- Ingen integritetspolicy för Dinodeck.
+
