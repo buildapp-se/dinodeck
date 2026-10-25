@@ -32,12 +32,15 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 ## P3
 
-- ✅ **Skriv ut för att färglägga** (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Konturerna gick att ta fram ur de färdiga bilderna (`tools/make-outlines.py`), inga nya bilder från Codex behövdes. **Patrik tittar på en utskrift**: konturerna är granskade av Claude på skärm, inte på papper. Ursprunglig beskrivning: två delar: (1) den egna scenen som målarbild, med bakgrund och utställda djur som konturer, (2) enskilda dinosaurier som målarbild. Kräver konturversioner (svartvit linjeteckning) av djur och bakgrunder: nya bilder från Codex, eller prova först om de går att ta fram ur de färdiga bilderna. Utskrift via webbläsarens egen utskriftsfunktion och en utskriftsstilmall.
+- Silhuettfrågan: kontrollera att Coelophysis, Herrerasaurus, Eoraptor och Compsognathus inte hamnar som svarsalternativ till varandra, eller byt ett triasdjur mot en flygödla (Eudimorphodon).
+- `tools/__pycache__/make-sounds.cpython-312.pyc` är incheckad sedan 2026-10-03: ta bort ur git och lägg `__pycache__/` i `.gitignore`.
+
+- ✅ **Skriv ut för att färglägga** (konturerna omgjorda 2026-10-25 som rena linjeteckningar av Codex, se `HANDOFF.md`) (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Konturerna gick att ta fram ur de färdiga bilderna (`tools/make-outlines.py`), inga nya bilder från Codex behövdes. **Patrik tittar på en utskrift**: konturerna är granskade av Claude på skärm, inte på papper. Ursprunglig beskrivning: två delar: (1) den egna scenen som målarbild, med bakgrund och utställda djur som konturer, (2) enskilda dinosaurier som målarbild. Kräver konturversioner (svartvit linjeteckning) av djur och bakgrunder: nya bilder från Codex, eller prova först om de går att ta fram ur de färdiga bilderna. Utskrift via webbläsarens egen utskriftsfunktion och en utskriftsstilmall.
 - **Alternativa bildstilar som går att välja i appen**, till exempel söta dinosaurier. Patrik 2026-10-03: "mycket senare". Stilrunda 2 (`img-src/style-round/sheet2.png`) har sju kandidater. Kräver en bilduppsättning per stil och ett val i inställningarna.
 
 ## Granskning 2026-10-06
 
 Fynd från den automatiska sviten (aifabriken `tools/audit-suite.ts`: headers, npm audit, secrets, Actions, markup, axe). Mätvärdena står som `(automated)`-rader under `## Audits` i CONTEXT.md.
 
-- [ ] `[P3]` Actions: de fyra `uses:` i `deploy.yml` pekar på en tagg (`@v4`, `@v3`), inte på en commit-hash (zizmor unpinned-uses, 4 high med zizmors nyare standardpolicy, hittat 2026-10-06 vid rättningen nedan). Inte åtgärdat: låg utanför den godkända punkten.
+- [x] `[P3]` (rättat 2026-10-25, pinnade på commit-hash, zizmor utan fynd) Actions: de fyra `uses:` i `deploy.yml` pekar på en tagg (`@v4`, `@v3`), inte på en commit-hash (zizmor unpinned-uses, 4 high med zizmors nyare standardpolicy, hittat 2026-10-06 vid rättningen nedan). Inte åtgärdat: låg utanför den godkända punkten.
 - [x] `[P2]` (rättat 2026-10-06 på grenen `batch/2026-10-06`; Deploy-workflowen grön på `main` 2026-10-07) Actions: `.github/workflows/deploy.yml:10-11` ger för breda `permissions` på workflow-nivå (zizmor excessive-permissions, 2 high): flytta dem till jobbet som behöver dem. Rad 21 checkar ut utan `persist-credentials: false` (artipacked, medium).

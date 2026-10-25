@@ -1,10 +1,10 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: Hela P1 är byggt och live. Kvar: avlyssning av ljuden, test på riktig telefon och surfplatta
-nextAction: Patrik lyssnar igenom de 120 ljudklippen och stickprovar de 30 höjdmåtten
+currentGoal: 40 djur live, nya målarbilder live. Kvar: avlyssning av ljuden, test på riktig telefon, surfplatta och papper
+nextAction: Patrik skriver ut en målarbild på papper, lyssnar igenom ljuden (160 klipp) och stickprovar höjdmåtten
 blockers: []
-reviewedAt: 2026-10-17
+reviewedAt: 2026-10-25
 ---
 
 # Handoff: Dinodeck
@@ -148,7 +148,7 @@ reviewedAt: 2026-10-17
 - **Verifierat live** (buildapp.se, bygge 16:06 svensk tid, commit `0b6897b`): kontrollsumman för alla 26 bilder är samma som lokalt, både med `?v=<slump>` och med vanlig adress, och `sw.js` är den nya versionen. `npm test` 16 tester, `npm run build` grönt.
 - **Inte verifierat:** en webbläsare med appen redan sparad (gammal service worker). Enligt mätningen i avsnittet om offline får den gamla bilder vid första laddningen och nya vid nästa. Den som hämtade en bild direkt, utan service worker, under de senaste fyra timmarna före deployen kan ha den kvar i webbläsarens cache lika länge.
 - **Inte gjort:**
-  - **Ikonerna** (`public/icons/`, favicon) är gjorda ur den gamla orange T. rex-bilden. `tools/make-icons.py` gör om dem.
+  - **Ikonerna och `og.png`** gjordes om ur den omfärgade T. rex samma kväll (21:43). Kontrollerat 2026-10-25: `tools/make-icons.py` ger byte för byte samma filer.
   - **`heightM`** behöver inte ses över: posen är densamma.
   - **Versionerade bildnamn.** Bilderna har fasta namn, så en besökare med appen installerad får gamla bilder vid första laddningen efter en deploy och nya vid nästa (se avsnittet om offline). Den riktiga lösningen är att låta Vite ge bilderna innehållshash i namnet: flytta `public/img/` till `src/img/` och hämta adresserna med `import.meta.glob('./img/*.webp', { eager: true, query: '?url', import: 'default' })`. Det rör sju ställen i `src/` och två skript i `tools/`, och gjordes inte här eftersom sessionen bara fick röra bilder och dokument.
 
@@ -220,3 +220,25 @@ Cross-project run from elwyn-dash with aifabriken `tools/audit-suite.ts` (header
 ## Beroendeuppdatering 2026-10-17
 
 - vite 8.3.4, @types/node 26.6.5 (bara låsfilen). `npm test` och `npm run build` gröna före och efter, `npm audit` 0. Inte pushat: en push till `main` deployar.
+
+## 2026-10-25: chunk med Patriks önskemål
+
+Allt på `main`, utlagt. Commits `e70909b` till `bce5181`.
+
+- **og-bilden** var redan rätt (live, 200 för FB, LinkedIn, Slack och X, byte för byte samma som `make-icons.py` ger). Tillagt: `og:site_name`, `og:image:type`, `twitter:image` och alt.
+- **Actions pinnade på commit-hash** (samma huvudversioner). `uvx zizmor --offline`: inga fynd. Deploy grön efteråt.
+- **Tidslinjen kapades av bottenfältet** på telefon med webbläsarens fält synliga (prov 390×664): remsan hade `min-height: 400px`, fem rader behöver ca 570 px. Nu mäts remsan efter ritning, och får den inte plats med fem rader blir det fyra (`timelineView.ts`). Radhöjden krymper dessutom i CSS om det ändå är trångt.
+- **Favoriter:** hjärtat i detaljvyn är helrött när kortet är favorit, vitt med röd kant annars (`aria-pressed`). "Ta bort alla favoriter" under listan, två tryck som nollställningen i föräldraläget.
+- **Storleksjämförelsen finns nu även på kortets baksida** i kortleken. Den låg bara i detaljvyn: inget beslut hade tagits emot baksidan, den byggdes bara där. `scaleHtml` och `fitScale` i `main.ts` delas av båda, `ResizeObserver` eftersom ett kort byggs innan det finns på sidan.
+- **Carnotaurus:** armarna hade en stor krökt rovklo och vänsterfoten fyra framåtriktade klor. Rättat av Codex i EDIT-läge (original i `img-src/v3/carnotaurus-before.png`): små stumparmar med trubbiga fingrar, tre tår plus sporre. Silhuett mot förra kortbilden 98,9 %.
+- **Målarbilderna omgjorda.** Kantdetektering på gouache gav prickig hudtextur och fläckig mark, grå gröt på papper. Nu ritar Codex om varje målning som ren linjeteckning (brief `img-src/BRIEF-line.md`, resultat `img-src/line/`), och `tools/make-outlines.py` förtjockar linjerna, gör utsidan genomskinlig med flodfyllning, ger ytterkonturen extra tyngd och beskär exakt som kortbilden. Utskriften är liggande A4.
+  - **Kontroller i skriptet:** fylld yta mot målningens silhuett 85 till 120 % (fångar läckage genom ett glapp i konturen), bläckandel 5 till 40 %.
+  - **Verifierat:** PDF i A4 från appens egen utskrift, ett djur och en scen, granskat i 300 dpi. Alla 43 konturer granskade på kontaktark.
+  - **Inte verifierat:** riktig skrivare och papper.
+  - `public/img/line/` växte från ca 560 kB till 3,5 MB (1 200 px, mjuka kanter). `dist/` är 11 MB.
+- **10 nya djur** (research `docs/research/batch-3.md`, agentens tvivel står sist i filen): Coelophysis, Herrerasaurus, Eoraptor (trias), Ceratosaurus, Kentrosaurus, Ichthyosaurus (jura), Baryonyx, Styracosaurus, Edmontosaurus, Quetzalcoatlus (krita). Alla vinns i utmaningar. Bilder (BRIEF-art batch 4a och 4b), målarbilder, läten (`make-sounds.py`), uttal (`make-names.py`), färgnivå (rad 31 till 40 i `dinosaur-colour.md` avsnitt 6).
+  - **Tidslinjen:** slutet av krita trängs. Skalan får nu gå upp till 70 px per miljon år (förut 50): fem rader från 32, fyra från 56. Remsan är 8 300 px med fem rader, 14 300 med fyra. Den döda `layoutTimeline` togs bort.
+  - **Namnklippen för de 30 gamla** blev annorlunda vid omkörning (troligen nyare Piper), så de gamla ligger kvar oförändrade. De nya ligger i `git stash` (`stash@{0}`) och kan släppas.
+  - **Val av Claude:** Ichthyosaurus fick `colourDisputed` (två pigmentstudier säger olika). Baryonyx datering 130 till 125 miljoner år behölls, nyare datering kan vara 126 till 121.
+  - **Risk:** tre tvåbenta triasdjur (Coelophysis, Herrerasaurus, Eoraptor) och Compsognathus kan vara svåra att skilja i silhuettfrågan.
+  - **Inte verifierat:** ljuden och uttalet (ingen har lyssnat), Eoraptors fingrar och Kentrosaurus taggpar är inte helt rätt enligt Codex egen granskning, syns knappt i kortstorlek.
