@@ -13,6 +13,8 @@ export interface Question {
   prompt: L;
   /** Things to count, or the id of the animal shown as a dark shape. */
   show?: { n: number } | { silhouette: string };
+  /** The read-aloud clip, public/audio/prompt-<say>-<lang>.mp3, for questions a non-reader gets. */
+  say?: 'count' | 'who' | 'longest';
   options: Option[];
   answer: number;
 }
@@ -51,7 +53,7 @@ function count(rand: Rand, level: Level): Question {
   const n = int(rand, 1, level === 'small' ? 5 : 9);
   return numberQuestion(
     rand,
-    { kind: 'count', prompt: { sv: 'Hur många T. rex?', en: 'How many T. rexes?' }, show: { n } },
+    { kind: 'count', prompt: { sv: 'Hur många T. rex?', en: 'How many T. rexes?' }, show: { n }, say: 'count' },
     n,
   );
 }
@@ -82,7 +84,7 @@ function silhouette(rand: Rand, withImage: readonly string[]): Question {
   const [right, ...wrong] = shuffle(rand, withImage).slice(0, 3) as [string, string, string];
   return build(
     rand,
-    { kind: 'silhouette', prompt: { sv: 'Vem är det?', en: 'Who is it?' }, show: { silhouette: right } },
+    { kind: 'silhouette', prompt: { sv: 'Vem är det?', en: 'Who is it?' }, show: { silhouette: right }, say: 'who' },
     { dino: right },
     wrong.map((dino) => ({ dino })),
   );
@@ -120,7 +122,7 @@ function fact(rand: Rand, target: Dino, dinos: readonly Dino[]): Question {
     if (three[0].lengthM < three[1].lengthM * 1.1) continue;
     return build(
       rand,
-      { kind: 'fact', prompt: { sv: 'Vilken var längst?', en: 'Which one was longest?' } },
+      { kind: 'fact', prompt: { sv: 'Vilken var längst?', en: 'Which one was longest?' }, say: 'longest' },
       { text: same(three[0].name) },
       [{ text: same(three[1].name) }, { text: same(three[2].name) }],
     );

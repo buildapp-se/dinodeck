@@ -331,6 +331,7 @@ function renderChallenge(id: string, level?: Level): void {
     },
     roar(d) { if (!state.muted) play(`audio/${d.id}-roar.mp3`); },
     chime(kind, step) { if (!state.muted) chime(kind, step); },
+    say(key) { if (!state.muted) play(`audio/prompt-${key}-${l}.mp3`); },
   });
 }
 

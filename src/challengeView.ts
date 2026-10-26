@@ -20,6 +20,8 @@ export interface ChallengeContext {
   roar(d: Dino): void;
   /** Right, wrong and win sounds; quiet when sound is off. */
   chime(kind: 'right' | 'wrong' | 'win', step?: number): void;
+  /** Reads a question aloud (public/audio/prompt-<key>-<lang>.mp3); quiet when sound is off. */
+  say(key: string): void;
 }
 
 /** Resolves to the ids whose picture actually loads. Missing art is normal until the images are made. */
@@ -35,6 +37,7 @@ function findImages(dinos: readonly Dino[]): Promise<string[]> {
 }
 
 const AGES: Record<Level, string[]> = { small: ['3', '4', '5'], mid: ['6', '7'], big: ['8', '9', '10'] };
+const sayBtn = (key: string, l: Lang): string => `<button type="button" class="say-btn" data-sound="prompt-${key}-${l}" aria-label="${t(l, 'listen')}">${icon('sound')}</button>`;
 const stars = (count: number, l: Lang): string => `<div class="progress" aria-label="${count} ${l === 'sv' ? 'av' : 'of'} ${WINS_NEEDED}">${Array.from({ length: WINS_NEEDED }, (_, i) => `<span class="${i < count ? 'on' : ''}">${icon('challenge')}</span>`).join('')}</div>`;
 
 // Short buzzes where the device has them (Android); iPhones ignore this.
@@ -47,11 +50,12 @@ export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): voi
     <section class="challenge">
       <div class="prize${ctx.repeat ? '' : ' locked'}">${ctx.artHtml(ctx.target)}</div>
       <h2>${ctx.repeat ? t(l, 'allWon') : `${t(l, 'winThis')} ${ctx.target.name}`}</h2>
-      <p class="hint">${t(l, 'howOld')}</p>
+      <p class="hint">${t(l, 'howOld')} ${sayBtn('how-old', l)}</p>
       <div class="levels">
         ${LEVELS.map((lv) => `<button type="button" class="big" data-level="${lv}" aria-label="${AGES[lv][0]} ${l === 'sv' ? 'till' : 'to'} ${AGES[lv].at(-1)} ${t(l, 'years')}"><span class="ages">${AGES[lv].map((age) => `<span>${age}</span>`).join('')}</span><small>${t(l, 'years')}</small></button>`).join('')}
       </div>
     </section>`;
+  ctx.say('how-old');
   view.querySelectorAll<HTMLButtonElement>('[data-level]').forEach((btn) =>
     btn.addEventListener('click', () => void play(view, ctx, btn.dataset.level as Level)),
   );
@@ -90,9 +94,13 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
         ${stars(right, l)}
         ${showHtml(q)}
         <h2${level === 'small' ? ' class="visually-hidden"' : ''}>${q.prompt[l]}</h2>
+        ${q.say ? `<p class="say-again">${sayBtn(q.say, l)}</p>` : ''}
         <p class="hint" id="msg" aria-live="polite">&nbsp;</p>
         <div class="options">${q.options.map(optionHtml).join('')}</div>
       </section>`;
+    // Read aloud for the two younger levels, a moment after the question appears.
+    const say = q.say;
+    if (say && level !== 'big') setTimeout(() => { if (!gone()) ctx.say(say); }, 300);
     view.querySelectorAll<HTMLButtonElement>('[data-i]').forEach((btn) =>
       btn.addEventListener('click', () => {
         if (Number(btn.dataset.i) !== q.answer) {
@@ -100,6 +108,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
           btn.classList.add('wrong');
           buzz([10, 40, 10]);
           ctx.chime('wrong');
+          if (level !== 'big') ctx.say('try-again');
           view.querySelector('#msg')!.textContent = t(l, 'tryAgain');
           return;
         }

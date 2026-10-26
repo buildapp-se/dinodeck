@@ -3,6 +3,7 @@
     uv run --python 3.12 --with piper-tts --with soundfile --with numpy tools/make-names.py
 
   -> public/audio/<id>-say-sv.mp3, public/audio/<id>-say-en.mp3
+  -> public/audio/prompt-<key>-sv.mp3 and -en.mp3: the challenge questions, read aloud for children who cannot read yet
 
 Runs Piper on this computer: no account, no service, nothing sent anywhere. The two voices are
 trained from scratch on free recordings (licences in VOICES below) and are downloaded on first run
@@ -81,6 +82,16 @@ NAMES: dict[str, dict[str, str]] = {
 }
 
 
+# Plain sentences are given as text: the voices read ordinary words well. "T. rex" is spelt as it is said.
+PROMPTS: dict[str, dict[str, str]] = {
+    "how-old": {"sv": "Hur gammal är du?", "en": "How old are you?"},
+    "who": {"sv": "Vem är det?", "en": "Who is it?"},
+    "count": {"sv": "Hur många te rex?", "en": "How many tee rexes?"},
+    "longest": {"sv": "Vilken var längst?", "en": "Which one was longest?"},
+    "try-again": {"sv": "Försök igen!", "en": "Try again!"},
+}
+
+
 def catalogue_ids() -> set[str]:
     ids: set[str] = set()
     for name in ("dinos.ts", "dinos-won.ts"):
@@ -99,9 +110,9 @@ def load_voice(lang: str) -> PiperVoice:
     return PiperVoice.load(model)
 
 
-def speak(voice: PiperVoice, ipa: str) -> tuple[np.ndarray, int]:
+def speak(voice: PiperVoice, ipa: str, text: bool = False) -> tuple[np.ndarray, int]:
     # [[ ]] hands Piper the sounds directly instead of text to interpret. The full stop makes the voice land the word.
-    chunks = list(voice.synthesize(f"[[ {ipa}. ]]", syn_config=SynthesisConfig(length_scale=SLOWER)))
+    chunks = list(voice.synthesize(ipa if text else f"[[ {ipa}. ]]", syn_config=SynthesisConfig(length_scale=SLOWER)))
     y = np.concatenate([c.audio_float_array for c in chunks])
     sr = chunks[0].sample_rate
     # Cut the silence before and after, keep a short breath of it, fade both ends, bring to full level.
@@ -136,6 +147,13 @@ def main() -> None:
             sounds = len(re.sub(r"[ˈˌː ]", "", said[lang]))
             if not 0.05 * sounds <= len(y) / sr <= 0.22 * sounds:
                 problems.append(f"{path.name}: {len(y) / sr:.2f} s for {sounds} sounds")
+        for key, said in PROMPTS.items():
+            y, sr = speak(voice, said[lang], text=True)
+            path = OUT / f"prompt-{key}-{lang}.mp3"
+            sf.write(path, y, sr, format="MP3")
+            # About 0.05 to 0.15 s per letter for a calm sentence.
+            if not 0.04 * len(said[lang]) <= len(y) / sr <= 0.15 * len(said[lang]):
+                problems.append(f"{path.name}: {len(y) / sr:.2f} s for {len(said[lang])} letters")
     total = sum(p.stat().st_size for p in OUT.glob("*-say-*.mp3"))
     print(f"{'FAIL' if problems else 'ok  '} {len(seconds)} names, {min(seconds):.1f} to {max(seconds):.1f} s, {total // 1024} kB")
     for p in problems:
