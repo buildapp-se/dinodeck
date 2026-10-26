@@ -2,7 +2,7 @@
 
 Runs in WSL, in the OmniVoice install that filmverk set up (see filmverk docs/research/generated-sound.md):
 
-    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- bash -c 'cd ~/voice && HF_HOME=~/voice/hf ~/voice/OmniVoice/.venv/bin/python /mnt/c/dev/dinodeck/tools/make-voice-sv.py'
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- bash -c 'cd ~/voice && HF_HOME=~/voice/hf ~/voice/OmniVoice/.venv/bin/python /mnt/c/dev/dinodeck/tools/make-voice-sv.py [key ...]'
     for f in audio-src/omnivoice/*.wav; do ffmpeg -loglevel error -y -i "$f" -b:a 64k "public/audio/$(basename "${f%.wav}").mp3" || break; done
 
   -> audio-src/omnivoice/prompt-<key>-sv.wav, then mp3 in public/audio/
@@ -35,7 +35,7 @@ PACE = 7.0 / len(REF_TEXT)
 
 PROMPTS = {
     "how-old": "Hur gammal är du?",
-    "who": "Vem är det?",
+    "who": "Vilken dinosaurie är det?",
     "count": "Hur många dinosaurier?",
     "longest": "Vilken var längst?",
     "try-again": "Försök igen!",
@@ -57,7 +57,8 @@ def plain(s: str) -> str:
 
 
 def main() -> None:
-    texts = {f"prompt-{k}-sv": t for k, t in PROMPTS.items()}
+    keys = sys.argv[1:] or list(PROMPTS)  # e.g. "who" to make one question again and leave the rest alone
+    texts = {f"prompt-{k}-sv": PROMPTS[k] for k in keys}
 
     from omnivoice.models.omnivoice import OmniVoice
 

@@ -84,7 +84,7 @@ function silhouette(rand: Rand, withImage: readonly string[]): Question {
   const [right, ...wrong] = shuffle(rand, withImage).slice(0, 3) as [string, string, string];
   return build(
     rand,
-    { kind: 'silhouette', prompt: { sv: 'Vem är det?', en: 'Who is it?' }, show: { silhouette: right }, say: 'who' },
+    { kind: 'silhouette', prompt: { sv: 'Vilken dinosaurie är det?', en: 'Who is it?' }, show: { silhouette: right }, say: 'who' },
     { dino: right },
     wrong.map((dino) => ({ dino })),
   );
