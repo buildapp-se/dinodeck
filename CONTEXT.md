@@ -44,8 +44,9 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - `img-src/` är gitignorerad: källbilderna finns bara på den här datorn.
 
 ## Audits
+- OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static PWA with no server; 0 high, 0 medium; the lane's missing-CSP low is refuted live (zone sets frame-ancestors 'none' and X-Frame-Options), root-relative manifest and font URLs on the shared buildapp.se origin left as low
 - npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
-- Actions (automated): 2026-10-06, fail, zizmor 2 high, 1 medium, 0 low (artipacked, excessive-permissions); evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Database: 2026-10-25, none, localStorage
+- Actions: 2026-10-26, pass, zizmor 0 high, 0 medium, 0 low
 
