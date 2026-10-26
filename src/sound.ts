@@ -44,7 +44,7 @@ export function play(url: string): void {
 const STEPS = [523.25, 659.25, 783.99, 1046.5, 1318.5];
 
 /** Short game sounds made on the spot, no files: a rising "pling" for a right answer, a soft low "boop" for a wrong one, a fanfare for a win. They play over a roar instead of cutting it off. */
-export function chime(kind: 'right' | 'wrong' | 'win', step = 0): void {
+export function chime(kind: 'right' | 'wrong' | 'win' | 'crack' | 'pip', step = 0): void {
   ctx ??= new AudioContext();
   const audio = ctx;
   void audio.resume();
@@ -68,5 +68,18 @@ export function chime(kind: 'right' | 'wrong' | 'win', step = 0): void {
     note(f, 0, 0.25, 'sine');
     note(f * 2, 0, 0.12, 'sine'); // an overtone makes it a bell
   } else if (kind === 'wrong') note(220, 0, 0.22, 'triangle', 150);
+  else if (kind === 'crack') {
+    // A shell cracking: a short burst of noise that fades fast, louder for each tap.
+    const length = 0.08;
+    const noise = audio.createBuffer(1, Math.round(audio.sampleRate * length), audio.sampleRate);
+    const data = noise.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) ** 3;
+    const src = audio.createBufferSource();
+    const gain = audio.createGain();
+    gain.gain.value = 0.3 + 0.2 * step;
+    src.buffer = noise;
+    src.connect(gain).connect(audio.destination);
+    src.start();
+  } else if (kind === 'pip') note(1800, 0, 0.12, 'sine', 2600); // the baby's peep
   else STEPS.slice(0, 4).forEach((f, i) => note(f, i * 0.11, i === 3 ? 0.6 : 0.18, 'triangle'));
 }

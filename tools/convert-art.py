@@ -2,6 +2,7 @@
 
     uv run --with pillow tools/convert-art.py            # every img-src/<id>.png
     uv run --with pillow tools/convert-art.py triceratops spinosaurus
+    uv run --with pillow tools/convert-art.py baby/egg baby/triceratops   # img-src/baby -> public/img/baby
 
 img-src/<id>.png (white or transparent background, any size)
   -> public/img/<id>.webp (transparent, trimmed, longest side 900 px)
@@ -50,9 +51,11 @@ def convert(name: str) -> str | None:
         return "nothing left after cut-out"
     im = im.crop(box)
     covered = sum(im.getchannel("A").histogram()[129:]) / (im.width * im.height)
-    scale = LONGEST / max(im.size)
+    # Babies are shown small (beside the adult, and in the egg): half the size is plenty.
+    scale = (480 if name.startswith("baby/") else LONGEST) / max(im.size)
     im = im.resize((round(im.width * scale), round(im.height * scale)), Image.Resampling.LANCZOS)
     out = OUT / f"{name}.webp"
+    out.parent.mkdir(parents=True, exist_ok=True)  # baby/<id>
     for quality in (82, 74, 66):  # busy textures need a lower setting to fit the budget
         im.save(out, "WEBP", quality=quality, method=6)
         size = out.stat().st_size

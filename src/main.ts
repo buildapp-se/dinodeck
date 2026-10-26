@@ -6,6 +6,7 @@ import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { dinoSheet, printSheet, sceneSheet } from './print.ts';
 import { chime, play } from './sound.ts';
 import { DINOS } from './catalog.ts';
+import { BABIES, eggChoices } from './babies.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
 import type { Level } from './challenge.ts';
@@ -24,8 +25,9 @@ const lang = (): Lang => state.lang;
 
 const isOpen = (d: Dino): boolean => d.starter || state.unlockAll || state.won.includes(d.id);
 const notWon = (d: Dino): boolean => !d.starter && !state.won.includes(d.id);
-/** The cards still to win, the next one first: most children go for whichever card comes next. */
-const toWin = (): Dino[] => DINOS.filter(notWon);
+/** The cards still to win, the next one first: most children go for whichever card comes next. Cards with a baby to hatch come first. */
+const toWin = (): Dino[] => [...DINOS.filter((d) => notWon(d) && d.id in BABIES), ...DINOS.filter((d) => notWon(d) && !(d.id in BABIES))];
+const today = (): string => new Date().toLocaleDateString('sv-SE'); // YYYY-MM-DD in local time
 
 const freshQueue = (): string[] =>
   deckOrder(shuffle(Math.random, DINOS.filter(isOpen)).map((d) => d.id), toWin().filter((d) => !isOpen(d)).map((d) => d.id));
@@ -43,9 +45,11 @@ const parentBtn = document.querySelector<HTMLButtonElement>('#parent')!;
 // Set by the three-second press, so typing the address is not a way in.
 let parentOpen = false;
 
-function artHtml(d: Dino): string {
+/** `withBaby`: the hatched baby stands beside the adult (open cards and the detail view only, never a silhouette). */
+function artHtml(d: Dino, withBaby = false): string {
+  const baby = withBaby && state.hatched.includes(d.id) ? `<img class="baby" src="img/baby/${d.id}.webp" alt="${t(lang(), 'baby')}">` : '';
   // The placeholder sits behind the image and stays if the image is missing.
-  return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="img/${d.id}.webp" alt="" decoding="async"></div>`;
+  return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="img/${d.id}.webp" alt="" decoding="async">${baby}</div>`;
 }
 
 /** Animal as a dark shape beside a child, same scale. Sized by fitScale once it is in the page. */
@@ -99,6 +103,7 @@ function factsHtml(d: Dino, compact = false): string {
     </dl>
     <h3>${t(l, 'didYouKnow')}</h3>
     <ul>${d.facts.map((f) => `<li>${f[l]}</li>`).join('')}</ul>
+    ${state.hatched.includes(d.id) && BABIES[d.id] ? `<h3>${t(l, 'theBaby')}</h3><p>${BABIES[d.id]![l]}</p>` : ''}
     <h3>${t(l, 'sound')}</h3>
     <p>${d.sound[l]}</p>
     <button type="button" class="chip listen" data-sound="${d.id}-call">${icon('sound')} ${t(l, 'listen')}</button>
@@ -133,7 +138,7 @@ function buildCard(d: Dino, depth: number): HTMLElement {
   }
   card.innerHTML = `
     <div class="face front">
-      ${artHtml(d)}
+      ${artHtml(d, true)}
       <h2 lang="la">${d.name}</h2>
       <p class="tag">${when(l, d)}</p>
       <button type="button" class="snd" aria-label="${t(l, 'listen')}">${icon('sound')}</button>
@@ -160,6 +165,11 @@ const handlers: DragHandlers = {
     if (!card || card.classList.contains('locked')) return;
     // A tap on the animal itself roars. Anywhere else on the card, the flip button or the keyboard turns it over.
     const img = at?.target;
+    if (img instanceof HTMLImageElement && img.classList.contains('baby')) {
+      if (!state.muted) chime('pip');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) img.animate([{ transform: 'none' }, { transform: 'translateY(-14%)' }, { transform: 'none' }], 300);
+      return;
+    }
     if (!state.muted && img instanceof HTMLImageElement && img.closest('.front .art') && card.dataset.id) {
       const box = img.getBoundingClientRect();
       if (onPicture(box.width, box.height, img.naturalWidth, img.naturalHeight, at!.x - box.left, at!.y - box.top)) {
@@ -223,8 +233,9 @@ function fillDeck(): void {
 
 function renderDeck(): void {
   const l = lang();
+  const egg = eggChoices(today(), state.eggDay, DINOS.filter(isOpen).map((d) => d.id), state.hatched).length > 0;
   view.innerHTML = `
-    <div id="deck" class="deck"></div>
+    <div id="deck" class="deck">${egg ? `<button type="button" id="egg" class="egg-btn" aria-label="${t(l, 'eggToday')}"><img src="img/baby/egg.webp" alt=""></button>` : ''}</div>
     <div class="controls">
       <button type="button" id="skip" class="round" aria-label="${t(l, 'next')}">${icon('next')}</button>
       <button type="button" id="flip" class="round small" aria-label="${t(l, 'flip')}">${icon('flip')}</button>
@@ -235,6 +246,64 @@ function renderDeck(): void {
   view.querySelector('#skip')!.addEventListener('click', () => fly(-1));
   view.querySelector('#save')!.addEventListener('click', () => fly(1));
   view.querySelector('#flip')!.addEventListener('click', () => handlers.tap());
+  view.querySelector('#egg')?.addEventListener('click', hatch);
+}
+
+/** Today's egg: three taps crack it, and a baby of one of the open cards comes out and moves onto that card. */
+function hatch(): void {
+  const l = lang();
+  const choices = eggChoices(today(), state.eggDay, DINOS.filter(isOpen).map((d) => d.id), state.hatched);
+  const id = choices[Math.floor(Math.random() * choices.length)];
+  const d = id ? byId.get(id) : undefined;
+  if (!id || !d) return;
+  const dialog = document.createElement('dialog');
+  dialog.className = 'hatch';
+  dialog.innerHTML = `
+    <p class="hint">${t(l, 'tapEgg')}</p>
+    <button type="button" class="egg" aria-label="${t(l, 'tapEgg')}">
+      <img class="baby-big" src="img/baby/${id}.webp" alt="">
+      <img class="half upper" src="img/baby/egg.webp" alt="">
+      <img class="half lower" src="img/baby/egg.webp" alt="">
+      <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="100" points="15,50 22,44 36,55 50,44 64,55 78,44 85,50"/></svg>
+    </button>
+    <div class="hatched" hidden>
+      <h2>${t(l, 'babyOf')} <span lang="la">${d.name}</span>!</h2>
+      <p>${BABIES[id]![l]}</p>
+      <button type="button" class="big primary see">${t(l, 'seeCard')}</button>
+    </div>`;
+  document.body.append(dialog);
+  const egg = dialog.querySelector<HTMLButtonElement>('.egg')!;
+  let taps = 0;
+  egg.addEventListener('click', () => {
+    if (taps >= 3) return;
+    taps++;
+    if (!state.muted) chime('crack', taps);
+    navigator.vibrate?.(taps < 3 ? 15 : [20, 40, 40]);
+    // Restart the wobble on every tap.
+    egg.classList.remove('wobble');
+    void egg.offsetWidth;
+    egg.classList.add('wobble', `crack-${taps}`);
+    if (taps < 3) return;
+    // Only now is the egg used up: a child who closes it halfway still has it.
+    state.hatched = [...state.hatched, id];
+    state.eggDay = today();
+    saveState(state);
+    egg.classList.add('open');
+    egg.setAttribute('aria-label', d.name);
+    setTimeout(() => {
+      if (!state.muted) chime('win');
+      dialog.querySelector('.hint')!.textContent = '';
+      dialog.querySelector<HTMLElement>('.hatched')!.hidden = false;
+      dialog.querySelector<HTMLElement>('.see')!.focus();
+    }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
+  });
+  dialog.querySelector('.see')!.addEventListener('click', () => {
+    queue = [id, ...queue.filter((x) => x !== id)]; // the card with its new baby on top
+    dialog.close();
+  });
+  // Escape or "see the card": either way the deck is drawn again, without the egg once it is used.
+  dialog.addEventListener('close', () => { dialog.remove(); if (location.hash === '' || location.hash === '#/') render(); });
+  dialog.showModal();
 }
 
 function renderFavorites(): void {
@@ -282,7 +351,7 @@ function renderDetail(d: Dino): void {
   view.innerHTML = `
     <article class="detail">
       <div class="detail-top"><a class="chip" href="${backTo}">${icon('next')} ${t(l, 'back')}</a><button type="button" id="fav" class="round heart${isFav ? ' on' : ''}" aria-pressed="${isFav}" aria-label="${t(l, 'favourite')}">${icon('heart')}</button></div>
-      ${artHtml(d)}
+      ${artHtml(d, true)}
       <h2 lang="la">${d.name}</h2>
       <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>
       <p class="lead">${d.short[l]}</p>
@@ -376,6 +445,16 @@ function render(): void {
     renderParent(view, {
       state,
       build: __BUILD__,
+      // A getter: the summary is drawn again after every switch, and a reset empties it.
+      get progress() {
+        return {
+          won: state.won.length,
+          toWin: DINOS.filter((d) => !d.starter).length,
+          hatched: state.hatched.length,
+          babies: Object.keys(BABIES).length,
+          latest: state.won.slice(-3).reverse().map((id) => byId.get(id)?.name ?? id),
+        };
+      },
       toggleUnlock: saved(() => { state.unlockAll = !state.unlockAll; }),
       toggleMute: saved(() => { state.muted = !state.muted; }),
       toggleLang: saved(() => { state.lang = state.lang === 'sv' ? 'en' : 'sv'; }),

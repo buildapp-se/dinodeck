@@ -5,6 +5,8 @@ export interface ParentContext {
   state: State;
   /** ISO time of the build. */
   build: string;
+  /** How far the child has come, for the summary at the top. Names newest first. */
+  progress: { won: number; toWin: number; hatched: number; babies: number; latest: string[] };
   /** Each changes the state and saves it; the view then redraws itself. */
   toggleUnlock(): void;
   toggleMute(): void;
@@ -38,12 +40,29 @@ export function attachHold(button: HTMLElement, onHeld: () => void, onShort: () 
   button.addEventListener('keyup', () => { if (stop()) onShort(); });
 }
 
+const meter = (n: number, of: number): string =>
+  `<span class="collect" aria-hidden="true"><i style="width:${of ? Math.round((100 * n) / of) : 0}%"></i></span>`;
+
+/** What a parent wants to know at a glance: how many cards and babies, and which cards came last. */
+function summaryHtml(ctx: ParentContext): string {
+  const l = ctx.state.lang;
+  const p = ctx.progress;
+  return `
+    <dl class="summary">
+      <dt>${t(l, 'cardsWon')}</dt><dd>${meter(p.won, p.toWin)} ${p.won} / ${p.toWin}</dd>
+      <dt>${t(l, 'babiesHatched')}</dt><dd>${meter(p.hatched, p.babies)} ${p.hatched} / ${p.babies}</dd>
+      <dt>${t(l, 'favorites')}</dt><dd>${ctx.state.favorites.length}</dd>
+      <dt>${t(l, 'latestWon')}</dt><dd lang="la">${p.latest.length ? p.latest.join(', ') : `<span lang="${l}">${t(l, 'noneYet')}</span>`}</dd>
+    </dl>`;
+}
+
 export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): void {
   const { state } = ctx;
   const l = state.lang;
   view.innerHTML = `
     <section class="challenge parent">
       <h2>${t(l, 'parent')}</h2>
+      ${summaryHtml(ctx)}
       <button type="button" class="row" data-act="unlock" role="switch" aria-checked="${state.unlockAll}">${t(l, 'unlockAll')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="mute" role="switch" aria-checked="${!state.muted}">${t(l, 'soundOn')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="lang">${t(l, 'language')} <b>${t(l, 'thisLang')}</b></button>

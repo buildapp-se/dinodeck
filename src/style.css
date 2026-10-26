@@ -710,3 +710,46 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   .print-scene .print-bg { inset: 0; width: 100%; height: 100%; object-fit: cover; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+/* The daily egg and its babies (src/babies.ts). */
+.art img.baby { place-self: end end; width: 34%; height: auto; max-height: 45%; margin: 0 2% 2% 0; z-index: 1; filter: drop-shadow(0 2px 3px rgb(0 0 0 / .2)); }
+.egg-btn { position: absolute; z-index: 5; top: -6px; left: -6px; width: 72px; height: 72px; padding: 6px; border: 0; border-radius: 50%; background: var(--card); box-shadow: var(--shadow-btn); cursor: pointer; animation: egg-nudge 2.4s ease-in-out infinite; }
+.egg-btn img { width: 100%; height: 100%; object-fit: contain; }
+@keyframes egg-nudge { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -12deg; } 82% { rotate: 10deg; } 88% { rotate: -6deg; } }
+.hatch { margin: auto; border: 0; border-radius: 24px; padding: 20px; width: min(92vw, 420px); background: var(--card); color: var(--ink); text-align: center; box-shadow: 0 8px 30px rgb(0 0 0 / .3); }
+.hatch::backdrop { background: rgb(46 42 32 / .6); }
+.hatch .hint { min-height: 1.5em; font-size: 1.25rem; font-weight: 700; }
+.hatch .egg { position: relative; display: grid; width: min(70vw, 280px, 42vh); aspect-ratio: 1; margin: 0 auto; padding: 0; border: 0; background: none; cursor: pointer; }
+.hatch .egg > * { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; transition: transform 500ms cubic-bezier(.2,.9,.3,1), opacity 500ms; }
+/* The shell is the same picture twice, cut along the crack. */
+.hatch .upper { clip-path: polygon(0 0, 100% 0, 100% 50%, 85% 50%, 78% 44%, 64% 55%, 50% 44%, 36% 55%, 22% 44%, 15% 50%, 0 50%); }
+.hatch .lower { clip-path: polygon(0 50%, 15% 50%, 22% 44%, 36% 55%, 50% 44%, 64% 55%, 78% 44%, 85% 50%, 100% 50%, 100% 100%, 0 100%); }
+.hatch .baby-big { transform: scale(.3); opacity: 0; }
+.hatch .crack { position: relative; z-index: 1; } /* clip-path lifts the shell halves into their own layer: keep the crack above them */
+.hatch .crack polyline { fill: none; stroke: #5a4a32; stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 200ms; }
+.hatch .crack-1 .crack polyline { stroke-dashoffset: 60; }
+.hatch .crack-2 .crack polyline { stroke-dashoffset: 0; }
+.hatch .wobble { animation: egg-wobble 350ms ease-in-out; }
+@keyframes egg-wobble { 25% { rotate: -8deg; } 75% { rotate: 8deg; } }
+.hatch .open .upper { transform: translate(-30%, -45%) rotate(-30deg); opacity: 0; }
+.hatch .open .lower { transform: translateY(35%); opacity: 0; }
+.hatch .open .half { transition: transform 600ms cubic-bezier(.2,.9,.3,1), opacity 300ms 300ms; } /* fly apart first, then fade */
+.hatch .open .crack { opacity: 0; }
+.hatch .open .baby-big { transform: none; opacity: 1; }
+.hatch .hatched h2 { margin: 8px 0; }
+.hatch .hatched p { margin: 0 0 16px; text-align: left; }
+.hatch .see { width: 100%; }
+@media (prefers-reduced-motion: reduce) { .egg-btn { animation: none; } }
+/* Parent mode's summary. */
+.summary { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 0 8px; padding: 14px 16px; border-radius: 16px; background: var(--page-2); text-align: left; }
+.summary dt { font-weight: 700; }
+.summary dd { display: flex; align-items: center; gap: 8px; margin: 0; flex-wrap: wrap; }
+.summary .collect { flex: 1; min-width: 60px; max-width: 160px; background: var(--card); }
+/* Phone on its side: the baby beside its text, so neither is scrolled out of sight. */
+@media (orientation: landscape) and (max-height: 540px) {
+  .hatch[open] { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 20px; width: min(92vw, 720px); }
+  .hatch[open]:has(.hatched[hidden]) { grid-template-columns: 1fr; width: auto; } /* the egg alone, centred, until it opens */
+  .hatch .hint { grid-column: 1 / -1; margin: 0; }
+  .hatch .egg { width: min(40vw, 70vh); }
+  .hatch .hatched h2 { margin-top: 0; }
+}
+.hatch .hint:empty { display: none; }

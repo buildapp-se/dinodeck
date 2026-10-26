@@ -6,10 +6,10 @@ import { advance, deckOrder, parseState, resetCollection, toggleFavorite } from 
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
-  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false });
-  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false });
+  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true }), ids, 'sv');
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
   assert.deepEqual(s, {
     v: 1,
     lang: 'en',
@@ -19,6 +19,8 @@ test('parseState survives junk and drops unknown ids', () => {
     unlockAll: false,
     muted: true,
     onboarded: false,
+    hatched: ['triceratops'],
+    eggDay: '',
   });
 });
 
