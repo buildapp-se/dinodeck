@@ -13,7 +13,7 @@ import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { KEY, advance, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { KEY, advance, deckOrder, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
@@ -23,10 +23,12 @@ const markOnboarded = (): void => { if (!state.onboarded) { state.onboarded = tr
 const lang = (): Lang => state.lang;
 
 const isOpen = (d: Dino): boolean => d.starter || state.unlockAll || state.won.includes(d.id);
-const locked = (): Dino[] => DINOS.filter((d) => !isOpen(d));
+const notWon = (d: Dino): boolean => !d.starter && !state.won.includes(d.id);
+/** The cards still to win, the next one first: most children go for whichever card comes next. */
+const toWin = (): Dino[] => DINOS.filter(notWon);
 
-// Open cards first, so the deck does not start on a run of locked ones.
-const freshQueue = (): string[] => [...shuffle(Math.random, DINOS.filter(isOpen)), ...shuffle(Math.random, locked())].map((d) => d.id);
+const freshQueue = (): string[] =>
+  deckOrder(shuffle(Math.random, DINOS.filter(isOpen)).map((d) => d.id), toWin().filter((d) => !isOpen(d)).map((d) => d.id));
 let queue = freshQueue();
 
 // A missing picture is normal until the art exists: drop the <img>, the placeholder behind it stays.
@@ -303,10 +305,8 @@ function renderDetail(d: Dino): void {
 /** `id` is the card asked for with "Vinn mig"; without it a random locked card is the prize. */
 function renderChallenge(id: string, level?: Level): void {
   const l = lang();
-  const notWon = (d: Dino): boolean => !d.starter && !state.won.includes(d.id);
-  const left = DINOS.filter(notWon);
   const asked = byId.get(id);
-  const target = asked && notWon(asked) ? asked : left[Math.floor(Math.random() * left.length)];
+  const target = asked && notWon(asked) ? asked : toWin()[0];
   const repeat = !target;
   const open = DINOS.filter(isOpen);
   const prize = target ?? open[Math.floor(Math.random() * open.length)]!;
@@ -326,7 +326,7 @@ function renderChallenge(id: string, level?: Level): void {
     onWin(d) {
       if (!repeat && !state.won.includes(d.id)) state.won = [...state.won, d.id];
       saveState(state);
-      queue = [d.id, ...queue.filter((x) => x !== d.id)]; // the new card is on top of the deck
+      queue = [d.id, ...freshQueue().filter((x) => x !== d.id)]; // the new card on top, and the next to win dealt in
       renderNav();
     },
     roar(d) { if (!state.muted) play(`audio/${d.id}-roar.mp3`); },

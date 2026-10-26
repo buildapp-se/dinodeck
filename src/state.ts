@@ -95,6 +95,18 @@ export function advance(queue: readonly string[]): string[] {
   return top === undefined ? [] : [...rest, top];
 }
 
+/**
+ * The deck: the open cards with the next few to win mixed in, two to four open cards apart.
+ * Only `shown` locked cards are dealt, so the deck never turns into a run of silhouettes.
+ */
+export function deckOrder(open: readonly string[], toWin: readonly string[], shown = 3): string[] {
+  const dealt = toWin.slice(0, shown);
+  const step = Math.min(4, Math.max(2, Math.floor(open.length / Math.max(1, dealt.length))));
+  const out = [...open];
+  dealt.forEach((id, i) => out.splice(Math.min(out.length, (i + 1) * step + i), 0, id));
+  return out;
+}
+
 export function loadState(knownIds: readonly string[], fallbackLang: Lang): State {
   let raw: string | null = null;
   try {

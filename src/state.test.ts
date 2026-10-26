@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { advance, parseState, resetCollection, toggleFavorite } from './state.ts';
+import { advance, deckOrder, parseState, resetCollection, toggleFavorite } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
@@ -36,6 +36,14 @@ test('toggleFavorite adds then removes', () => {
 test('advance rotates and never loses a card', () => {
   assert.deepEqual(advance(['a', 'b', 'c']), ['b', 'c', 'a']);
   assert.deepEqual(advance([]), []);
+});
+
+test('deckOrder deals the next three to win between open cards', () => {
+  const open = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  assert.deepEqual(deckOrder(open, ['X', 'Y', 'Z', 'W']), ['a', 'b', 'X', 'c', 'd', 'Y', 'e', 'f', 'Z', 'g', 'h']);
+  assert.deepEqual(deckOrder(['a'], ['X', 'Y']), ['a', 'X', 'Y']);
+  assert.deepEqual(deckOrder(open, []), open);
+  assert.equal(deckOrder([...open, ...open.map((x) => x + '2')], ['X']).indexOf('X'), 4);
 });
 
 test('catalog is complete in both languages', () => {
