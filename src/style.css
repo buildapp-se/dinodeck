@@ -40,7 +40,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   padding: max(12px, env(safe-area-inset-top)) 16px 8px;
   color: var(--ink);
 }
-.top h1 { font-size: 1.5rem; }
+.top h1 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; }
+/* The app icon as a small brand mark, so the header is more than a word. */
+.top h1::before { content: ''; flex: none; width: 36px; height: 36px; border-radius: var(--r-s); background: url('/icons/icon-192.png') center / cover; box-shadow: var(--shadow-btn); }
 .chip {
   display: inline-block;
   min-height: 44px;
@@ -79,8 +81,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   user-select: none;
   outline: none;
 }
-.card[data-depth='1'] { transform: translateY(12px) scale(0.95); }
-.card[data-depth='2'] { transform: translateY(24px) scale(0.9); }
+/* A slight fan, so the stack reads as a hand of cards. */
+.card[data-depth='1'] { transform: translateY(12px) scale(0.95) rotate(-2deg); }
+.card[data-depth='2'] { transform: translateY(24px) scale(0.9) rotate(2.5deg); }
 .card:focus-visible .face { box-shadow: 0 0 0 5px var(--accent); }
 .face {
   position: absolute;
@@ -232,7 +235,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .detail-top #fav { width: 56px; height: 56px; margin: 0; }
 .detail .art { flex: none; aspect-ratio: 900 / 545; margin: 8px 0 16px; }
 .detail .art img { cursor: pointer; }
-.detail .chip { background: var(--forest); color: var(--card); }
+/* Two levels: the colouring page, which only this view has, is the one filled button. The rest are quieter. */
+.detail .chip, .detail .say-btn { background: var(--page-2); color: var(--ink); }
+.detail .print-btn { background: var(--forest); color: var(--card); }
 .detail .lead { font-weight: 400; }
 
 .nav {
@@ -533,13 +538,13 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .strip { position: relative; flex: 1; min-height: 320px; overflow-x: auto; overflow-y: hidden; touch-action: pan-x; cursor: grab; user-select: none; scrollbar-width: none; }
 .track { position: absolute; top: 0; bottom: 0; left: 0; }
 .band { position: absolute; top: 0; bottom: 0; padding: 6px 12px; box-shadow: inset 2px 0 rgb(0 0 0 / 0.25); }
-.band b { position: sticky; left: 12px; font-size: 1.2rem; color: var(--ink); }
+.band b { position: sticky; left: 12px; display: inline-block; padding: 2px 12px; border-radius: var(--r-pill); background: rgb(255 255 255 / .6); font-size: 1.1rem; color: var(--ink); }
 .tick { position: absolute; bottom: 6px; padding-left: 6px; border-left: 2px solid var(--ink); color: var(--ink); font-size: .875rem; font-weight: 700; white-space: nowrap; }
 /* Row pitch matches ROW in timelineView.ts. 70px = band label above the rows plus the year ticks below them. */
 .tl-item {
   --row: min(102px, (100% - 70px) / var(--lanes));
   position: absolute;
-  top: calc(38px + var(--row) * var(--lane));
+  top: calc(38px + (100% - 70px - var(--row) * var(--lanes)) / 2 + var(--row) * var(--lane)); /* rows centred in the band */
   height: calc(var(--row) - 6px);
   width: 104px;
   margin-left: -52px;
