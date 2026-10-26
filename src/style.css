@@ -697,3 +697,4 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   .hatch .hatched h2 { margin-top: 0; }
 }
 .hatch .hint:empty { display: none; }
+.deck:has(.card[data-depth='0'].flipped) .egg-btn { display: none; } /* it would cover the name on the back */

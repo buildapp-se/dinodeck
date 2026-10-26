@@ -64,7 +64,7 @@ Det mesta från de tre designagenterna är gjort (se HANDOFF, natt 2026-10-25/26
 - [x] `[P2]` (klart 2026-10-26) Föräldraläget: sammanfattning (vunna kort, kläckta ungar, favoriter, tre senast vunna).
 - [ ] `[P3]` Föräldraläget: skriv ut favoriternas målarbilder i ett svep. Veckans kort kräver datum per vinst (sparas inte i dag).
 - [ ] `[P3]` Hjälp efter två fel (rätt svar pulserar); silhuettfrågor på nivå 3-5 med olika kroppsformer; silhuetter även på nivå 8-10.
-- [ ] `[P3]` Visuellt: kortets baksida med faktaruta, detaljvyns knappar i två nivåer, sidhuvud med märke, tidslinjens rader centrerade och etiketter som piller, kortstapeln lätt solfjäder, enhetlig radieskala, rensa det gamla CSS-lagret (`style.css` rad 1-455).
+- [x] `[P3]` (klart 2026-10-26, agent) Visuellt: faktaruta på baksidan, detaljvyns knappar i två nivåer (utskrift fylld), märke i sidhuvudet, tidslinjen centrerad med periodpiller, solfjäder i kortstapeln, radieskala `--r-s` till `--r-pill`, gamla CSS-lagret sammanslaget.
 - [ ] `[P3]` Nytt djur i scenen: fall in med studs; "NY"-märke på vunna kort tills de vänts.
 - [ ] `[P3]` Scenen: dra med `translate` i stället för `left/top` (layout varje rörelse).
 
