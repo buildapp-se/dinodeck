@@ -4,7 +4,7 @@ import { onPicture } from './picture.ts';
 import { icon } from './icons.ts';
 import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { dinoSheet, printSheet, sceneSheet } from './print.ts';
-import { chime, play } from './sound.ts';
+import { chime, peep, play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { BABIES, eggChoices } from './babies.ts';
 import { shuffle } from './challenge.ts';
@@ -166,7 +166,8 @@ const handlers: DragHandlers = {
     // A tap on the animal itself roars. Anywhere else on the card, the flip button or the keyboard turns it over.
     const img = at?.target;
     if (img instanceof HTMLImageElement && img.classList.contains('baby')) {
-      if (!state.muted) chime('pip');
+      const d = card.dataset.id ? byId.get(card.dataset.id) : undefined;
+      if (!state.muted && d) peep(d.id, d.weightKg);
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) img.animate([{ transform: 'none' }, { transform: 'translateY(-14%)' }, { transform: 'none' }], 300);
       return;
     }
@@ -292,6 +293,7 @@ function hatch(): void {
     egg.setAttribute('aria-label', d.name);
     setTimeout(() => {
       if (!state.muted) chime('win');
+      setTimeout(() => { if (!state.muted) peep(id, d.weightKg); }, 650); // the baby says hello after the fanfare
       dialog.querySelector('.hint')!.textContent = '';
       dialog.querySelector<HTMLElement>('.hatched')!.hidden = false;
       dialog.querySelector<HTMLElement>('.see')!.focus();

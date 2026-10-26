@@ -44,7 +44,7 @@ export function play(url: string): void {
 const STEPS = [523.25, 659.25, 783.99, 1046.5, 1318.5];
 
 /** Short game sounds made on the spot, no files: a rising "pling" for a right answer, a soft low "boop" for a wrong one, a fanfare for a win. They play over a roar instead of cutting it off. */
-export function chime(kind: 'right' | 'wrong' | 'win' | 'crack' | 'pip', step = 0): void {
+export function chime(kind: 'right' | 'wrong' | 'win' | 'crack', step = 0): void {
   ctx ??= new AudioContext();
   const audio = ctx;
   void audio.resume();
@@ -80,6 +80,42 @@ export function chime(kind: 'right' | 'wrong' | 'win' | 'crack' | 'pip', step = 
     src.buffer = noise;
     src.connect(gain).connect(audio.destination);
     src.start();
-  } else if (kind === 'pip') note(1800, 0, 0.12, 'sine', 2600); // the baby's peep
+  }
   else STEPS.slice(0, 4).forEach((f, i) => note(f, i * 0.11, i === 3 ? 0.6 : 0.18, 'triangle'));
+}
+
+/** The pitch of a baby's peep: the bigger the grown-up animal, the lower. Even a sauropod baby was small, so all of them stay chick-like. */
+export const peepPitch = (adultKg: number): number => Math.min(3600, Math.max(1600, 3800 - 450 * Math.log10(adultKg)));
+
+/**
+ * A baby's peep, made on the spot like the chimes: two to four quick chirps that rise and drop, as a chick's do.
+ * `id` picks the pattern, so each kind of baby always sounds the same and different from the others.
+ */
+export function peep(id: string, adultKg: number): void {
+  ctx ??= new AudioContext();
+  const audio = ctx;
+  void audio.resume();
+  let hash = 0;
+  for (const c of id) hash = (hash * 31 + c.charCodeAt(0)) >>> 0;
+  const base = peepPitch(adultKg);
+  const chirps = 2 + (hash % 3);
+  const gap = 0.11 + ((hash >> 3) % 4) * 0.02;
+  for (let i = 0; i < chirps; i++) {
+    const t0 = audio.currentTime + i * gap;
+    const f = base * (1 + (((hash >> (i + 5)) % 5) - 2) * 0.06); // each chirp a little higher or lower
+    const length = 0.07 + ((hash >> (i + 2)) % 3) * 0.02;
+    const osc = audio.createOscillator();
+    const gain = audio.createGain();
+    osc.type = 'sine';
+    // Up quickly, then a longer slide down: "piip".
+    osc.frequency.setValueAtTime(f * 0.8, t0);
+    osc.frequency.exponentialRampToValueAtTime(f * 1.25, t0 + length * 0.3);
+    osc.frequency.exponentialRampToValueAtTime(f * 0.85, t0 + length);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.22, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + length);
+    osc.connect(gain).connect(audio.destination);
+    osc.start(t0);
+    osc.stop(t0 + length + 0.03);
+  }
 }

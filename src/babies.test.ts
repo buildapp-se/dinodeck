@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { BABIES, eggChoices } from './babies.ts';
 import { DINOS } from './catalog.ts';
+import { peepPitch } from './sound.ts';
 
 test('every baby belongs to a card, lays eggs, and has its fact in both languages', () => {
   for (const [id, fact] of Object.entries(BABIES)) {
@@ -19,4 +20,11 @@ test('eggChoices: one egg a day, only babies of open cards not yet hatched', () 
   assert.deepEqual(eggChoices('2026-10-26', '2026-10-25', open, ['triceratops']), ['stegosaurus']);
   assert.deepEqual(eggChoices('2026-10-26', '2026-10-26', open, []), []);
   assert.deepEqual(eggChoices('2026-10-26', '', ['spinosaurus'], []), []);
+});
+
+test('a small animal peeps higher than a big one, inside a pleasant range', () => {
+  const pitch = (id: string): number => peepPitch(DINOS.find((d) => d.id === id)!.weightKg);
+  assert.ok(pitch('oviraptor') > pitch('tyrannosaurus-rex'));
+  assert.ok(pitch('tyrannosaurus-rex') > pitch('brachiosaurus'));
+  for (const id of Object.keys(BABIES)) assert.ok(pitch(id) >= 1600 && pitch(id) <= 3600, id);
 });
