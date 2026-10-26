@@ -37,6 +37,7 @@ reviewedAt: 2026-10-26
 - **Byggt** (`src/sceneView.ts`, rutt `#/scen`): välj period, tryck på ett djur i listan för att ställa ut det, dra för att flytta, knappar för större, mindre, vänd och ta bort. Sparas i `state.scene` med lägen som andelar av scenens storlek, så den ser likadan ut på mobil och surfplatta.
 - **Val av Claude:** djur börjar i skalenlig storlek (Diplodocus mycket större än Velociraptor), det som står längre ned ritas framför, högst 20 djur. Bara öppna kort som har bild går att ställa ut.
 - **Ljud i scenen (tillagt senare samma dag):** två snabba tryck på ett utställt djur ger dess vrål. Räknas för hand i `pointerup`, eftersom webbläsarens `dblclick` inte går att lita på för ett finger på något som också dras. Ett tryck markerar bara, drag ger inget ljud, ljud av gäller här också.
+- **Tangentbord (2026-10-26):** Delete eller Backspace tar bort markerat djur, samma väg som ta bort-knappen. Bara ett djur kan vara markerat åt gången.
 - **Bakgrunder:** färgfält tills `public/img/bg-<period>.webp` finns. Brief: `img-src/BRIEF-bg.md`.
 - **Verifierat** i Chromium 390×844: lägga till, dra, större, vända, byta bakgrund, ta bort, sparat efter omladdning. **Inte verifierat:** riktig pekskärm, surfplatta i liggande läge.
 - **Fälla:** `vite preview` kan ligga kvar på porten efter att den stoppats, och webbläsaren kan visa gammal `index.html`. Ladda med `?v=N` och jämför skriptnamnet mot `dist/assets/` innan ett testresultat tros.

@@ -190,6 +190,16 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     draw();
   });
 
+  // Delete (Backspace on a Mac keyboard) does what the take-away button does.
+  const onKey = (e: KeyboardEvent): void => {
+    if (!stage.isConnected) return document.removeEventListener('keydown', onKey);
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selected) {
+      e.preventDefault();
+      tools.querySelector<HTMLElement>('[data-tool="remove"]')!.click();
+    }
+  };
+  document.addEventListener('keydown', onKey);
+
   draw();
   // Redraw rather than re-place by index: a picture that failed to load is removed, which would shift the indexes.
   const watch = new ResizeObserver(() => (stage.isConnected ? draw() : watch.disconnect()));
