@@ -40,9 +40,11 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   padding: max(12px, env(safe-area-inset-top)) 16px 8px;
   color: var(--ink);
 }
-.top h1 { display: flex; align-items: center; gap: 10px; font-size: 1.5rem; }
+.top h1 { font-size: 1.5rem; }
+/* Icon and name together are the way home, as on most sites. */
+.top .home { display: flex; align-items: center; gap: 10px; min-height: 44px; color: inherit; text-decoration: none; }
 /* The app icon as a small brand mark, so the header is more than a word. */
-.top h1::before { content: ''; flex: none; width: 36px; height: 36px; border-radius: var(--r-s); background: url('/icons/icon-192.png') center / cover; box-shadow: var(--shadow-btn); }
+.top .home::before { content: ''; flex: none; width: 36px; height: 36px; border-radius: var(--r-s); background: url('/icons/icon-192.png') center / cover; box-shadow: var(--shadow-btn); }
 .chip {
   display: inline-block;
   min-height: 44px;

@@ -544,7 +544,8 @@ function parentGate(url: string): void {
   dialog.showModal();
 }
 
-nav.addEventListener('click', (e) => {
+// The navigation and the name in the header: a press on the page already open starts it over (no hashchange fires).
+for (const el of [nav, document.querySelector('.top')!]) el.addEventListener('click', (e) => {
   const link = (e.target as Element).closest('a');
   if (link && link.getAttribute('href') === location.hash) render();
 });
