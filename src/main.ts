@@ -4,7 +4,7 @@ import { onPicture } from './picture.ts';
 import { icon } from './icons.ts';
 import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { dinoSheet, printSheet, sceneSheet } from './print.ts';
-import { play } from './sound.ts';
+import { chime, play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { shuffle } from './challenge.ts';
 import { renderLevelPicker } from './challengeView.ts';
@@ -330,6 +330,7 @@ function renderChallenge(id: string, level?: Level): void {
       renderNav();
     },
     roar(d) { if (!state.muted) play(`audio/${d.id}-roar.mp3`); },
+    chime(kind, step) { if (!state.muted) chime(kind, step); },
   });
 }
 

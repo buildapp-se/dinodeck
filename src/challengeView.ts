@@ -18,6 +18,8 @@ export interface ChallengeContext {
   oneMore(level: Level): void;
   onWin(d: Dino): void;
   roar(d: Dino): void;
+  /** Right, wrong and win sounds; quiet when sound is off. */
+  chime(kind: 'right' | 'wrong' | 'win', step?: number): void;
 }
 
 /** Resolves to the ids whose picture actually loads. Missing art is normal until the images are made. */
@@ -97,6 +99,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
           btn.disabled = true;
           btn.classList.add('wrong');
           buzz([10, 40, 10]);
+          ctx.chime('wrong');
           view.querySelector('#msg')!.textContent = t(l, 'tryAgain');
           return;
         }
@@ -104,6 +107,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
         btn.classList.add('right');
         btn.insertAdjacentHTML('afterbegin', icon('check'));
         buzz(15);
+        ctx.chime('right', right - 1);
         view.querySelectorAll<HTMLButtonElement>('[data-i]').forEach((b) => (b.disabled = true));
         setTimeout(right >= WINS_NEEDED ? won : ask, 700);
       }),
@@ -114,7 +118,8 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
     ctx.onWin(ctx.target); // earned even if the child already left
     if (gone()) return;
     // The roar comes with the colour, not before the card is shown.
-    setTimeout(() => { if (!gone()) { ctx.roar(ctx.target); buzz([30, 50, 60]); } }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400);
+    ctx.chime('win');
+    setTimeout(() => { if (!gone()) { ctx.roar(ctx.target); buzz([30, 50, 60]); } }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600);
     view.innerHTML = `
       <section class="challenge">
         ${stars(WINS_NEEDED, l)}
