@@ -219,6 +219,11 @@ function fillDeck(): void {
     });
   }
   const top = topCard();
+  // The heart under the deck shows whether the top card is already a favourite.
+  const saved = !!top?.dataset.id && state.favorites.includes(top.dataset.id);
+  const save = view.querySelector('#save');
+  save?.classList.toggle('on', saved);
+  save?.setAttribute('aria-pressed', String(saved));
   if (top) {
     deck.append(top); // the top card paints last, above the rest and above a leaving card's shadow
     if (keyboardOnDeck) top.focus({ preventScroll: true }); // the card that had focus just flew off
