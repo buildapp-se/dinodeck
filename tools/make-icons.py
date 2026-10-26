@@ -21,19 +21,20 @@ def cutout(width: int) -> Image.Image:
 
 
 def icon(size: int, silhouette: bool = False) -> Image.Image:
-    canvas = Image.new("RGBA", (512, 512), GREEN)
+    k = 2 if size > 512 else 1  # drawn at double size for the 1024 px store icon, so it is not upscaled
+    canvas = Image.new("RGBA", (512 * k, 512 * k), GREEN)
     for color, angle, shift in [("#e4d8bf", -8, (10, 14)), (PAPER, 5, (0, 0))]:
-        card = Image.new("RGBA", (296, 226))
-        ImageDraw.Draw(card).rounded_rectangle((0, 0, 295, 225), radius=26, fill=color)
+        card = Image.new("RGBA", (296 * k, 226 * k))
+        ImageDraw.Draw(card).rounded_rectangle((0, 0, 296 * k - 1, 226 * k - 1), radius=26 * k, fill=color)
         if color == PAPER:
-            animal = cutout(256)
+            animal = cutout(256 * k)
             if silhouette:
                 alpha = animal.getchannel("A")
                 animal = Image.new("RGBA", animal.size, "#2e2a20")
                 animal.putalpha(alpha.point(lambda value: round(value * 0.85)))
-            card.alpha_composite(animal, ((296 - animal.width) // 2, (226 - animal.height) // 2))
+            card.alpha_composite(animal, ((296 * k - animal.width) // 2, (226 * k - animal.height) // 2))
         card = card.rotate(angle, Image.Resampling.BICUBIC, expand=True)
-        canvas.alpha_composite(card, ((512 - card.width) // 2 + shift[0], (512 - card.height) // 2 + shift[1]))
+        canvas.alpha_composite(card, ((512 * k - card.width) // 2 + shift[0] * k, (512 * k - card.height) // 2 + shift[1] * k))
     return canvas.resize((size, size), Image.Resampling.LANCZOS).convert("RGB")
 
 
@@ -64,6 +65,9 @@ def main() -> None:
     icon(48).save(ROOT / "public/favicon.png", optimize=True)
     icon(32, True).save(ROOT / "public/favicon-32.png", optimize=True)
     social().save(ROOT / "public/og.png", optimize=True)
+    # App stores, not shipped with the app: App Store wants 1024 px with no transparency.
+    (ROOT / "store").mkdir(exist_ok=True)
+    icon(1024).save(ROOT / "store/icon-1024.png", optimize=True)
     large = icon(512)
     background = (47, 90, 60)
     outside = sum(
