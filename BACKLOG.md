@@ -44,14 +44,26 @@ Rekommenderad väg: Capacitor med `dist/` inbakat, för båda butikerna (fungera
 
 - [ ] `[P1]` Beslut: släppa i butikerna, och i så fall Capacitor eller TWA. Kräver Google-utvecklarkonto (stängt test med 12 testare i 14 dagar för nya personliga konton) och Apple Developer Program (kostar).
 - [ ] `[P1]` Cloudflare Web Analytics på buildapp.se injicerar ett tredjepartsskript. Stäng av för `/dinodeck/*` eller gå via Capacitor. Apple 1.3 Kids.
-- [ ] `[P1]` Källänken på kortets baksida (`src/main.ts`, `target="_blank"`): visa som text i appversionen, eller lägg bakom en föräldraspärr (vuxenuppgift, inte bara håll in).
-- [ ] `[P1]` Integritetspolicy för Dinodeck (ingen data samlas, bara localStorage), länkad från föräldraläget.
+- [x] `[P1]` (klart 2026-10-26, multiplikationsfråga i `<dialog>`) Källänken på kortets baksida bakom en föräldraspärr.
+- [x] `[P1]` (klart 2026-10-26, `public/integritet.html`) Integritetspolicy för Dinodeck, länkad från föräldraläget.
 - [ ] `[P2]` Capacitor: spegla sparat läge till `@capacitor/preferences` (iOS kan rensa webbvyns lagring vid lite utrymme).
-- [ ] `[P2]` Manifest: `id`, `orientation`, `categories`, `screenshots`. Ikoner 1024×1024 (App Store) och 512×512, featuregrafik 1024×500, skärmdumpar.
-- [ ] `[P2]` Telefon på tvären (844×390): kortet krymper till 108 px, tidslinjens remsa och scenens bricka hamnar bakom menyn. Låsa stående på telefon i appversionen, eller egen liggande layout.
-- [ ] `[P2]` Barn som inte läser: upplästa frågor ("Vem är det?", "Hur många?") och korta rätt/fel-ljud. Piper finns redan.
-- [ ] `[P3]` Innehåll: upprepade fakta mellan kort (samtidigt som T. rex ×4, papegojnäbb ×3, malande tänder ×3), ca 20 fakta som bara upprepar kortets egen text. Coelophysis kannibalrad (motbevisad i texten) för 4-åringar?
-- [ ] `[P3]` Sidtitel och metabeskrivning stannar på svenska i engelskt läge.
+- [ ] `[P2]` Manifest: `screenshots`, ikoner 1024×1024 (App Store) och 512×512, featuregrafik 1024×500. (`id`, `orientation`, `categories` klara 2026-10-26.)
+- [x] `[P2]` (klart 2026-10-26, egen liggande layout) Telefon på tvären (844×390).
+- [x] `[P2]` (klart 2026-10-26) Barn som inte läser: upplästa frågor och rätt/fel-ljud.
+- [ ] `[P3]` Innehåll: tio dubbletter utbytta 2026-10-26. Kvar: "samtidigt som T. rex" och papegojnäbb på flera kort, ca 20 fakta som upprepar kortets egen text. Coelophysis kannibalrad (motbevisad i texten) för 4-åringar?
+- [x] `[P3]` (klart 2026-10-26, `document.title`) Sidtitel i engelskt läge.
+
+## Design (granskning 2026-10-25, resten)
+
+Det mesta från de tre designagenterna är gjort (se HANDOFF, natt 2026-10-25/26). Kvar:
+
+- [ ] `[P2]` Kortlekens ordning: efter de öppna korten kommer 32 silhuetter i rad. Blanda in låsta kort, eller ett enda "32 kort att vinna"-kort.
+- [ ] `[P2]` Ett skäl att komma tillbaka utan streak-press, t.ex. "Dagens ägg" (gratis kort eller snabbquiz). Kräver äggbild och knäckljud.
+- [ ] `[P2]` Föräldraläget: sammanfattning (vunna, veckans kort), skriv ut favoriternas målarbilder; flytta "Ta bort alla favoriter" dit.
+- [ ] `[P3]` Hjälp efter två fel (rätt svar pulserar); silhuettfrågor på nivå 3-5 med olika kroppsformer; silhuetter även på nivå 8-10.
+- [ ] `[P3]` Visuellt: kortets baksida med faktaruta, detaljvyns knappar i två nivåer, sidhuvud med märke, tidslinjens rader centrerade och etiketter som piller, kortstapeln lätt solfjäder, enhetlig radieskala, rensa det gamla CSS-lagret (`style.css` rad 1-455).
+- [ ] `[P3]` Nytt djur i scenen: fall in med studs; "NY"-märke på vunna kort tills de vänts.
+- [ ] `[P3]` Scenen: dra med `translate` i stället för `left/top` (layout varje rörelse).
 
 ## Granskning 2026-10-06
 

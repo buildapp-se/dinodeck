@@ -1,10 +1,10 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: 40 djur live, nya målarbilder live. Kvar: avlyssning av ljuden, test på riktig telefon, surfplatta och papper
-nextAction: Patrik skriver ut en målarbild på papper, lyssnar igenom ljuden (160 klipp) och stickprovar höjdmåtten
+currentGoal: 40 djur live, designrunda live (liggande telefon, vinstfirande, ljud och uppläsning i utmaningen). Kvar: test på riktig telefon, surfplatta och papper
+nextAction: Patrik provar på telefon (liggande, vibration, ljud), skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
 blockers: []
-reviewedAt: 2026-10-25
+reviewedAt: 2026-10-26
 ---
 
 # Handoff: Dinodeck
@@ -262,8 +262,21 @@ Buggjakt i webbläsare, kodgranskning, innehåll och språk, appbutiker och barn
 - **Övrigt:** långa namn i svarsknappar bryts (Parasaurolophus gick utanför 360 px), fisk räknas som kött i "Vad åt?", räknefrågan frågar "Hur många T. rex?" som bilden visar, dubbeltryck räknas inte som bekräftelse på "Ta bort alla favoriter", låsta favoriter visas som silhuett, fokus stannar på hjärtat, storleksbilden hoppar inte (CLS 0,44).
 - **Innehåll:** ca 40 rättelser i fakta och språk, bl.a. Triceratops tänder klippte (malde inte), Brachiosaurus näsborrar, Archaeopteryx hade ingen näbb, inga kända Argentinosaurus-ägg, Baryonyx 126 till 122 milj. år, Protoceratops 85 kg (läten omgjorda), "för 68 till 66 miljoner år sedan", Quetzalcoatlus betyder fjäderklädd orm.
 
-**Inte rättat, kräver Patrik** (står i BACKLOG under Appbutiker):
-- Cloudflare Web Analytics laddar `static.cloudflareinsights.com/beacon.min.js` på live-sajten (verifierat 2026-10-25). Inga kakor, men tredjepartsanalys stoppar Apples Kids-kategori. Ändras i Cloudflare-zonen buildapp.se, som delas med andra projekt.
-- Källänken på kortets baksida går ut ur appen utan föräldraspärr.
-- Ingen integritetspolicy för Dinodeck.
+**Inte rättat, kräver Patrik** (står i BACKLOG under Appbutiker): Cloudflare Web Analytics laddar `static.cloudflareinsights.com/beacon.min.js` på live-sajten (verifierat 2026-10-25). Inga kakor, men tredjepartsanalys stoppar Apples Kids-kategori. Ändras i Cloudflare-zonen buildapp.se, som delas med andra projekt. Patrik tar det själv om det blir butiksappar. Källänken och integritetspolicyn är gjorda, se nedan.
+
+### Natt 2026-10-25/26: resten av granskningen och designrunda
+
+Live (`06db28a` till `65b5f59`), verifierat i Chromium mot `vite preview` på 390×844, 844×390, 667×375, 820×1180 och 1440×900:
+
+- **Målarbilder:** tolv konturer gick ut i kanten (svansspetsar, nosar), omritade av Codex med marginal (`img-src/v3/line-edge/`). `make-outlines.py` beskär efter teckningens egen ram och jämför täthet, inte yta. Höga djur (Brachiosaurus, Quetzalcoatlus, Therizinosaurus) skrivs ut på stående A4, `print.ts` väljer; resten liggande. Prövat som PDF, en sida var.
+- **Föräldraspärr:** källänken öppnas efter en multiplikationsfråga (6 till 9) i en `<dialog>`. **Integritetspolicy:** `public/integritet.html` (sv/en), länkad från föräldraläget, nämner Cloudflare-räkningen på webbversionen.
+- **Övrigt:** sidtiteln följer språket, manifest med `id`, `categories`, `orientation: any`. Tio dubblettfakta utbytta. Fokus följer med till nästa kort med tangentbord, `storage`-händelsen synkar två öppna kopior, ResizeObserver kopplas bort.
+- **Design** (tre granskningsagenter: visuellt, flöde, rörelse och layout):
+  - Liggande telefon: menyn som list till vänster, kortet efter höjd (4:3), scenens fack i två kolumner bredvid, utmaningen utan scroll. Tidslinjen behåller minst fyra rader (tre får inte plats med 40 djur).
+  - Surfplatta och dator: kortet 3:4 och centrerat, utmaningen centrerad (sjönk förut till botten), favoritrutnätet max 1100 px.
+  - Utmaning: syntetiserade ljud (Web Audio, inga filer) för rätt (ett tonsteg högre per stjärna), fel och vinst; vibration på Android; fel knapp skakar; vrålet kommer med färgen; större skur och glöd; "En till" spelar nästa kort på samma nivå. Frågorna läses upp på nivå 3-5 och 6-7 (Piper, `prompt-*.mp3`, 10 klipp) med högtalarknapp. Stapel bredvid "8 / 32".
+  - Rörelse: nästa kort glider fram, kastkurvan behåller fingrets fart, vyer tonar över (View Transitions), alla knappar ger efter vid tryck. Scroll nollställs mellan vyer (detaljvyn öppnade förut halvvägs ner).
+  - Scenen: verktygen som ikoner på ljus platta, nya djur sprids från mitten i stället för samma punkt.
+- **Beslut tagna utan Patrik:** spärren som multiplikation; kortlekens ordning orörd (öppna först); vänsterpilen på hoppa över-knappen behålls (samma håll som svepet).
+- **Inte verifierat:** riktig telefon (vibration, `:active` i iOS Safari, View Transitions i Safari), skrivare, ljuden och uppläsningen avlyssnade.
 
