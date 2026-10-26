@@ -1,0 +1,12 @@
+Dinodeck: licenser för ljud som andra har gjort
+
+Rösten som läser frågorna på svenska är gjord med OmniVoice (k2-fsa/OmniVoice, Apache-2.0),
+vars ljudtokenizer har Boson Higgs Audio 2 Community License. Den kräver följande rader:
+
+Built with Higgs Materials licensed from Boson AI USA, Inc., Copyright Boson AI USA, Inc., All Rights Reserved and Meta Llama 3 licensed under the Meta Llama 3 Community License, Copyright Meta Platforms, Inc., All Right Reserved. based on Meta Llama 3
+
+Meta Llama 3 is licensed under the Meta Llama 3 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
+Boson Higgs Audio 2 is licensed under the Boson Community License, Copyright © Boson AI USA, Inc. All Rights Reserved.
+
+Namnen och de engelska frågorna läses av Piper med rösterna sv_SE-nst (NST, CC0, KBLab)
+och en_GB-cori (LibriVox, public domain).

@@ -43,6 +43,7 @@ const UI = {
   source: { sv: 'Källa', en: 'Source' },
   title: { sv: 'Dinodeck: dinosauriekort för barn', en: 'Dinodeck: dinosaur cards for kids' },
   privacy: { sv: 'Integritet', en: 'Privacy' },
+  licences: { sv: 'Licenser', en: 'Licences' },
   gateAsk: { sv: 'För vuxna: svara för att öppna länken.', en: 'For grown-ups: answer to open the link.' },
   cancel: { sv: 'Avbryt', en: 'Cancel' },
   open: { sv: 'Öppna', en: 'Open' },

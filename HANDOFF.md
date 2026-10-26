@@ -293,3 +293,12 @@ Live (`06db28a` till `65b5f59`), verifierat i Chromium mot `vite preview` på 39
 - **Ungarnas pip** (Patrik 2026-10-26): `peep()` i `src/sound.ts`, syntetiskt som klangerna. Två till fyra snabba "piip" som stiger och faller, mönstret bestämt av djurets id (samma unge låter alltid likadant), tonhöjden efter den vuxnas vikt (ca 1 700 Hz för Brachiosaurus, ca 3 300 Hz för Velociraptor). Piper när ungen kläcks och när man trycker på den. Inte avlyssnat av människa.
 - **Hjärtknappen på kortleken** är ifylld när översta kortet redan är favorit (`fillDeck`, `aria-pressed`). Provat genom tolv kort.
 - **Remote med kontonamn:** `origin` är `https://Elwyndaz@github.com/buildapp-se/dinodeck.git`, så push fungerar oavsett vilket gh-konto som är aktivt (fackligastudier-ui används av affisch och projekt).
+
+### 2026-10-26: svenska frågorna med OmniVoice
+
+- Räknefrågan heter nu "Hur många dinosaurier?" (Patrik: man ser knappt vilken art det är).
+- Patrik jämförde ElevenLabs (Alice och Jessica), OmniVoice och Piper. Han valde OmniVoice utan referens i tempo 0,75 (`audio-src/omnivoice-ref.wav`). De fem svenska `prompt-*-sv.mp3` är gjorda med `tools/make-voice-sv.py`, med det valda klippet som referens. Alla fem transkriberades tillbaka ordagrant av KB-Whisper, och de har samma tempo som det valda klippet. Ingen har lyssnat på de färdiga klippen.
+- Fälla: med `speed=0.75` kom två gånger ett helt tomt klipp. Längd per klipp (`duration`) och omförsök gav rätt alla fem.
+- Namnen och engelskan stannar hos Piper. Patrik researchar talsyntes med en annan agent.
+- Licens för Boson Higgs Audio 2 (OmniVoices tokenizer) läst i sin helhet: attributionsraderna finns i `public/licenser.txt`, länkade i föräldraläget. Utökad licens krävs först över 100 000 användare per år.
+- ElevenLabs-prov kostade cirka 0,008 USD från OpenRouter-saldot.

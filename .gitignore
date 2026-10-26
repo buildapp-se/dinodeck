@@ -7,3 +7,6 @@ audio-src/voices/
 .repowise/
 .playwright-mcp/
 .claude/
+# Voice samples for listening, and OmniVoice takes before mp3 (tools/make-voice-sv.py), not shipped.
+audio-src/voice-test/
+audio-src/omnivoice/

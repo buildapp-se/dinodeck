@@ -3,7 +3,7 @@
     uv run --python 3.12 --with piper-tts --with soundfile --with numpy tools/make-names.py
 
   -> public/audio/<id>-say-sv.mp3, public/audio/<id>-say-en.mp3
-  -> public/audio/prompt-<key>-sv.mp3 and -en.mp3: the challenge questions, read aloud for children who cannot read yet
+  -> public/audio/prompt-<key>-en.mp3: the challenge questions, read aloud for children who cannot read yet
 
 Runs Piper on this computer: no account, no service, nothing sent anywhere. The two voices are
 trained from scratch on free recordings (licences in VOICES below) and are downloaded on first run
@@ -82,13 +82,13 @@ NAMES: dict[str, dict[str, str]] = {
 }
 
 
-# Plain sentences are given as text: the voices read ordinary words well. "T. rex" is spelt as it is said.
+# Plain sentences are given as text: the voice reads ordinary words well. Swedish questions: tools/make-voice-sv.py.
 PROMPTS: dict[str, dict[str, str]] = {
-    "how-old": {"sv": "Hur gammal är du?", "en": "How old are you?"},
-    "who": {"sv": "Vem är det?", "en": "Who is it?"},
-    "count": {"sv": "Hur många te rex?", "en": "How many tee rexes?"},
-    "longest": {"sv": "Vilken var längst?", "en": "Which one was longest?"},
-    "try-again": {"sv": "Försök igen!", "en": "Try again!"},
+    "how-old": {"en": "How old are you?"},
+    "who": {"en": "Who is it?"},
+    "count": {"en": "How many dinosaurs?"},
+    "longest": {"en": "Which one was longest?"},
+    "try-again": {"en": "Try again!"},
 }
 
 
@@ -148,6 +148,8 @@ def main() -> None:
             if not 0.05 * sounds <= len(y) / sr <= 0.22 * sounds:
                 problems.append(f"{path.name}: {len(y) / sr:.2f} s for {sounds} sounds")
         for key, said in PROMPTS.items():
+            if lang not in said:
+                continue
             y, sr = speak(voice, said[lang], text=True)
             path = OUT / f"prompt-{key}-{lang}.mp3"
             sf.write(path, y, sr, format="MP3")

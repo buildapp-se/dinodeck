@@ -53,7 +53,7 @@ function count(rand: Rand, level: Level): Question {
   const n = int(rand, 1, level === 'small' ? 5 : 9);
   return numberQuestion(
     rand,
-    { kind: 'count', prompt: { sv: 'Hur många T. rex?', en: 'How many T. rexes?' }, show: { n }, say: 'count' },
+    { kind: 'count', prompt: { sv: 'Hur många dinosaurier?', en: 'How many dinosaurs?' }, show: { n }, say: 'count' },
     n,
   );
 }
