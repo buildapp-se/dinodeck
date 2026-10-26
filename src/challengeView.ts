@@ -90,7 +90,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
     const q = makeQuestion(level, Math.random, ctx.target, ctx.dinos, withImage);
     view.innerHTML = `
       <section class="challenge">
-        <p class="win-count">${ctx.wonCount} / ${toWin}</p>
+        <p class="win-count" aria-label="${ctx.wonCount} ${l === 'sv' ? 'av' : 'of'} ${toWin}"><span class="collect"><i style="width:${Math.round((100 * ctx.wonCount) / toWin)}%"></i></span>${ctx.wonCount} / ${toWin}</p>
         ${stars(right, l)}
         ${showHtml(q)}
         <h2${level === 'small' ? ' class="visually-hidden"' : ''}>${q.prompt[l]}</h2>

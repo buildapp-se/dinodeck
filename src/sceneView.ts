@@ -42,10 +42,10 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       </div>
       <div class="stage"></div>
       <div class="tools">
-        <button type="button" data-tool="smaller" aria-label="${t(l, 'smaller')}">−</button>
-        <button type="button" data-tool="bigger" aria-label="${t(l, 'bigger')}">+</button>
-        <button type="button" data-tool="flip" aria-label="${t(l, 'turn')}">⇄</button>
-        <button type="button" data-tool="remove" aria-label="${t(l, 'takeAway')}">✕</button>
+        <button type="button" data-tool="smaller" aria-label="${t(l, 'smaller')}">${icon('minus')}</button>
+        <button type="button" data-tool="bigger" aria-label="${t(l, 'bigger')}">${icon('plus')}</button>
+        <button type="button" data-tool="flip" aria-label="${t(l, 'turn')}">${icon('mirror')}</button>
+        <button type="button" data-tool="remove" aria-label="${t(l, 'takeAway')}">${icon('close')}</button>
       </div>
       <div class="tray">
         ${ctx.open.map((d) => `<button type="button" data-add="${d.id}" aria-label="${d.name}"><img src="img/${d.id}.webp" alt=""></button>`).join('')}
@@ -160,7 +160,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     b.addEventListener('click', () => {
       const d = ctx.open.find((x) => x.id === b.dataset.add);
       if (!d || scene.items.length >= MAX_SCENE_ITEMS) return;
-      selected = { id: d.id, x: 0.5 + ((scene.items.length % 5) - 2) * 0.12, y: 0.7, size: startSize(d), flip: false };
+      selected = { id: d.id, x: 0.5 + [0, -0.1, 0.1, -0.2, 0.2][scene.items.length % 5]!, y: 0.7, size: startSize(d), flip: false };
       scene.items.push(selected);
       ctx.save();
       draw();
