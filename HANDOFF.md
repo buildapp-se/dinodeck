@@ -1,8 +1,8 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: 40 djur live, designrunda live (liggande telefon, vinstfirande, ljud och uppläsning i utmaningen). Kvar: test på riktig telefon, surfplatta och papper
-nextAction: Patrik provar på telefon (liggande, vibration, ljud), skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
+currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
+nextAction: Patrik provar ägget och liggande läge på telefon, skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
 blockers: []
 reviewedAt: 2026-10-26
 ---
@@ -280,3 +280,12 @@ Live (`06db28a` till `65b5f59`), verifierat i Chromium mot `vite preview` på 39
 - **Beslut tagna utan Patrik:** spärren som multiplikation; kortlekens ordning orörd (öppna först); vänsterpilen på hoppa över-knappen behålls (samma håll som svepet).
 - **Inte verifierat:** riktig telefon (vibration, `:active` i iOS Safari, View Transitions i Safari), skrivare, ljuden och uppläsningen avlyssnade.
 
+### 2026-10-26: Dagens ägg, kortleksordning, föräldrasammanfattning
+
+- **Dagens ägg** (Patriks idé): ett ägg uppe till vänster på kortleken när det finns en unge att kläcka. Tre tryck knäcker det (spricka, knäckljud, vibration), en unge till ett av de öppna korten kommer ut med ett faktum och flyttar in på kortet: liten bild nere till höger på framsidan och i detaljvyn, faktat under "Ungen" på baksidan. Tryck på ungen piper. Ett ägg per lokalt datum (`state.eggDay`); ägget räknas som använt först vid tredje trycket. Inget ägg om inget öppet kort har en okläckt unge.
+- **Tolv ungar:** de åtta startkorten plus Maiasaura, Protoceratops, Parasaurolophus och Oviraptor. Målade av Codex (`img-src/BRIEF-baby.md`, vuxenbilden som referens), konverterade med `convert-art.py baby/<id>` till 480 px. Fakta granskade av en agent mot källor, sju omformulerade (`docs/research/babies.md`). Havsreptilerna får aldrig ägg (födde levande, testat).
+- **Kortleken:** bara de tre nästa att vinna ligger i leken, varvade med öppna kort (`deckOrder`). Nästa att vinna = kort med unge först, sedan katalogordning. Utmaningen utan valt kort tar nästa i tur i stället för slump.
+- **Föräldraläget:** sammanfattning överst (vunna kort och kläckta ungar med stapel, favoriter, tre senast vunna).
+- **Ikon:** Dinodeck har egen ikon (buildapp.se:s hus är sajtens). 1024 px för App Store i `store/icon-1024.png`.
+- **Beslut tagna utan Patrik:** ungen kommer bara till kort barnet redan har (ägget delar inte ut vinstkort); vilken unge slumpas bland de möjliga; ägget ligger på kortleken, inte i menyn.
+- **Inte verifierat:** riktig telefon (knäckljud, vibration), Protoceratops-ungens krage är nästan vuxen.

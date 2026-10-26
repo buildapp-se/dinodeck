@@ -6,3 +6,4 @@ img-src/
 audio-src/voices/
 .repowise/
 .playwright-mcp/
+.claude/

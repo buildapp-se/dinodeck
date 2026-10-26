@@ -47,7 +47,7 @@ Rekommenderad väg: Capacitor med `dist/` inbakat, för båda butikerna (fungera
 - [x] `[P1]` (klart 2026-10-26, multiplikationsfråga i `<dialog>`) Källänken på kortets baksida bakom en föräldraspärr.
 - [x] `[P1]` (klart 2026-10-26, `public/integritet.html`) Integritetspolicy för Dinodeck, länkad från föräldraläget.
 - [ ] `[P2]` Capacitor: spegla sparat läge till `@capacitor/preferences` (iOS kan rensa webbvyns lagring vid lite utrymme).
-- [ ] `[P2]` Manifest: `screenshots`, ikoner 1024×1024 (App Store) och 512×512, featuregrafik 1024×500. (`id`, `orientation`, `categories` klara 2026-10-26.)
+- [ ] `[P2]` Manifest: `screenshots`, featuregrafik 1024×500. (Ikon 1024 i `store/icon-1024.png` och 512 i `public/icons/` klara 2026-10-26, `tools/make-icons.py`.)
 - [x] `[P2]` (klart 2026-10-26, egen liggande layout) Telefon på tvären (844×390).
 - [x] `[P2]` (klart 2026-10-26) Barn som inte läser: upplästa frågor och rätt/fel-ljud.
 - [ ] `[P3]` Innehåll: tio dubbletter utbytta 2026-10-26. Kvar: "samtidigt som T. rex" och papegojnäbb på flera kort, ca 20 fakta som upprepar kortets egen text. Coelophysis kannibalrad (motbevisad i texten) för 4-åringar?
@@ -57,9 +57,12 @@ Rekommenderad väg: Capacitor med `dist/` inbakat, för båda butikerna (fungera
 
 Det mesta från de tre designagenterna är gjort (se HANDOFF, natt 2026-10-25/26). Kvar:
 
-- [ ] `[P2]` Kortlekens ordning: efter de öppna korten kommer 32 silhuetter i rad. Blanda in låsta kort, eller ett enda "32 kort att vinna"-kort.
-- [ ] `[P2]` Ett skäl att komma tillbaka utan streak-press, t.ex. "Dagens ägg" (gratis kort eller snabbquiz). Kräver äggbild och knäckljud.
-- [ ] `[P2]` Föräldraläget: sammanfattning (vunna, veckans kort), skriv ut favoriternas målarbilder; flytta "Ta bort alla favoriter" dit.
+- [x] `[P2]` (klart 2026-10-26) Kortlekens ordning: bara de tre nästa att vinna, varvade med öppna kort.
+- [x] `[P2]` (klart 2026-10-26, Patriks idé) Dagens ägg: en unge om dagen till ett öppet kort, tolv ungar.
+- [ ] `[P2]` Ungar till de övriga 24 djuren som lägger ägg (havsreptilerna föder levande, inget ägg). Nästa i tur: de mest kända, t.ex. Spinosaurus, Allosaurus, Iguanodon, Edmontosaurus. Fakta per unge måste ha källa (`docs/research/babies.md`); för arter utan kända ungar skrivs det ärligt, med släkting.
+- [ ] `[P3]` Målarbilder av ungarna.
+- [x] `[P2]` (klart 2026-10-26) Föräldraläget: sammanfattning (vunna kort, kläckta ungar, favoriter, tre senast vunna).
+- [ ] `[P3]` Föräldraläget: skriv ut favoriternas målarbilder i ett svep. Veckans kort kräver datum per vinst (sparas inte i dag).
 - [ ] `[P3]` Hjälp efter två fel (rätt svar pulserar); silhuettfrågor på nivå 3-5 med olika kroppsformer; silhuetter även på nivå 8-10.
 - [ ] `[P3]` Visuellt: kortets baksida med faktaruta, detaljvyns knappar i två nivåer, sidhuvud med märke, tidslinjens rader centrerade och etiketter som piller, kortstapeln lätt solfjäder, enhetlig radieskala, rensa det gamla CSS-lagret (`style.css` rad 1-455).
 - [ ] `[P3]` Nytt djur i scenen: fall in med studs; "NY"-märke på vunna kort tills de vänts.
