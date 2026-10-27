@@ -45,7 +45,7 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 
 ## Audits
 - OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static PWA with no server; 0 high, 0 medium; the lane's missing-CSP low is refuted live (zone sets frame-ancestors 'none' and X-Frame-Options), root-relative manifest and font URLs on the shared buildapp.se origin left as low
-- Mutation: 2026-10-27, warn, Stryker 10 on 5 src files: challenge 86,29 % (64,47), print 97,50 % (27,50), state 89,57 % (66,87), text 11,30 % (3,77), timeline 100,00 % (75,76); tests by Gemini 3.8 Flash, reviewed by Claude
+- Mutation: 2026-10-27, warn, Stryker 10 on 6 src files: challenge 86,29 % (64,47), picture 100,00 % (75,61), print 97,50 % (27,50), state 89,57 % (66,87), text 11,30 % (3,77), timeline 100,00 % (75,76); tests by Gemini 3.8 Flash, reviewed by Claude
 - npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Database: 2026-10-25, none, localStorage
