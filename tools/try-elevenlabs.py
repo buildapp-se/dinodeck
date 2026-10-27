@@ -50,11 +50,24 @@ def main() -> int:
                 return 1
             path.write_bytes(data)
             print(f"ok {path.name}")
-    rows = "".join(
-        f"<h2>{id_}</h2>" + "".join(f'<p>{n} <audio controls src="{id_}-{n}.mp3"></audio></p>' for n in range(1, DRAFTS + 1))
-        for id_ in PROMPTS
+    # One choice per animal, "none" asks for new drafts; the summary at the bottom is pasted back to Claude.
+    def row(id_: str) -> str:
+        drafts = sorted(OUT.glob(f"{id_}-*.mp3"), key=lambda p: int(p.stem.rsplit("-", 1)[1]))
+        opts = "".join(
+            f'<label><input type=radio name="{id_}" value="{p.stem.rsplit("-", 1)[1]}"> {p.stem.rsplit("-", 1)[1]} <audio controls src="{p.name}"></audio></label><br>'
+            for p in drafts
+        )
+        return f'<h2>{id_}</h2>{opts}<label><input type=radio name="{id_}" value="nya"> inget bra, gör nya</label>'
+    script = """<script>
+const out = document.querySelector('textarea');
+document.addEventListener('change', () => { out.value = [...new Set([...document.querySelectorAll('input')].map(i => i.name))]
+  .map(n => n + '=' + (document.querySelector(`input[name="${n}"]:checked`)?.value ?? '?')).join('\\n'); });
+</script>"""
+    (OUT / "listen.html").write_text(
+        f"<!doctype html><meta charset=utf-8><title>Vrål</title><body style='font-family:sans-serif;max-width:40em;margin:auto'>"
+        f"{''.join(row(i) for i in PROMPTS)}<h2>Klistra in till Claude</h2><textarea rows=10 cols=40 readonly></textarea>{script}",
+        encoding="utf-8",
     )
-    (OUT / "listen.html").write_text(f"<!doctype html><meta charset=utf-8><title>Vrål</title><body style='font-family:sans-serif'>{rows}", encoding="utf-8")
     return 0
 
 
