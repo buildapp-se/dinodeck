@@ -88,11 +88,26 @@ function fitScale(root: ParentNode, d: Dino): void {
 
 /** Card text a beginning reader can hear: each word in a span, lit up while the voice says it (tools/make-read-sv.py).
  *  Swedish only so far; a text changed since its clip was made stays plain until the clip is made again. */
-function readable(l: Lang, d: Dino, key: string, text: string): string {
+function clipFor(l: Lang, d: Dino, key: string, text: string): number[][] | null {
   const clip = (READ_SV as Record<string, Record<string, { text: string; words: number[][] }>>)[d.id]?.[key];
-  if (l !== 'sv' || clip?.text !== text) return text;
-  const words = text.split(' ').map((w, i) => `<span class="w" data-at="${clip.words[i]![0]}" data-to="${clip.words[i]![1]}">${w}</span>`);
-  return `${words.join(' ')} <button type="button" class="say-btn" data-read="${d.id}-${key}" aria-label="${t(l, 'listen')}">${icon('sound')}</button>`;
+  return l === 'sv' && clip?.text === text ? clip.words : null;
+}
+const spans = (clip: string, text: string, times: number[][]): string =>
+  text.split(' ').map((w, i) => `<span class="w" data-clip="${clip}" data-at="${times[i]![0]}" data-to="${times[i]![1]}">${w}</span>`).join(' ');
+const readBtn = (l: Lang, clip: string): string => ` <button type="button" class="say-btn" data-read="${clip}" aria-label="${t(l, 'listen')}">${icon('sound')}</button>`;
+
+function readable(l: Lang, d: Dino, key: string, text: string): string {
+  const times = clipFor(l, d, key, text);
+  return times ? spans(`${d.id}-${key}`, text, times) + readBtn(l, `${d.id}-${key}`) : text;
+}
+
+/** "Did you know?": one clip reads every point, with a pause between them; one button by the heading. */
+function didYouKnow(l: Lang, d: Dino): string {
+  const facts = d.facts.map((f) => f[l]);
+  const times = clipFor(l, d, 'facts', facts.join(' '));
+  let at = 0;
+  const items = facts.map((f) => `<li>${times ? spans(`${d.id}-facts`, f, times.slice(at, (at += f.split(' ').length))) : f}</li>`);
+  return `<h3>${t(l, 'didYouKnow')}${times ? readBtn(l, `${d.id}-facts`) : ''}</h3><ul>${items.join('')}</ul>`;
 }
 
 function factsHtml(d: Dino, compact = false): string {
@@ -111,11 +126,10 @@ function factsHtml(d: Dino, compact = false): string {
       <dt>${t(l, 'ate')}</dt><dd>${dietName(l, d.diet)}</dd>
       <dt>${t(l, 'found')}</dt><dd>${d.found[l]}</dd>
     </dl>
-    <h3>${t(l, 'didYouKnow')}</h3>
-    <ul>${d.facts.map((f, i) => `<li>${readable(l, d, `fact-${i + 1}`, f[l])}</li>`).join('')}</ul>
+    ${didYouKnow(l, d)}
     ${state.hatched.includes(d.id) && BABIES[d.id] ? `<h3>${t(l, 'theBaby')}</h3><p>${readable(l, d, 'baby', BABIES[d.id]![l])}</p>` : ''}
     <h3>${t(l, 'sound')}</h3>
-    <p>${readable(l, d, 'sound', d.sound[l])}</p>
+    <p>${d.sound[l]}</p>
     <button type="button" class="chip listen" data-sound="${d.id}-call">${icon('sound')} ${t(l, 'listen')}</button>
     <p class="guess">${t(l, 'soundGuess')}</p>
     <h3>${t(l, 'colour')}</h3>
@@ -538,7 +552,7 @@ document.addEventListener('click', (e) => {
   if (sound && !state.muted) play(`audio/${sound}.mp3`);
   const read = (e.target as Element).closest<HTMLElement>('[data-read]');
   if (!read || state.muted) return;
-  const words = [...read.parentElement!.querySelectorAll<HTMLElement>('.w')];
+  const words = [...document.querySelectorAll<HTMLElement>(`.w[data-clip="${read.dataset.read}"]`)];
   play(`audio/read/${read.dataset.read}.mp3`, (elapsed) => {
     const tick = (): void => {
       const s = elapsed();

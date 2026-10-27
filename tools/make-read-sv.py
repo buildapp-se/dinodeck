@@ -5,7 +5,7 @@ Three steps, the middle one in WSL like tools/make-voice-sv.py (same voice, same
 
     node tools/read-texts.ts
     MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- bash -c 'cd ~/voice && HF_HOME=~/voice/hf ~/voice/OmniVoice/.venv/bin/python /mnt/c/dev/dinodeck/tools/make-read-sv.py [id ...]'
-    for f in audio-src/read/*.wav; do ffmpeg -loglevel error -y -i "$f" -ac 1 -b:a 48k "public/audio/read/$(basename "${f%.wav}").mp3" || break; done
+    for f in audio-src/read/*.wav; do case $f in *-fact-*) continue;; esac; ffmpeg -loglevel error -y -i "$f" -ac 1 -b:a 48k "public/audio/read/$(basename "${f%.wav}").mp3" || break; done
 
   -> audio-src/read/<id>-<key>.wav, public/audio/read/<id>-<key>.mp3 and src/read-sv.json: {id: {key: {text, words: [[start, end], ...]}}},
      one [start, end] in seconds per word of `text` split on spaces.
@@ -27,6 +27,7 @@ import torch
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "audio-src" / "read"
+FACT_GAP = 0.8  # seconds of quiet between the "Did you know?" points
 TIMES = ROOT / "src" / "read-sv.json"  # imported by the app (src/main.ts)
 
 _spec = importlib.util.spec_from_file_location("voice", Path(__file__).with_name("make-voice-sv.py"))
@@ -128,6 +129,20 @@ def main() -> None:
         if any(b[0] < a[0] for a, b in zip(times, times[1:])) or times[-1][1] > secs + 0.2:
             problems.append(f"{u['id']}-{u['key']}: word times out of order or past the end")
         old.setdefault(u["id"], {})[u["key"]] = {"text": u["text"], "words": times} | ({"said": u["said"]} if u["said"] != u["text"] else {})
+    for id_ in {u["id"] for u in units}:
+        keys = [u["key"] for u in units if u["id"] == id_]
+        # Texts no longer read aloud (the sound paragraph, Patrik 2026-10-27) leave the app's data.
+        old[id_] = {k: v for k, v in old[id_].items() if k in keys or k == "facts"}
+        # "Did you know?" is read as one clip: every point, with a pause between them (Patrik 2026-10-27).
+        facts = [k for k in keys if k.startswith("fact-")]
+        parts, words, at = [], [], 0.0
+        for k in facts:
+            y, sr = sf.read(SRC / f"{id_}-{k}.wav", dtype="float32")
+            words += [[round(a + at, 2), round(b + at, 2)] for a, b in old[id_][k]["words"]]
+            parts += [y, np.zeros(int(FACT_GAP * sr), dtype=np.float32)]
+            at += len(y) / sr + FACT_GAP
+        sf.write(SRC / f"{id_}-facts.wav", np.concatenate(parts[:-1]), sr)
+        old[id_]["facts"] = {"text": " ".join(old[id_][k]["text"] for k in facts), "words": words}
     TIMES.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"{'FAIL' if problems else 'ok  '} {len(todo)} clips timed")
     for p in problems:

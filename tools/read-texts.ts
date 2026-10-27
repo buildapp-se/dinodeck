@@ -9,7 +9,6 @@ const texts = DINOS.flatMap((d) => [
   { id: d.id, key: 'short', text: d.short.sv },
   ...d.facts.map((f, i) => ({ id: d.id, key: `fact-${i + 1}`, text: f.sv })),
   ...(BABIES[d.id] ? [{ id: d.id, key: 'baby', text: BABIES[d.id]!.sv }] : []),
-  { id: d.id, key: 'sound', text: d.sound.sv },
   { id: d.id, key: 'colour', text: colourNote('sv', d) },
   { id: d.id, key: 'long', text: d.long.sv },
 ]);
