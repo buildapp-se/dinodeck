@@ -396,7 +396,7 @@ function renderDetail(d: Dino): void {
       ${artHtml(d, true)}
       <h2 lang="la">${d.name}</h2>
       <p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>
-      <p class="lead">${d.short[l]}</p>
+      <p class="lead">${readable(l, d, 'short', d.short[l])}</p>
       <button type="button" id="print-dino" class="chip print-btn">${icon('print')} ${t(l, 'printColour')}</button>
       ${scaleHtml(d)}
       ${factsHtml(d, true)}
