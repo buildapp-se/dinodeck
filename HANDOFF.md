@@ -12,7 +12,7 @@ reviewedAt: 2026-10-27
 ## 2026-10-27: uppläsning med ordmarkering, prov på T. rex
 
 - **Live:** T. rex detaljsida på svenska, högtalarknapp efter ingressen och varje faktarad; orden lyser (ockra) medan OmniVoice läser. Knapparna döljs när ljudet är av. Andra djur och engelska visar texten som förut.
-- **Hur:** `tools/make-read-sv.py` gör klipp (`public/audio/read/`) och ordtider (`src/read-sv.json`, importeras av `main.ts`, `readable()`). `play()` i `src/sound.ts` ger nu en klocka till den som vill följa ljudet.
+- **Hur:** `tools/make-read-sv.py` gör klipp (`public/audio/read/`) och ordtider (`src/read-sv.json`, importeras av `main.ts`, `readable()`); texterna samlas av `tools/read-texts.ts`. Ordtider med MMS-alignern; första försöket (orden fördelade efter bokstäver) drev upp till en sekund i långa texter. `SAY` stavar om feluttalade ord ("banaan"). `play()` i `src/sound.ts` ger nu en klocka till den som vill följa ljudet.
 - **Verifierat:** Playwright på buildapp.se: orden tänds i ordning och pausen mellan meningarna hålls. Ej verifierat: att markeringen följer rösten för örat, på riktig telefon.
 - **Fälla:** KB-Whispers ordtider (`return_timestamps="word"`) ger CUDA out of memory i WSL fast 7 GB är ledigt; vanlig transkribering fungerar.
 

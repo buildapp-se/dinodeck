@@ -47,45 +47,37 @@ def spoken(text: str) -> str:
     return " ".join(say(w) for w in text.split())
 
 
-def word_times(text: str, y: np.ndarray, sr: int) -> list[list[float]]:
-    """A [start, end] for every space-separated word of `text`. The voice speaks at a set pace per letter
-    (duration = PACE * length), so the words are laid out over the time it actually speaks, by letters,
-    skipping its pauses. Whisper's own word times crash the transformers in the WSL install (CUDA out of
-    memory with 7 GB free, 2026-10-27).
-    ponytail: a word can land 0,1-0,2 s off; forced alignment (torchaudio MMS) if that is ever seen."""
-    hop = sr // 100
-    env = np.array([np.sqrt(np.mean(y[i:i + hop] ** 2)) for i in range(0, len(y) - hop + 1, hop)])
-    talking = env > env.max() * 0.05
-    # A pause is at least 0,12 s of quiet; shorter dips are inside words and count as speech.
-    quiet = ~talking
-    i = 0
-    while i < len(quiet):
-        if quiet[i]:
-            j = i
-            while j < len(quiet) and quiet[j]:
-                j += 1
-            if j - i < 12:
-                talking[i:j] = True
-            i = j
-        else:
-            i += 1
-    frames = np.flatnonzero(talking)  # the 10 ms frames where it speaks, in order
-    words = text.split()
-    # Each sentence gets its own stretch of speech between the long pauses (0,3 s and up), when they add up.
-    cuts = [k + 1 for k in np.flatnonzero(np.diff(frames) > 30)]
-    ends = [k + 1 for k, w in enumerate(words[:-1]) if w[-1] in ".!?" and not (len(w) == 2 and w[0].isupper())]  # "T." in "T. rex" ends nothing
-    if len(cuts) != len(ends):
-        cuts, ends = [], []
-    times = []
-    for fs, ws in zip(np.split(frames, cuts), np.split(np.array(words, dtype=object), ends)):
-        letters = [max(1, len(voice.plain(w))) for w in ws]
-        total, at = sum(letters), 0
-        for n in letters:
-            a = fs[min(len(fs) - 1, at * len(fs) // total)]
-            b = fs[min(len(fs) - 1, (at + n) * len(fs) // total - 1)]
-            times.append([round(a / 100, 2), round((b + 1) / 100, 2)])
-            at += n
-    return times
+_fa: tuple | None = None
+
+
+def word_times(said: str, y: np.ndarray, sr: int) -> list[list[float]]:
+    """A [start, end] for every space-separated word of `said`, by forced alignment: torchaudio's MMS
+    aligner (1 100 languages) is given the known text and finds where each letter sits in the sound.
+    It knows only a-z, so å, ä and ö are read as a, a and o; a word with no letters at all (a number)
+    gets the gap between its neighbours. Whisper's own word times crash in this WSL install (CUDA out of
+    memory with 7 GB free, 2026-10-27), and spreading words by letters drifted a second in long texts."""
+    global _fa
+    import torchaudio
+
+    if _fa is None:
+        b = torchaudio.pipelines.MMS_FA
+        _fa = (b.get_model().to("cuda:0"), b.get_tokenizer(), b.get_aligner(), b.sample_rate)
+    model, tokenizer, aligner, rate = _fa
+    words = said.split()
+    norm = ["".join(c for c in w.lower().translate(str.maketrans("åäöéü", "aaoeu")) if "a" <= c <= "z") for w in words]
+    wave = torchaudio.functional.resample(torch.from_numpy(y).unsqueeze(0), sr, rate).to("cuda:0")
+    with torch.inference_mode():
+        emission, _ = model(wave)
+        spans = aligner(emission[0], tokenizer([n for n in norm if n]))
+    step = wave.shape[1] / emission.shape[1] / rate  # seconds per emission frame
+    found = iter(spans)
+    times: list[list[float] | None] = [None if not n else [s[0].start * step, s[-1].end * step] for n in norm for s in [next(found) if n else None]]
+    for i, t in enumerate(times):
+        if t is None:
+            lo = times[i - 1][1] if i else 0.0  # type: ignore[index]
+            hi = next((x[0] for x in times[i + 1:] if x), len(y) / sr)
+            times[i] = [lo, hi]
+    return [[round(a, 2), round(b, 2)] for a, b in times]  # type: ignore[misc]
 
 
 def main() -> None:
@@ -129,7 +121,7 @@ def main() -> None:
         out = asr({"raw": y, "sampling_rate": sr}, generate_kwargs={"language": "sv"})
         score = difflib.SequenceMatcher(None, voice.plain(u["text"]), voice.plain(out["text"])).ratio()
         secs = len(y) / sr
-        times = word_times(u["text"], y, sr)
+        times = word_times(u["said"], y, sr)
         # ponytail: Whisper leans towards real words, so a low score flags a clip to listen to, not a verdict.
         if score < 0.75 or not 0.03 * len(u["text"]) <= secs <= 0.12 * len(u["text"]) + 0.3:
             problems.append(f"{u['id']}-{u['key']}: {secs:.1f} s, heard {out['text'].strip()!r:.80} ({score:.2f})")
