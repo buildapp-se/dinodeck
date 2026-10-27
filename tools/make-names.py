@@ -34,6 +34,15 @@ VOICES = {
     "sv": ("sv/sv_SE/nst/medium/sv_SE-nst-medium", "NST Swedish speech database, CC0, trained from scratch by KBLab (National Library of Sweden)"),
     "en": ("en/en_GB/cori/high/en_GB-cori-high", "LibriVox recordings, public domain, trained from scratch by Bryce Beattie"),
 }
+# Swedish names said by OmniVoice, the card's voice, instead (Patrik 2026-10-27): the draft from
+# tools/make-names-sv-omni.py that passed all three listens in `check-read.py --names`. Piper's own clips pass
+# that check 23 times of 40, so it is no stricter on either voice. The other names stay with Piper.
+OMNI = {
+    "tyrannosaurus-rex": 2, "triceratops": 1, "brachiosaurus": 2, "diplodocus": 1, "ankylosaurus": 2, "spinosaurus": 2,
+    "allosaurus": 1, "carnotaurus": 2, "dilophosaurus": 1, "compsognathus": 2, "archaeopteryx": 1, "microraptor": 1,
+    "apatosaurus": 2, "iguanodon": 1, "maiasaura": 1, "protoceratops": 1, "eoraptor": 1, "ceratosaurus": 1,
+    "kentrosaurus": 1, "ichthyosaurus": 1, "quetzalcoatlus": 1,
+}
 SLOWER = 1.15  # a little slower than the voice's normal pace: these are for children learning a long word
 
 S = "sˈaʉːrʉːs"  # Swedish -saurus, stressed where a Swede puts it
@@ -139,6 +148,8 @@ def main() -> None:
             if unknown:
                 problems.append(f"{dino} ({lang}): the voice has no sound for {sorted(unknown)}")
                 continue
+            if lang == "sv" and dino in OMNI:
+                continue  # said by the card's voice instead, tools/make-names-sv-omni.py
             y, sr = speak(voice, said[lang])
             path = OUT / f"{dino}-say-{lang}.mp3"
             sf.write(path, y, sr, format="MP3")

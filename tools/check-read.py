@@ -12,6 +12,8 @@ import json
 import os
 import re
 import sys
+import time
+import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -26,27 +28,58 @@ Ignore the voice's character, speed and small accent. Dinosaur names may be said
 Answer with JSON only: {{"problems": [{{"word": "<word as written>", "heard": "<what it sounded like>"}}]}}, empty list if all is right."""
 
 
-def check(model: str, clip: Path, text: str) -> list[dict]:
+def check(model: str, clip: Path, text: str, brief: str = BRIEF, field: str = "problems"):
     content = [
-        {"type": "text", "text": BRIEF.format(text=text)},
-        {"type": "input_audio", "input_audio": {"data": base64.b64encode(clip.read_bytes()).decode(), "format": "mp3"}},
+        {"type": "text", "text": brief.format(text=text)},
+        {"type": "input_audio", "input_audio": {"data": base64.b64encode(clip.read_bytes()).decode(), "format": clip.suffix[1:]}},
     ]
     req = urllib.request.Request(
         "https://openrouter.ai/api/v1/chat/completions",
         data=json.dumps({"model": model, "messages": [{"role": "user", "content": content}], "temperature": 0}).encode(),
         headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}", "Content-Type": "application/json"},
     )
-    for _ in range(3):  # an empty or malformed answer happens now and then
-        with urllib.request.urlopen(req, timeout=180) as r:
-            answer = json.load(r)["choices"][0]["message"]["content"] or ""
+    for attempt in range(6):  # an empty or malformed answer happens now and then, and so does 429 with 8 at once
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                answer = json.load(r)["choices"][0]["message"]["content"] or ""
+        except urllib.error.HTTPError as e:
+            if e.code != 429:
+                raise
+            time.sleep(5 * (attempt + 1))
+            continue
         found = re.search(r"\{.*\}", answer, re.S)
         if found:
-            return json.loads(found.group(0))["problems"]
-    raise ValueError(f"{clip.name}: no JSON in three answers")
+            return json.loads(found.group(0))[field]
+    raise ValueError(f"{clip.name}: no usable answer in six tries")
+
+
+NAME_BRIEF = """You are checking a Swedish text-to-speech clip for a children's app about dinosaurs.
+The voice should say the dinosaur name {text}. CAPITALS mark the stressed syllable; the letters sound as in Swedish.
+Is the name said that way: these syllables, stress on the capital one, nothing missing or added?
+Answer with JSON only: {{"right": true or false}}"""
+
+
+def names(model: str) -> int:
+    """--names: for each animal, the OmniVoice draft (tools/make-names-sv-omni.py) that says the name as the card's
+    hint does in all three listens, or none, and then Piper's clip stays."""
+    drafts = ROOT / "audio-src" / "names-omni"
+    rows = json.loads((drafts / "names.json").read_text(encoding="utf-8"))
+    jobs = [(id_, n, f'"{name}", pronounced "{hint}"') for id_, name, hint in rows for n in (1, 2)]
+    with ThreadPoolExecutor(8) as pool:
+        got = list(pool.map(lambda j: sum(bool(check(model, drafts / f"{j[0]}-{j[1]}.wav", j[2], NAME_BRIEF, "right")) for _ in range(VOTES)), jobs))
+    picks = {}
+    for (id_, n, _), v in zip(jobs, got):
+        if v == VOTES and id_ not in picks:
+            picks[id_] = n
+    print(" ".join(f"{i}={n}" for i, n in picks.items()))
+    print(f"ok   {len(picks)} of {len(rows)} names pass")
+    return 0
 
 
 def main() -> int:
     args = sys.argv[1:]
+    if args and args[0] == "--names":
+        return names(args[1] if len(args) > 1 else "google/gemini-4-argon")
     model = args.pop(0) if args and "/" in args[0] and not args[0].endswith(".mp3") else "google/gemini-4-argon"
     times = json.loads((ROOT / "src" / "read-sv.json").read_text(encoding="utf-8"))
     clips = [Path(a) for a in args] or sorted(CLIPS.glob("*.mp3"))

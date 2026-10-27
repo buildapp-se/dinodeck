@@ -9,8 +9,8 @@ Runs in WSL, in the OmniVoice install that filmverk set up (see filmverk docs/re
 
 Local, no account, nothing sent anywhere. Patrik chose the voice by ear 2026-10-26: the model's own voice,
 without a reference, at speed 0,75. That take, audio-src/omnivoice-ref.wav, is the reference for every clip,
-since without one each sentence would get a new voice. Names and English stay with Piper (tools/make-names.py):
-OmniVoice takes no phonetic spelling, so it cannot be told where a name is stressed, and gave Iguanodon no sound at all.
+since without one each sentence would get a new voice. English and about half the names stay with Piper
+(tools/make-names.py, OMNI): OmniVoice takes no phonetic spelling, so it cannot be told where a name is stressed.
 
 Every clip is transcribed back with KB-Whisper. Prints one line per check and exits non-zero if a clip is
 suspect: the transcript is far from the text, or the length is off.

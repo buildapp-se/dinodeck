@@ -14,3 +14,4 @@ audio-src/omnivoice/
 audio-src/elevenlabs/
 audio-src/read/
 __pycache__/
+audio-src/names-omni/
