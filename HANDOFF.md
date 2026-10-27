@@ -23,7 +23,7 @@ reviewedAt: 2026-10-27
 
 ## 2026-10-27: mutation-tester
 
-Mutation-lanes under dygnet (Gemini 3.8 Flash och Gemini 4 Argon skrev tester, Stryker 10 mätte, Claude granskade): bara testfiler ändrade om inget annat sägs, inga tester borttagna, repots kontrollkedja grön. Poängen per fil står på Mutation-raden i CONTEXT. Auditsvep inför LinkedIn: UX, WCAG (axe plus tangentbord), Lighthouse, Markup, Headers, TLS och OG image alla pass; källänken på kortet höjd från 40 till 44 px (`src/style.css` `.link`).
+Mutation-lanes under dygnet (Gemini 3.8 Flash och Gemini 4 Argon skrev tester, Stryker 10 mätte, Claude granskade): bara testfiler ändrade om inget annat sägs, inga tester borttagna, repots kontrollkedja grön. Poängen per fil står på Mutation-raden i CONTEXT. Auditsvep inför LinkedIn: UX, WCAG (axe plus tangentbord), Lighthouse, Markup, Headers, TLS och OG image alla pass; källänken på kortet höjd från 40 till 44 px (`src/style.css` `.link`). Faktagranskning (Gemini 3.8 Flash, granskad av Claude): Edmontosaurus maginnehåll står nu som osäkert (omtvistat enligt Wikipedia "Edmontosaurus"; lanens källa Uhl 2020 kunde inte bekräftas), Quetzalcoatlus vingar mäts från vingspets till vingspets. Baryonyx "liknade en gavials" avvisat, korrekt svenska. Argon-granskningen föll på kvoten.
 
 ## 2026-10-03: projektstart, steg 1
 

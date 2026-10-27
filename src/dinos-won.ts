@@ -1106,8 +1106,8 @@ export const WON: Dino[] = [
       en: 'A big duck-billed dinosaur and one of the very last dinosaurs. It lived at the same time as Tyrannosaurus rex.',
     },
     long: {
-      sv: 'Edmontosaurus hade en bred, platt näbb, och längre in satt hundratals tänder tätt packade som malde maten. I magen på fossil har man hittat barr, kvistar och frön. Den kunde gå både på två och på fyra ben och levde troligen i flock. En del fossil kallas mumier eftersom de har avtryck av huden. Därför vet forskare att den var fjällig, men inte vilken färg den hade.',
-      en: 'Edmontosaurus had a broad, flat beak, and further in sat hundreds of tightly packed teeth that ground up its food. Conifer needles, twigs and seeds have been found in the stomachs of fossils. It could walk on two legs or on four and probably lived in herds. Some fossils are called mummies because they have prints of the skin. That is how scientists know it was scaly, but not what colour it was.',
+      sv: 'Edmontosaurus hade en bred, platt näbb, och längre in satt hundratals tänder tätt packade som malde maten. I ett fossil hittade man barr, kvistar och frön inuti kroppen. Forskare är inte säkra på om det var maten eller växtdelar som spolades in efteråt. Den kunde gå både på två och på fyra ben och levde troligen i flock. En del fossil kallas mumier eftersom de har avtryck av huden. Därför vet forskare att den var fjällig, men inte vilken färg den hade.',
+      en: 'Edmontosaurus had a broad, flat beak, and further in sat hundreds of tightly packed teeth that ground up its food. Conifer needles, twigs and seeds were found inside one fossil. Scientists are not sure whether they were its food or plant bits washed in later. It could walk on two legs or on four and probably lived in herds. Some fossils are called mummies because they have prints of the skin. That is how scientists know it was scaly, but not what colour it was.',
     },
     facts: [
       { sv: 'En Edmontosaurus har ett läkt bett i svansen som troligen kom från en Tyrannosaurus rex.', en: 'One Edmontosaurus has a healed bite in its tail that probably came from a Tyrannosaurus rex.' },
@@ -1143,8 +1143,8 @@ export const WON: Dino[] = [
       en: 'One of the largest flying animals that ever lived. It was not a dinosaur, but it lived alongside them.',
     },
     long: {
-      sv: 'Quetzalcoatlus hör till flygödlorna. Vingarna var gjorda av hud och nästan lika breda som en buss är lång. På marken gick den på alla fyra, och med halsen rakt upp var den lika hög som en giraff. Forskare tror att den vandrade omkring och fångade små djur med sin långa näbb utan tänder, ungefär som en stork. För att lyfta tog den troligen sats med armarna och hoppade upp i luften.',
-      en: 'Quetzalcoatlus belongs to the pterosaurs. Its wings were made of skin and almost as wide as a bus is long. On the ground it walked on all fours, and with its neck held up it was as tall as a giraffe. Scientists think it walked about catching small animals with its long, toothless beak, a bit like a stork. To take off it probably pushed hard with its arms and vaulted into the air.',
+      sv: 'Quetzalcoatlus hör till flygödlorna. Vingarna var gjorda av hud, och från vingspets till vingspets var den nästan lika lång som en buss. På marken gick den på alla fyra, och med halsen rakt upp var den lika hög som en giraff. Forskare tror att den vandrade omkring och fångade små djur med sin långa näbb utan tänder, ungefär som en stork. För att lyfta tog den troligen sats med armarna och hoppade upp i luften.',
+      en: 'Quetzalcoatlus belongs to the pterosaurs. Its wings were made of skin, and from wingtip to wingtip it was almost as long as a bus. On the ground it walked on all fours, and with its neck held up it was as tall as a giraffe. Scientists think it walked about catching small animals with its long, toothless beak, a bit like a stork. To take off it probably pushed hard with its arms and vaulted into the air.',
     },
     facts: [
       { sv: 'Den är uppkallad efter en gud hos aztekerna, ett folk som levde i Mexiko.', en: 'It is named after a god of the Aztecs, a people who lived in Mexico.' },
