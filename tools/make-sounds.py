@@ -36,6 +36,8 @@ HIGH_PASS = {"alligator": 40, "elephant": 80, "lion": 40, "bison": 40, "dove": 1
 
 # A voice is (source, which loud passage of it, pitch nudge, volume). One voice per sound: two recordings mixed
 # are heard as two animals at once (Patrik, 2026-10-03 the T. rex squeak, 2026-10-25 Diplodocus). main() refuses more.
+# What failed there was the mix, not layering: one animal a second before, then another a second after (Patrik
+# 2026-10-27). Layers that start together and fuse into ONE new animal, as in Jurassic Park, are allowed.
 # "roar" is what a film would do. "call" follows the card's own text under "What did it sound like?".
 L = lambda src, nth=0, tune=1.0, gain=1.0: (src, nth, tune, gain)
 RECIPES: dict[str, dict[str, list | str]] = {
