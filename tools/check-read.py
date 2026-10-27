@@ -21,8 +21,7 @@ CLIPS = ROOT / "public" / "audio" / "read"
 VOTES = 3
 BRIEF = """You are checking a Swedish text-to-speech clip for a children's app about dinosaurs.
 The voice should say exactly this Swedish text: "{text}"
-Listen and list every word that is mispronounced: wrong stress (e.g. "banan" the fruit is stressed on the second
-syllable, "banan" the track on the first), wrong vowel, a word swallowed, slurred or not Swedish, an extra or missing word.
+Listen and list every word that is mispronounced: wrong stress (so it sounds like another word), wrong vowel, a word swallowed, slurred or not Swedish, an extra or missing word.
 Ignore the voice's character, speed and small accent. Dinosaur names may be said the Latin way.
 Answer with JSON only: {{"problems": [{{"word": "<word as written>", "heard": "<what it sounded like>"}}]}}, empty list if all is right."""
 
