@@ -6,6 +6,7 @@ import { CHILD_ASPECT, CHILD_M, pxPerMetre } from './scale.ts';
 import { dinoSheet, printSheet, sceneSheet } from './print.ts';
 import { chime, peep, play } from './sound.ts';
 import { DINOS } from './catalog.ts';
+import READ_SV from './read-sv.json';
 import { BABIES, eggChoices } from './babies.ts';
 import { shuffle } from './challenge.ts';
 import { burstHtml, renderLevelPicker } from './challengeView.ts';
@@ -85,6 +86,15 @@ function fitScale(root: ParentNode, d: Dino): void {
   shape.addEventListener('load', fit);
 }
 
+/** Card text a beginning reader can hear: each word in a span, lit up while the voice says it (tools/make-read-sv.py).
+ *  Swedish only so far; a text changed since its clip was made stays plain until the clip is made again. */
+function readable(l: Lang, d: Dino, key: string, text: string): string {
+  const clip = (READ_SV as Record<string, Record<string, { text: string; words: number[][] }>>)[d.id]?.[key];
+  if (l !== 'sv' || clip?.text !== text) return text;
+  const words = text.split(' ').map((w, i) => `<span class="w" data-at="${clip.words[i]![0]}" data-to="${clip.words[i]![1]}">${w}</span>`);
+  return `${words.join(' ')} <button type="button" class="say-btn" data-read="${d.id}-${key}" aria-label="${t(l, 'listen')}">${icon('sound')}</button>`;
+}
+
 function factsHtml(d: Dino, compact = false): string {
   const l = lang();
   const note = groupNote(l, d.group);
@@ -92,7 +102,7 @@ function factsHtml(d: Dino, compact = false): string {
   return `
     ${compact ? '' : `<p class="say">${d.pronounce[l]} <button type="button" class="say-btn" data-sound="${d.id}-say-${l}" aria-label="${t(l, 'sayName')}">${icon('sound')}</button></p>`}
     ${note ? `<p class="note">${note}</p>` : ''}
-    ${compact ? '' : `<p class="lead">${d.short[l]}</p>${scaleHtml(d)}`}
+    ${compact ? '' : `<p class="lead">${readable(l, d, 'short', d.short[l])}</p>${scaleHtml(d)}`}
     <dl class="facts">
       <dt>${t(l, 'means')}</dt><dd>${d.meaning[l]}</dd>
       <dt>${t(l, 'lived')}</dt><dd>${when(l, d)}</dd>
@@ -102,7 +112,7 @@ function factsHtml(d: Dino, compact = false): string {
       <dt>${t(l, 'found')}</dt><dd>${d.found[l]}</dd>
     </dl>
     <h3>${t(l, 'didYouKnow')}</h3>
-    <ul>${d.facts.map((f) => `<li>${f[l]}</li>`).join('')}</ul>
+    <ul>${d.facts.map((f, i) => `<li>${readable(l, d, `fact-${i + 1}`, f[l])}</li>`).join('')}</ul>
     ${state.hatched.includes(d.id) && BABIES[d.id] ? `<h3>${t(l, 'theBaby')}</h3><p>${BABIES[d.id]![l]}</p>` : ''}
     <h3>${t(l, 'sound')}</h3>
     <p>${d.sound[l]}</p>
@@ -526,6 +536,17 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
 document.addEventListener('click', (e) => {
   const sound = (e.target as Element).closest<HTMLElement>('[data-sound]')?.dataset.sound;
   if (sound && !state.muted) play(`audio/${sound}.mp3`);
+  const read = (e.target as Element).closest<HTMLElement>('[data-read]');
+  if (!read || state.muted) return;
+  const words = [...read.parentElement!.querySelectorAll<HTMLElement>('.w')];
+  play(`audio/read/${read.dataset.read}.mp3`, (elapsed) => {
+    const tick = (): void => {
+      const s = elapsed();
+      for (const w of words) w.classList.toggle('now', s !== null && s >= +w.dataset.at! && s < +w.dataset.to!);
+      if (s !== null) requestAnimationFrame(tick);
+    };
+    tick();
+  });
 });
 
 window.addEventListener('hashchange', () => (document.startViewTransition ? void document.startViewTransition(render) : render()));

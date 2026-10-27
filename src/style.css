@@ -448,6 +448,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   cursor: pointer;
 }
 .muted .snd, .muted .listen, .muted .guess, .muted .say-btn { display: none; }
+/* The word being read aloud, so a beginning reader can follow along (main.ts, readable). */
+.w { border-radius: 4px; transition: background-color 0.08s; }
+.w.now { background: var(--accent); color: var(--ink); }
 
 /* Parent mode */
 .hold {

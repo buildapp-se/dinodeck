@@ -7,8 +7,9 @@ const decoded = new Map<string, Promise<AudioBuffer>>();
 const KEEP = 24;
 let taps = 0;
 
-/** Plays one sound, cutting off the one before it. Has to be called from a tap: browsers allow no sound before one. */
-export function play(url: string): void {
+/** Plays one sound, cutting off the one before it. Has to be called from a tap: browsers allow no sound before one.
+ *  `onStart` gets a clock once the sound starts: seconds into it, or null once it has ended or been cut off. */
+export function play(url: string, onStart?: (elapsed: () => number | null) => void): void {
   ctx ??= new AudioContext();
   const audio = ctx;
   void audio.resume();
@@ -31,10 +32,14 @@ export function play(url: string): void {
   buffer
     .then((b) => {
       if (tap !== taps) return;
-      playing = audio.createBufferSource();
-      playing.buffer = b;
-      playing.connect(audio.destination);
-      playing.start();
+      const source = audio.createBufferSource();
+      playing = source;
+      source.buffer = b;
+      source.connect(audio.destination);
+      source.onended = () => { if (playing === source) playing = undefined; };
+      source.start();
+      const t0 = audio.currentTime;
+      onStart?.(() => (playing === source ? audio.currentTime - t0 : null));
     })
     // No sound this time (offline before the files were saved, say). The card works without it, so nothing is shown.
     .catch(() => decoded.delete(url));

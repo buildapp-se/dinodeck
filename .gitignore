@@ -12,3 +12,5 @@ audio-src/voice-test/
 audio-src/omnivoice/
 # ElevenLabs test roars (tools/try-elevenlabs.py): free plan, not licensed for the app.
 audio-src/elevenlabs/
+audio-src/read/
+__pycache__/

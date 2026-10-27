@@ -35,7 +35,6 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 ## P3
 
 - Silhuettfrågan: kontrollera att Coelophysis, Herrerasaurus, Eoraptor och Compsognathus inte hamnar som svarsalternativ till varandra, eller byt ett triasdjur mot en flygödla (Eudimorphodon).
-- `tools/__pycache__/make-sounds.cpython-312.pyc` är incheckad sedan 2026-10-03: ta bort ur git och lägg `__pycache__/` i `.gitignore`.
 
 - ✅ **Skriv ut för att färglägga** (konturerna omgjorda 2026-10-25 som rena linjeteckningar av Codex, se `HANDOFF.md`) (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Konturerna gick att ta fram ur de färdiga bilderna (`tools/make-outlines.py`), inga nya bilder från Codex behövdes. **Patrik tittar på en utskrift**: konturerna är granskade av Claude på skärm, inte på papper. Ursprunglig beskrivning: två delar: (1) den egna scenen som målarbild, med bakgrund och utställda djur som konturer, (2) enskilda dinosaurier som målarbild. Kräver konturversioner (svartvit linjeteckning) av djur och bakgrunder: nya bilder från Codex, eller prova först om de går att ta fram ur de färdiga bilderna. Utskrift via webbläsarens egen utskriftsfunktion och en utskriftsstilmall.
 - **Alternativa bildstilar som går att välja i appen**, till exempel söta dinosaurier. Patrik 2026-10-03: "mycket senare". Stilrunda 2 (`img-src/style-round/sheet2.png`) har sju kandidater. Kräver en bilduppsättning per stil och ett val i inställningarna.
