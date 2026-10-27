@@ -10,3 +10,5 @@ audio-src/voices/
 # Voice samples for listening, and OmniVoice takes before mp3 (tools/make-voice-sv.py), not shipped.
 audio-src/voice-test/
 audio-src/omnivoice/
+# ElevenLabs test roars (tools/try-elevenlabs.py): free plan, not licensed for the app.
+audio-src/elevenlabs/
