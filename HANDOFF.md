@@ -4,10 +4,14 @@ status: active
 currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Patrik provar ägget och liggande läge på telefon, skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
 blockers: []
-reviewedAt: 2026-10-26
+reviewedAt: 2026-10-27
 ---
 
 # Handoff: Dinodeck
+
+## 2026-10-27: mutation-tester
+
+Nattens mutation-lanes (Gemini 3.8 Flash skrev tester, Stryker 10 mätte, Claude granskade): bara testfiler ändrade, inga tester borttagna, repots kontrollkedja grön. Poängen per fil står på Mutation-raden i CONTEXT.
 
 ## 2026-10-03: projektstart, steg 1
 

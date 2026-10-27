@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { advance, deckOrder, parseState, resetCollection, toggleFavorite } from './state.ts';
+import { advance, deckOrder, KEY, loadState, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, toggleFavorite } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
@@ -22,6 +22,87 @@ test('parseState survives junk and drops unknown ids', () => {
     hatched: ['triceratops'],
     eggDay: '',
   });
+});
+
+test('parseState validates background period and falls back to jurassic', () => {
+  assert.equal(parseState(JSON.stringify({ scene: { bg: 'triassic' } }), ids, 'sv').scene.bg, 'triassic');
+  assert.equal(parseState(JSON.stringify({ scene: { bg: 'cretaceous' } }), ids, 'sv').scene.bg, 'cretaceous');
+  assert.equal(parseState(JSON.stringify({ scene: { bg: 'jurassic' } }), ids, 'sv').scene.bg, 'jurassic');
+  assert.equal(parseState(JSON.stringify({ scene: { bg: '' } }), ids, 'sv').scene.bg, 'jurassic');
+  assert.equal(parseState(JSON.stringify({ scene: { bg: 'unknown' } }), ids, 'sv').scene.bg, 'jurassic');
+});
+
+test('parseState validates scene items: clamping, non-finite values, flipping, and capping', () => {
+  const flipped = parseState(JSON.stringify({ scene: { items: [{ id: 'triceratops', flip: true }] } }), ids, 'sv');
+  assert.equal(flipped.scene.items[0]?.flip, true);
+
+  const nonFinite = parseState('{"scene":{"items":[{"id":"triceratops","x":1e999,"y":-1e999,"size":1e999}]}}', ids, 'sv');
+  assert.equal(nonFinite.scene.items[0]?.x, 0.5);
+  assert.equal(nonFinite.scene.items[0]?.y, 0.7);
+  assert.equal(nonFinite.scene.items[0]?.size, 0.3);
+
+  const junkItems = parseState(JSON.stringify({ scene: { items: [null, undefined, 42, 'str', true, false, {}, { id: 'triceratops' }] } }), ids, 'sv');
+  assert.equal(junkItems.scene.items.length, 1);
+  assert.equal(junkItems.scene.items[0]?.id, 'triceratops');
+
+  const many = Array.from({ length: 25 }, () => ({ id: 'triceratops' }));
+  const capped = parseState(JSON.stringify({ scene: { items: many } }), ids, 'sv');
+  assert.equal(capped.scene.items.length, MAX_SCENE_ITEMS);
+});
+
+test('parseState parses valid state fields including onboarded, lang, and eggDay', () => {
+  const s = parseState(JSON.stringify({ lang: 'sv', onboarded: true, eggDay: '2026-10-27' }), ids, 'en');
+  assert.equal(s.lang, 'sv');
+  assert.equal(s.onboarded, true);
+  assert.equal(s.eggDay, '2026-10-27');
+});
+
+test('KEY is dinodeck and loadState/saveState persist to localStorage', () => {
+  assert.equal(KEY, 'dinodeck');
+
+  const store = new Map<string, string>();
+  const originalLocalStorage = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => store.set(k, String(v)),
+    removeItem: (k: string) => store.delete(k),
+    clear: () => store.clear(),
+    key: (i: number) => Array.from(store.keys())[i] ?? null,
+    length: store.size,
+  };
+
+  try {
+    const s = parseState(null, ids, 'sv');
+    saveState(s);
+    assert.equal(store.has(KEY), true);
+    assert.deepEqual(loadState(ids, 'sv'), s);
+  } finally {
+    globalThis.localStorage = originalLocalStorage;
+  }
+});
+
+test('loadState and saveState handle unavailable localStorage gracefully', () => {
+  const originalLocalStorage = globalThis.localStorage;
+  globalThis.localStorage = {
+    getItem: () => {
+      throw new Error('Blocked');
+    },
+    setItem: () => {
+      throw new Error('Blocked');
+    },
+    removeItem: () => {},
+    clear: () => {},
+    key: () => null,
+    length: 0,
+  };
+
+  try {
+    const s = loadState(ids, 'sv');
+    assert.equal(s.lang, 'sv');
+    assert.doesNotThrow(() => saveState(s));
+  } finally {
+    globalThis.localStorage = originalLocalStorage;
+  }
 });
 
 test('resetCollection empties the collection and keeps language and sound', () => {
