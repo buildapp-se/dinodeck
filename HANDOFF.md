@@ -16,13 +16,13 @@ reviewedAt: 2026-10-27
 - **Verifierat:** Playwright på buildapp.se: orden tänds i ordning och pausen mellan meningarna hålls. Ej verifierat: att markeringen följer rösten för örat, på riktig telefon.
 - **Fälla:** KB-Whispers ordtider (`return_timestamps="word"`) ger CUDA out of memory i WSL fast 7 GB är ledigt; vanlig transkribering fungerar.
 
-## 2026-10-27: filmvrål från ElevenLabs, 29 av 40 live
+## 2026-10-27: filmvrål från ElevenLabs, alla 40 live
 
 - Utkast (3 per djur, Brachiosaurus 9) i `audio-src/elevenlabs/` (gitignorerad, `listen.html` där). `tools/try-elevenlabs.py` gör utkast, gratisplanen, ca 3 300 krediter totalt. Beslut och licens: CONTEXT, raden Ljud. Källraden står i föräldraläget, `integritet.html` och `licenser.txt`.
 - Valt utkast ligger i `audio-src/elevenlabs-roars/<id>.mp3`; `tools/make-sounds.py` använder det i stället för receptets vrål.
 - **Patrik valde 7:** T. rex 1, Triceratops 2, Stegosaurus 1, Diplodocus 3, Ankylosaurus 1, Pteranodon 2, Velociraptor 6 (Brachiosaurus 1-6 underkända).
 - **Gemini valde 22** (`tools/judge-roars.py`, gemini-4-argon via OpenRouter, tre röster per djur, ca 1,5 öre per djur). Kalibrering mot Patriks sju: samma val på 1 av 7, alltså ingen smakdomare, bara en spärr mot trasiga utkast (två djur, konstiga slut). Valen: Allosaurus 1, Apatosaurus 1, Archaeopteryx 1, Argentinosaurus 1, Baryonyx 2, Brachiosaurus 7, Carnotaurus 2, Ceratosaurus 2, Coelophysis 2, Compsognathus 2, Deinonychus 2, Dilophosaurus 1, Edmontosaurus 1, Eoraptor 2, Gallimimus 2, Giganotosaurus 1, Herrerasaurus 3, Ichthyosaurus 2, Iguanodon 2, Kentrosaurus 1, Maiasaura 2, Microraptor 2.
-- **Kvar:** 11 djur odömda (domningen stoppades av minnesbrist), står i BACKLOG.
+- **Gemini valde de sista 11** samma kväll (Patriks "fixa allt"): Mosasaurus 1, Oviraptor 3, Pachycephalosaurus 3, Parasaurolophus 2, Plateosaurus 2, Plesiosaurus 1, Protoceratops 2, Quetzalcoatlus 2, Spinosaurus 2, Styracosaurus 1, Therizinosaurus 2.
 
 ## 2026-10-27: ungen hoppar, ny kläckning
 
