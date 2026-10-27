@@ -113,15 +113,15 @@ function factsHtml(d: Dino, compact = false): string {
     </dl>
     <h3>${t(l, 'didYouKnow')}</h3>
     <ul>${d.facts.map((f, i) => `<li>${readable(l, d, `fact-${i + 1}`, f[l])}</li>`).join('')}</ul>
-    ${state.hatched.includes(d.id) && BABIES[d.id] ? `<h3>${t(l, 'theBaby')}</h3><p>${BABIES[d.id]![l]}</p>` : ''}
+    ${state.hatched.includes(d.id) && BABIES[d.id] ? `<h3>${t(l, 'theBaby')}</h3><p>${readable(l, d, 'baby', BABIES[d.id]![l])}</p>` : ''}
     <h3>${t(l, 'sound')}</h3>
-    <p>${d.sound[l]}</p>
+    <p>${readable(l, d, 'sound', d.sound[l])}</p>
     <button type="button" class="chip listen" data-sound="${d.id}-call">${icon('sound')} ${t(l, 'listen')}</button>
     <p class="guess">${t(l, 'soundGuess')}</p>
     <h3>${t(l, 'colour')}</h3>
-    <p class="colour-note">${colourNote(l, d)}</p>
+    <p class="colour-note">${readable(l, d, 'colour', colourNote(l, d))}</p>
     <h3>${t(l, 'more')}</h3>
-    <p>${d.long[l]}</p>
+    <p>${readable(l, d, 'long', d.long[l])}</p>
     <p class="source">${t(l, 'source')}: <button type="button" class="link" data-gate="${d.source.url}">${d.source.label}</button></p>`;
 }
 

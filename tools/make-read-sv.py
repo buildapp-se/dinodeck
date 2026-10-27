@@ -3,7 +3,7 @@ each word up while it is spoken (for children who are just starting to read).
 
 Three steps, the middle one in WSL like tools/make-voice-sv.py (same voice, same reference, same pace):
 
-    node --input-type=module -e "import {DINOS} from './src/catalog.ts'; import {writeFileSync} from 'node:fs'; writeFileSync('audio-src/read/texts.json', JSON.stringify(DINOS.flatMap((d) => [{id: d.id, key: 'short', text: d.short.sv}, ...d.facts.map((f, i) => ({id: d.id, key: 'fact-' + (i + 1), text: f.sv}))]), null, 1))"
+    node tools/read-texts.ts
     MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- bash -c 'cd ~/voice && HF_HOME=~/voice/hf ~/voice/OmniVoice/.venv/bin/python /mnt/c/dev/dinodeck/tools/make-read-sv.py [id ...]'
     for f in audio-src/read/*.wav; do ffmpeg -loglevel error -y -i "$f" -ac 1 -b:a 48k "public/audio/read/$(basename "${f%.wav}").mp3" || break; done
 
@@ -73,7 +73,7 @@ def word_times(text: str, y: np.ndarray, sr: int) -> list[list[float]]:
     words = text.split()
     # Each sentence gets its own stretch of speech between the long pauses (0,3 s and up), when they add up.
     cuts = [k + 1 for k in np.flatnonzero(np.diff(frames) > 30)]
-    ends = [k + 1 for k, w in enumerate(words[:-1]) if w[-1] in ".!?"]
+    ends = [k + 1 for k, w in enumerate(words[:-1]) if w[-1] in ".!?" and not (len(w) == 2 and w[0].isupper())]  # "T." in "T. rex" ends nothing
     if len(cuts) != len(ends):
         cuts, ends = [], []
     times = []
