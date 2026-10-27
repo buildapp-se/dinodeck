@@ -43,6 +43,9 @@ const stars = (count: number, l: Lang): string => `<div class="progress" aria-la
 // Short buzzes where the device has them (Android); iPhones ignore this.
 const buzz = (pattern: number | number[]): void => { try { navigator.vibrate?.(pattern); } catch { /* not allowed here */ } };
 
+/** 24 dots flying out from the centre: the win here and the hatched egg. */
+export const burstHtml = (): string => `<div class="burst" aria-hidden="true">${Array.from({ length: 24 }, (_, i) => { const r = i % 2 ? 80 : 140; return `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 12) * r)}px;--dy:${Math.round(Math.sin(i * Math.PI / 12) * r)}px"></span>`; }).join('')}</div>`;
+
 export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): void {
   if (ctx.level) return void play(view, ctx, ctx.level);
   const l = ctx.lang;
@@ -132,7 +135,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
     view.innerHTML = `
       <section class="challenge">
         ${stars(WINS_NEEDED, l)}
-        <div class="prize reveal">${ctx.artHtml(ctx.target)}<div class="burst" aria-hidden="true">${Array.from({ length: 24 }, (_, i) => { const r = i % 2 ? 80 : 140; return `<span style="--dx:${Math.round(Math.cos(i * Math.PI / 12) * r)}px;--dy:${Math.round(Math.sin(i * Math.PI / 12) * r)}px"></span>`; }).join('')}</div></div>
+        <div class="prize reveal">${ctx.artHtml(ctx.target)}${burstHtml()}</div>
         <h2>${t(l, 'youWon')} ${ctx.target.name}!</h2>
         <div class="levels win-actions" hidden>
           <a class="big primary" href="#/scen/${ctx.target.id}">${l === 'sv' ? 'Ställ ut' : 'Display it'}</a>

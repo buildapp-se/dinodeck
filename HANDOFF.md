@@ -9,6 +9,12 @@ reviewedAt: 2026-10-27
 
 # Handoff: Dinodeck
 
+## 2026-10-27: ungen hoppar, ny kläckning
+
+- **Ungen:** ett gemensamt `hop()` i `src/main.ts` (pip plus hopp med huk, sträckning och landning) på kortleken, i detaljvyn och i kläckdialogen. Före: detaljvyn och dialogen gjorde ingenting vid tryck, kortleken hoppade bara 14 %.
+- **Kläckningen:** oregelbunden spricka (`CRACK` i `src/main.ts`, skalhalvornas `clip-path` i `src/style.css` följer samma punkter) som växer från mitten, grenar vid tryck två, ägget gungar hårdare för varje tryck och vickar av sig själv innan första trycket. Överskalet flyger av, ungen poppar upp ur underskalet, glöd och konfetti med skalbitar (`burstHtml` delas med utmaningsvinsten). Ägget storleksätts på höjd i äggets form och dialogen förankras uppifrån i stående läge, så ägget står still när texten kommer.
+- **Verifierat:** `npm test` och bygget gröna. Playwright 390×844, 375×667, 844×390: ungen piper och animeras vid tryck (touch) på kortleken, i detaljvyn och i dialogen, kortet vänds inte; ingen rullning i dialogen; ägget flyttas högst 2 px. Animationen är granskad som frysta bildrutor (Playwright-fönstret renderade 2 bilder/s), inte i full fart: **Patrik provar på telefon**.
+
 ## 2026-10-27: mutation-tester
 
 Nattens mutation-lanes (Gemini 3.8 Flash skrev tester, Stryker 10 mätte, Claude granskade): bara testfiler ändrade, inga tester borttagna, repots kontrollkedja grön. Poängen per fil står på Mutation-raden i CONTEXT.

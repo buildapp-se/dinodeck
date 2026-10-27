@@ -662,29 +662,51 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 .egg-btn img { width: 100%; height: 100%; object-fit: contain; }
 @keyframes egg-nudge { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -12deg; } 82% { rotate: 10deg; } 88% { rotate: -6deg; } }
 .hatch { margin: auto; border: 0; border-radius: 24px; padding: 20px; width: min(92vw, 420px); background: var(--card); color: var(--ink); text-align: center; box-shadow: 0 8px 30px rgb(0 0 0 / .3); }
+/* Anchored at the top, not centred: the text that comes in under the baby must not shove the egg up mid-hatch. */
+@media (orientation: portrait) { .hatch { margin-top: max(16px, 6vh); } }
 .hatch::backdrop { background: rgb(46 42 32 / .6); }
 .hatch .hint { min-height: 1.5em; font-size: 1.25rem; font-weight: 700; }
-.hatch .egg { position: relative; display: grid; width: min(70vw, 280px, 42vh); aspect-ratio: 1; margin: 0 auto; padding: 0; border: 0; background: none; cursor: pointer; }
-.hatch .egg > * { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; transition: transform 500ms cubic-bezier(.2,.9,.3,1), opacity 500ms; }
-/* The shell is the same picture twice, cut along the crack. */
-.hatch .upper { clip-path: polygon(0 0, 100% 0, 100% 50%, 85% 50%, 78% 44%, 64% 55%, 50% 44%, 36% 55%, 22% 44%, 15% 50%, 0 50%); }
-.hatch .lower { clip-path: polygon(0 50%, 15% 50%, 22% 44%, 36% 55%, 50% 44%, 64% 55%, 78% 44%, 85% 50%, 100% 50%, 100% 100%, 0 100%); }
-.hatch .baby-big { transform: scale(.3); opacity: 0; }
-.hatch .crack { position: relative; z-index: 1; } /* clip-path lifts the shell halves into their own layer: keep the crack above them */
-.hatch .crack polyline { fill: none; stroke: #5a4a32; stroke-width: 2; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 200ms; }
-.hatch .crack-1 .crack polyline { stroke-dashoffset: 60; }
-.hatch .crack-2 .crack polyline { stroke-dashoffset: 0; }
-.hatch .wobble { animation: egg-wobble 350ms ease-in-out; }
-@keyframes egg-wobble { 25% { rotate: -8deg; } 75% { rotate: 8deg; } }
-.hatch .open .upper { transform: translate(-30%, -45%) rotate(-30deg); opacity: 0; }
-.hatch .open .lower { transform: translateY(35%); opacity: 0; }
-.hatch .open .half { transition: transform 600ms cubic-bezier(.2,.9,.3,1), opacity 300ms 300ms; } /* fly apart first, then fade */
-.hatch .open .crack { opacity: 0; }
-.hatch .open .baby-big { transform: none; opacity: 1; }
+/* Sized by height in the egg's own shape, so the pictures can never stretch it past the screen. */
+.hatch .egg { position: relative; display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr); height: min(38vh, 360px); aspect-ratio: 339 / 480; margin: 0 auto; padding: 0; border: 0; background: none; cursor: pointer; }
+.hatch .egg > * { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: contain; }
+/* The egg rocks now and then on its own, and on each tap a little harder, from its bottom like a real egg. */
+.hatch .egg { transform-origin: 50% 90%; animation: egg-nudge 2.4s ease-in-out infinite; --w: 7deg; }
+.hatch .crack-2 { --w: 10deg; }
+.hatch .crack-3 { --w: 14deg; }
+.hatch .egg.wobble { animation: egg-wobble 380ms ease-in-out; }
+.hatch .egg.open { animation: none; }
+@keyframes egg-wobble { 20% { rotate: calc(-1 * var(--w)); scale: 1.03 .97; } 55% { rotate: var(--w); } 80% { rotate: calc(var(--w) / -3); } }
+/* The shell is the same picture twice, cut along the crack (CRACK in main.ts). */
+.hatch .upper { clip-path: polygon(0 0, 100% 0, 100% 50%, 95% 52%, 89% 47%, 82% 53%, 75% 46%, 69% 52%, 62% 45%, 56% 53%, 50% 47%, 44% 54%, 38% 46%, 31% 52%, 25% 45%, 18% 51%, 11% 46%, 5% 52%, 0 49%); }
+.hatch .lower { clip-path: polygon(0 49%, 5% 52%, 11% 46%, 18% 51%, 25% 45%, 31% 52%, 38% 46%, 44% 54%, 50% 47%, 56% 53%, 62% 45%, 69% 52%, 75% 46%, 82% 53%, 89% 47%, 95% 52%, 100% 50%, 100% 100%, 0 100%); }
+/* The landscape baby sits low in the tall egg, in the lower shell, and squashes from its feet. */
+.hatch .baby-big { opacity: 0; object-position: 50% 62%; transform-origin: 50% 82%; }
+.hatch .crack { position: relative; z-index: 1; overflow: visible; } /* clip-path lifts the shell halves into their own layer: keep the crack above them */
+.hatch .crack polyline { fill: none; stroke: #4a3722; stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset 220ms ease-out; filter: drop-shadow(0 1.5px 0 rgb(255 248 230 / .9)); }
+.hatch .crack polyline.branch { stroke-width: .7; }
+.hatch .crack-1 .main { stroke-dashoffset: 62; }
+.hatch .crack-2 .main { stroke-dashoffset: 18; }
+.hatch .crack-2 .branch { stroke-dashoffset: 0; }
+.hatch .crack-3 .crack polyline { stroke-dashoffset: 0; }
+/* Open: the top flies up and tumbles away, the baby pops up out of the bottom half, then the bottom sinks away. */
+.hatch .open .crack { opacity: 0; transition: opacity 100ms; }
+.hatch .open .upper { animation: shell-top 750ms cubic-bezier(.2,.7,.4,1) forwards; }
+.hatch .open .lower { animation: shell-bottom 500ms 700ms ease-in forwards; }
+.hatch .open .baby-big { opacity: 1; animation: baby-pop 650ms 120ms cubic-bezier(.3,1.5,.5,1) backwards; }
+@keyframes shell-top { 35% { transform: translate(-8%, -30%) rotate(-20deg); opacity: 1; } to { transform: translate(-30%, 30%) rotate(-75deg); opacity: 0; } }
+@keyframes shell-bottom { to { transform: translateY(18%) scale(.9); opacity: 0; } }
+@keyframes baby-pop { from { transform: translateY(28%) scale(.35); opacity: 0; } 30% { opacity: 1; } }
+.hatch .egg::before { content: ''; grid-area: 1 / 1; border-radius: 50%; background: radial-gradient(closest-side, rgb(227 164 60 / .45), transparent); opacity: 0; }
+.hatch .open::before { animation: glow 900ms 100ms var(--ease-out) forwards; }
+.hatch .burst { width: auto; height: auto; top: 62%; }
+.hatch .egg:not(.open) .burst { display: none; }
+.hatch .burst span { animation-delay: 60ms; }
+.hatch .burst span:nth-child(4n) { width: 15px; height: 11px; border-radius: 40% 60% 30% 55%; background: #f3e1bd; box-shadow: inset -2px -2px 0 #d9b98a; } /* bits of shell among the confetti */
 .hatch .hatched h2 { margin: 8px 0; }
 .hatch .hatched p { margin: 0 0 16px; text-align: left; }
 .hatch .see { width: 100%; }
-@media (prefers-reduced-motion: reduce) { .egg-btn { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .egg-btn, .hatch .egg, .hatch .open * { animation: none !important; } .hatch .open .half { opacity: 0; } }
+.art img.baby, .detail .art img.baby { cursor: pointer; transform-origin: 50% 100%; }
 /* Parent mode's summary. */
 .summary { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 0 8px; padding: 14px 16px; border-radius: 16px; background: var(--page-2); text-align: left; }
 .summary dt { font-weight: 700; }
@@ -695,8 +717,9 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
   .hatch[open] { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 20px; width: min(92vw, 720px); }
   .hatch[open]:has(.hatched[hidden]) { grid-template-columns: 1fr; width: auto; } /* the egg alone, centred, until it opens */
   .hatch .hint { grid-column: 1 / -1; margin: 0; }
-  .hatch .egg { width: min(40vw, 70vh); }
+  .hatch .hint:empty { display: none; } /* the layout changes here anyway, and height is short */
+  .hatch .egg { height: min(66vh, 300px); }
   .hatch .hatched h2 { margin-top: 0; }
 }
-.hatch .hint:empty { display: none; }
+.hatch .hint:empty { visibility: hidden; } /* keeps its line, so the egg stays put */
 .deck:has(.card[data-depth='0'].flipped) .egg-btn { display: none; } /* it would cover the name on the back */

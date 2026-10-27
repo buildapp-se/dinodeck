@@ -8,7 +8,7 @@ import { chime, peep, play } from './sound.ts';
 import { DINOS } from './catalog.ts';
 import { BABIES, eggChoices } from './babies.ts';
 import { shuffle } from './challenge.ts';
-import { renderLevelPicker } from './challengeView.ts';
+import { burstHtml, renderLevelPicker } from './challengeView.ts';
 import type { Level } from './challenge.ts';
 import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
@@ -159,6 +159,20 @@ function roar(id: string, picture: HTMLElement): void {
   picture.animate([{ transform: 'none' }, { transform: 'scale(1.07) rotate(-2deg)' }, { transform: 'none' }], 350);
 }
 
+/** A baby's hello: its own peep and a hop that crouches, jumps and lands with a squash. */
+function hop(id: string, baby: HTMLElement): void {
+  const d = byId.get(id);
+  if (!state.muted && d) peep(id, d.weightKg);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  baby.animate([
+    { transform: 'none' },
+    { transform: 'scale(1.12, .86)', offset: 0.15, easing: 'ease-out' }, // crouch, then up and slowing
+    { transform: 'translateY(-40%) scale(.92, 1.1) rotate(-5deg)', offset: 0.5, easing: 'ease-in' }, // then falling faster
+    { transform: 'scale(1.15, .84)', offset: 0.8 }, // land
+    { transform: 'none' },
+  ], 600);
+}
+
 const handlers: DragHandlers = {
   tap(at) {
     const card = topCard();
@@ -166,9 +180,7 @@ const handlers: DragHandlers = {
     // A tap on the animal itself roars. Anywhere else on the card, the flip button or the keyboard turns it over.
     const img = at?.target;
     if (img instanceof HTMLImageElement && img.classList.contains('baby')) {
-      const d = card.dataset.id ? byId.get(card.dataset.id) : undefined;
-      if (!state.muted && d) peep(d.id, d.weightKg);
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) img.animate([{ transform: 'none' }, { transform: 'translateY(-14%)' }, { transform: 'none' }], 300);
+      if (card.dataset.id) hop(card.dataset.id, img);
       return;
     }
     if (!state.muted && img instanceof HTMLImageElement && img.closest('.front .art') && card.dataset.id) {
@@ -255,6 +267,15 @@ function renderDeck(): void {
   view.querySelector('#egg')?.addEventListener('click', hatch);
 }
 
+// The crack, in % of the egg: two lines out from the middle, then two side branches.
+// The shell halves in style.css are clipped along the same points.
+const CRACK = [
+  '50,47 44,54 38,46 31,52 25,45 18,51 11,46 5,52 0,49',
+  '50,47 56,53 62,45 69,52 75,46 82,53 89,47 95,52 100,50',
+  '38,46 36,41 32,38',
+  '69,52 71,57 75,60',
+];
+
 /** Today's egg: three taps crack it, and a baby of one of the open cards comes out and moves onto that card. */
 function hatch(): void {
   const l = lang();
@@ -270,7 +291,8 @@ function hatch(): void {
       <img class="baby-big" src="img/baby/${id}.webp" alt="">
       <img class="half upper" src="img/baby/egg.webp" alt="">
       <img class="half lower" src="img/baby/egg.webp" alt="">
-      <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="100" points="15,50 22,44 36,55 50,44 64,55 78,44 85,50"/></svg>
+      <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${CRACK.map((p, i) => `<polyline class="${i < 2 ? 'main' : 'branch'}" pathLength="100" points="${p}"/>`).join('')}</svg>
+      ${burstHtml()}
     </button>
     <div class="hatched" hidden>
       <h2>${t(l, 'babyOf')} <span lang="la">${d.name}</span>!</h2>
@@ -279,9 +301,10 @@ function hatch(): void {
     </div>`;
   document.body.append(dialog);
   const egg = dialog.querySelector<HTMLButtonElement>('.egg')!;
+  const baby = dialog.querySelector<HTMLElement>('.baby-big')!;
   let taps = 0;
   egg.addEventListener('click', () => {
-    if (taps >= 3) return;
+    if (taps >= 3) { hop(id, baby); return; }
     taps++;
     if (!state.muted) chime('crack', taps);
     navigator.vibrate?.(taps < 3 ? 15 : [20, 40, 40]);
@@ -296,9 +319,11 @@ function hatch(): void {
     saveState(state);
     egg.classList.add('open');
     egg.setAttribute('aria-label', d.name);
+    // Faded shells and confetti still count as overflow and would give the dialog a scrollbar.
+    setTimeout(() => dialog.querySelectorAll('.half, .burst').forEach((el) => el.remove()), 1300);
     setTimeout(() => {
       if (!state.muted) chime('win');
-      setTimeout(() => { if (!state.muted) peep(id, d.weightKg); }, 650); // the baby says hello after the fanfare
+      setTimeout(() => hop(id, baby), 650); // the baby says hello after the fanfare
       dialog.querySelector('.hint')!.textContent = '';
       dialog.querySelector<HTMLElement>('.hatched')!.hidden = false;
       dialog.querySelector<HTMLElement>('.see')!.focus();
@@ -369,6 +394,8 @@ function renderDetail(d: Dino): void {
   fitScale(view, d);
   const picture = view.querySelector<HTMLElement>('.detail .art img');
   picture?.addEventListener('click', () => { if (!state.muted) roar(d.id, picture); });
+  const baby = view.querySelector<HTMLElement>('.detail .art img.baby');
+  baby?.addEventListener('click', () => hop(d.id, baby));
   view.querySelector('#print-dino')!.addEventListener('click', () => void printSheet(dinoSheet(d)));
   view.querySelector('#fav')!.addEventListener('click', () => {
     state.favorites = toggleFavorite(state.favorites, d.id);
