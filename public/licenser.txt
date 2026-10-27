@@ -10,3 +10,7 @@ Boson Higgs Audio 2 is licensed under the Boson Community License, Copyright © 
 
 Namnen och de engelska frågorna läses av Piper med rösterna sv_SE-nst (NST, CC0, KBLab)
 och en_GB-cori (LibriVox, public domain).
+
+Vrålet när man trycker på djuret på kortet är för några av djuren gjort med elevenlabs.io
+(ElevenLabs Sound Effects, gratisplanen: icke-kommersiellt, med källangivelse).
+Lätet på kortets baksida bygger på inspelningar av nutida djur (CC0 eller public domain).

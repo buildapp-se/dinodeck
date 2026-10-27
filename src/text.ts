@@ -44,6 +44,10 @@ const UI = {
   title: { sv: 'Dinodeck: dinosauriekort för barn', en: 'Dinodeck: dinosaur cards for kids' },
   privacy: { sv: 'Integritet', en: 'Privacy' },
   licences: { sv: 'Licenser', en: 'Licences' },
+  roarCredit: {
+    sv: 'Vrålet när man trycker på djuret på kortet är för några av djuren gjort med elevenlabs.io.',
+    en: 'For some of the animals, the roar when you tap the animal on the card is made with elevenlabs.io.',
+  },
   gateAsk: { sv: 'För vuxna: svara för att öppna länken.', en: 'For grown-ups: answer to open the link.' },
   cancel: { sv: 'Avbryt', en: 'Cancel' },
   open: { sv: 'Öppna', en: 'Open' },

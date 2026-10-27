@@ -9,6 +9,12 @@ reviewedAt: 2026-10-27
 
 # Handoff: Dinodeck
 
+## 2026-10-27: filmvrål från ElevenLabs (väntar på Patriks val)
+
+- 24 utkast (3 per startkort) i `audio-src/elevenlabs/` (gitignorerad), väljs på `listen.html` där. Gratisplanen, 480 krediter. Beslutet och licensen står i CONTEXT, raden Ljud.
+- Valt utkast kopieras till `audio-src/elevenlabs-roars/<id>.mp3`; `tools/make-sounds.py` använder det i stället för receptets vrål. Provat med T. rex: bara den filen ändras, alla kontroller gröna.
+- Källraden (föräldraläget, `integritet.html`, `licenser.txt`) är **committad men inte pushad**: den pushas tillsammans med vrålen, annars påstår sajten något som inte stämmer.
+
 ## 2026-10-27: ungen hoppar, ny kläckning
 
 - **Ungen:** ett gemensamt `hop()` i `src/main.ts` (pip plus hopp med huk, sträckning och landning) på kortleken, i detaljvyn och i kläckdialogen. Före: detaljvyn och dialogen gjorde ingenting vid tryck, kortleken hoppade bara 14 %.

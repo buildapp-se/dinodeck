@@ -25,6 +25,7 @@ import soundfile as sf
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC, OUT = ROOT / "audio-src", ROOT / "public" / "audio"
+PICKED = SRC / "elevenlabs-roars"  # <id>.mp3: the chosen draft per animal, replaces the recipe's roar
 ALLOWED = {"CC0", "Public domain"}
 SR = 32000  # output sample rate
 K = 0.18  # how strongly weight bends pitch: rate = (recorded kg / dinosaur kg) ** K
@@ -204,6 +205,17 @@ def centroid(y: np.ndarray) -> float:
     return float((spec * np.fft.rfftfreq(len(y), 1 / SR)).sum() / spec.sum())
 
 
+def picked_roar(dino: str) -> np.ndarray | None:
+    """A film roar chosen from ElevenLabs drafts (tools/try-elevenlabs.py), if there is one. Free plan:
+    non-commercial only and credited to elevenlabs.io in parent mode, the privacy page and licenser.txt."""
+    path = PICKED / f"{dino}.mp3"
+    if not path.exists():
+        return None
+    x, sr = sf.read(path, always_2d=True)
+    mono = x.mean(axis=1)
+    return finish(np.interp(np.arange(int(len(mono) * SR / sr)) * sr / SR, np.arange(len(mono)), mono))
+
+
 def main() -> None:
     kg = weights()
     if set(kg) != set(RECIPES):
@@ -217,7 +229,7 @@ def main() -> None:
         for kind in ("roar", "call"):
             if recipe[kind] != "horn" and len(recipe[kind]) != 1:
                 sys.exit(f"FAIL {dino} {kind}: one voice per sound, not {len(recipe[kind])}")
-            y = build(recipe[kind], kg[dino], sources)
+            y = picked if kind == "roar" and (picked := picked_roar(dino)) is not None else build(recipe[kind], kg[dino], sources)
             path = OUT / f"{dino}-{kind}.mp3"
             sf.write(path, y, SR, format="MP3")
             made[(dino, kind)] = y
@@ -232,7 +244,7 @@ def main() -> None:
     for kind in ("roar", "call"):
         same: dict[tuple, list[str]] = {}
         for dino, recipe in RECIPES.items():
-            if recipe[kind] != "horn" and len(recipe[kind]) == 1:
+            if recipe[kind] != "horn" and len(recipe[kind]) == 1 and not (kind == "roar" and (PICKED / f"{dino}.mp3").exists()):
                 src, nth, _, _ = recipe[kind][0]
                 same.setdefault((src, nth), []).append(dino)
         for dinos in same.values():
