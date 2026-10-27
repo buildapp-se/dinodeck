@@ -34,6 +34,19 @@ voice = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(voice)  # REF, REF_TEXT, PACE, trim() and plain() are shared with the questions
 
 
+# Words the voice says wrong, spelled for the ear: the card still shows the real word. Same number of words,
+# so the times still fit. "banan" came out as the race track, not the fruit (Patrik, 2026-10-27).
+SAY = {"banan": "banaan"}
+
+
+def spoken(text: str) -> str:
+    def say(w: str) -> str:
+        core = w.rstrip(".,!?")
+        new = SAY.get(core.lower())
+        return w if not new else (new.capitalize() if core[0].isupper() else new) + w[len(core):]
+    return " ".join(say(w) for w in text.split())
+
+
 def word_times(text: str, y: np.ndarray, sr: int) -> list[list[float]]:
     """A [start, end] for every space-separated word of `text`. The voice speaks at a set pace per letter
     (duration = PACE * length), so the words are laid out over the time it actually speaks, by letters,
@@ -81,7 +94,10 @@ def main() -> None:
     if only:
         units = [u for u in units if u["id"] in only]
     old = json.loads(TIMES.read_text(encoding="utf-8")) if TIMES.exists() else {}
-    todo = [u for u in units if old.get(u["id"], {}).get(u["key"], {}).get("text") != u["text"] or not (SRC / f"{u['id']}-{u['key']}.wav").exists()]
+    for u in units:
+        u["said"] = spoken(u["text"])
+    done = lambda u: old.get(u["id"], {}).get(u["key"], {})  # noqa: E731
+    todo = [u for u in units if done(u).get("text") != u["text"] or done(u).get("said", u["text"]) != u["said"] or not (SRC / f"{u['id']}-{u['key']}.wav").exists()]
     # A clip with no times yet (a run that stopped after speaking) keeps its sound; only a changed text speaks again.
     speak = [u for u in todo if not (SRC / f"{u['id']}-{u['key']}.wav").exists() or u["key"] in old.get(u["id"], {})]
     print(f"ok   {len(units)} texts, {len(speak)} to speak, {len(todo)} to time")
@@ -93,7 +109,7 @@ def main() -> None:
         sr = model.sampling_rate
         for u in speak:
             for _ in range(3):  # the model now and then returns nothing; a new try usually speaks
-                y = np.asarray(model.generate(text=u["text"], language="sv", ref_audio=str(voice.REF), ref_text=voice.REF_TEXT, duration=voice.PACE * len(u["text"]))[0], dtype=np.float32).reshape(-1)
+                y = np.asarray(model.generate(text=u["said"], language="sv", ref_audio=str(voice.REF), ref_text=voice.REF_TEXT, duration=voice.PACE * len(u["said"]))[0], dtype=np.float32).reshape(-1)
                 if y.size:
                     break
             else:
@@ -119,7 +135,7 @@ def main() -> None:
             problems.append(f"{u['id']}-{u['key']}: {secs:.1f} s, heard {out['text'].strip()!r:.80} ({score:.2f})")
         if any(b[0] < a[0] for a, b in zip(times, times[1:])) or times[-1][1] > secs + 0.2:
             problems.append(f"{u['id']}-{u['key']}: word times out of order or past the end")
-        old.setdefault(u["id"], {})[u["key"]] = {"text": u["text"], "words": times}
+        old.setdefault(u["id"], {})[u["key"]] = {"text": u["text"], "words": times} | ({"said": u["said"]} if u["said"] != u["text"] else {})
     TIMES.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"{'FAIL' if problems else 'ok  '} {len(todo)} clips timed")
     for p in problems:
