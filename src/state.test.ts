@@ -1,13 +1,17 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { advance, deckOrder, KEY, loadState, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { advance, deckOrder, KEY, loadState, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, type State, toggleFavorite } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
   assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
   assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
   const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
   assert.deepEqual(s, {
@@ -57,6 +61,29 @@ test('parseState parses valid state fields including onboarded, lang, and eggDay
   assert.equal(s.eggDay, '2026-10-27');
 });
 
+test('parseState validates language choices and falls back when missing or invalid', () => {
+  assert.equal(parseState('{}', ids, 'sv').lang, 'sv');
+  assert.equal(parseState('{}', ids, 'en').lang, 'en');
+  assert.equal(parseState(JSON.stringify({ lang: 'sv' }), ids, 'en').lang, 'sv');
+  assert.equal(parseState(JSON.stringify({ lang: 'en' }), ids, 'sv').lang, 'en');
+  assert.equal(parseState(JSON.stringify({ lang: 'de' }), ids, 'sv').lang, 'sv');
+  assert.equal(parseState(JSON.stringify({ lang: 'de' }), ids, 'en').lang, 'en');
+  assert.equal(parseState(JSON.stringify({ lang: 123 }), ids, 'sv').lang, 'sv');
+  assert.equal(parseState(JSON.stringify({ lang: null }), ids, 'sv').lang, 'sv');
+});
+
+test('parseState strictly validates eggDay format matching full YYYY-MM-DD date string', () => {
+  assert.equal(parseState('{}', ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: '2026-10-27' }), ids, 'sv').eggDay, '2026-10-27');
+  assert.equal(parseState(JSON.stringify({ eggDay: 'prefix2026-10-27' }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: '2026-10-27suffix' }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: '2026-10-27T00:00:00' }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: ['2026-10-27'] }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: 20261027 }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: null }), ids, 'sv').eggDay, '');
+  assert.equal(parseState(JSON.stringify({ eggDay: '2026/10/27' }), ids, 'sv').eggDay, '');
+});
+
 test('KEY is dinodeck and loadState/saveState persist to localStorage', () => {
   assert.equal(KEY, 'dinodeck');
 
@@ -76,6 +103,18 @@ test('KEY is dinodeck and loadState/saveState persist to localStorage', () => {
     saveState(s);
     assert.equal(store.has(KEY), true);
     assert.deepEqual(loadState(ids, 'sv'), s);
+
+    const custom: State = {
+      ...s,
+      lang: 'en',
+      muted: true,
+      unlockAll: true,
+      won: ['triceratops'],
+      favorites: ['triceratops'],
+      eggDay: '2026-10-27',
+    };
+    saveState(custom);
+    assert.deepEqual(loadState(ids, 'sv'), custom);
   } finally {
     globalThis.localStorage = originalLocalStorage;
   }
