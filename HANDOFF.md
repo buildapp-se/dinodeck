@@ -9,11 +9,13 @@ reviewedAt: 2026-10-27
 
 # Handoff: Dinodeck
 
-## 2026-10-27: filmvrål från ElevenLabs (väntar på Patriks val)
+## 2026-10-27: filmvrål från ElevenLabs, 29 av 40 live
 
-- 24 utkast (3 per startkort) i `audio-src/elevenlabs/` (gitignorerad), väljs på `listen.html` där. Gratisplanen, 480 krediter. Beslutet och licensen står i CONTEXT, raden Ljud.
-- Valt utkast kopieras till `audio-src/elevenlabs-roars/<id>.mp3`; `tools/make-sounds.py` använder det i stället för receptets vrål. Provat med T. rex: bara den filen ändras, alla kontroller gröna.
-- Källraden (föräldraläget, `integritet.html`, `licenser.txt`) är **committad men inte pushad**: den pushas tillsammans med vrålen, annars påstår sajten något som inte stämmer.
+- Utkast (3 per djur, Brachiosaurus 9) i `audio-src/elevenlabs/` (gitignorerad, `listen.html` där). `tools/try-elevenlabs.py` gör utkast, gratisplanen, ca 3 300 krediter totalt. Beslut och licens: CONTEXT, raden Ljud. Källraden står i föräldraläget, `integritet.html` och `licenser.txt`.
+- Valt utkast ligger i `audio-src/elevenlabs-roars/<id>.mp3`; `tools/make-sounds.py` använder det i stället för receptets vrål.
+- **Patrik valde 7:** T. rex 1, Triceratops 2, Stegosaurus 1, Diplodocus 3, Ankylosaurus 1, Pteranodon 2, Velociraptor 6 (Brachiosaurus 1-6 underkända).
+- **Gemini valde 22** (`tools/judge-roars.py`, gemini-4-argon via OpenRouter, tre röster per djur, ca 1,5 öre per djur). Kalibrering mot Patriks sju: samma val på 1 av 7, alltså ingen smakdomare, bara en spärr mot trasiga utkast (två djur, konstiga slut). Valen: Allosaurus 1, Apatosaurus 1, Archaeopteryx 1, Argentinosaurus 1, Baryonyx 2, Brachiosaurus 7, Carnotaurus 2, Ceratosaurus 2, Coelophysis 2, Compsognathus 2, Deinonychus 2, Dilophosaurus 1, Edmontosaurus 1, Eoraptor 2, Gallimimus 2, Giganotosaurus 1, Herrerasaurus 3, Ichthyosaurus 2, Iguanodon 2, Kentrosaurus 1, Maiasaura 2, Microraptor 2.
+- **Kvar:** 11 djur odömda (domningen stoppades av minnesbrist), står i BACKLOG.
 
 ## 2026-10-27: ungen hoppar, ny kläckning
 
