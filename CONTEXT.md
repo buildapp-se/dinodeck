@@ -46,6 +46,13 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 ## Audits
 - OWASP Top 10: 2026-10-26, pass, code review only (Gemini 3.8 Flash, verified by Claude), static PWA with no server; 0 high, 0 medium; the lane's missing-CSP low is refuted live (zone sets frame-ancestors 'none' and X-Frame-Options), root-relative manifest and font URLs on the shared buildapp.se origin left as low
 - Mutation: 2026-10-27, warn, Stryker 10 on 6 src files: challenge 86,29 % (64,47), picture 100,00 % (75,61), print 97,50 % (27,50), state 89,57 % (66,87), text 11,30 % (3,77), timeline 100,00 % (75,76); tests by Gemini 3.8 Flash, reviewed by Claude
+- UX: 2026-10-27, pass, 7 of 7 script checks pass on all five tabs (local, --interact), screenshot review phone and desktop: no open finding; the card's source link was 40 px high, now 44
+- WCAG 2.2 AA: 2026-10-27, pass, axe 4.14.0 0 violations on buildapp.se/dinodeck (mobile); keyboard pass on all five tabs: every control reached, focus visible (the card's ring sits on `.face`)
+- Lighthouse: 2026-10-27, pass, mobile: performance 92, a11y 100, best practices 100, SEO 100
+- Markup: 2026-10-27, pass, W3C 0 errors, 0 warnings, 0 broken links on buildapp.se/dinodeck
+- Headers: 2026-10-27, pass, 6 of 6 on buildapp.se/dinodeck, Observatory B+ on buildapp.se
+- TLS: 2026-10-27, pass, SSL Labs A+ on all four buildapp.se endpoints (GitHub Pages)
+- OG image: 2026-10-27, pass, 1200x630 PNG, https://buildapp.se/dinodeck/og.png, checked by eye
 - npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Database: 2026-10-25, none, localStorage
