@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { colourNote, t } from './text.ts';
+import { colourNote, t, when } from './text.ts';
 
 const ids = (level: string): string[] => DINOS.filter((d) => d.colour === level).map((d) => d.id).sort();
 
@@ -43,4 +43,31 @@ test('UI translations for deck navigation and favorites in Swedish and English',
   assert.equal(t('en', 'favourite'), 'Favourite');
   assert.equal(t('sv', 'clearFavs'), 'Ta bort alla favoriter');
   assert.equal(t('en', 'clearFavs'), 'Remove all favourites');
+});
+
+test('UI translations for detail view, measurements and confirmation in Swedish and English', () => {
+  assert.equal(t('sv', 'clearFavsSure'), 'Tryck igen för att ta bort alla');
+  assert.equal(t('en', 'clearFavsSure'), 'Tap again to remove them all');
+  assert.equal(t('sv', 'back'), 'Tillbaka');
+  assert.equal(t('en', 'back'), 'Back');
+  assert.equal(t('sv', 'means'), 'Namnet betyder');
+  assert.equal(t('en', 'means'), 'The name means');
+  assert.equal(t('sv', 'lived'), 'Levde');
+  assert.equal(t('en', 'lived'), 'Lived');
+  assert.equal(t('sv', 'mya'), 'miljoner år sedan');
+  assert.equal(t('en', 'mya'), 'million years ago');
+  assert.equal(t('sv', 'length'), 'Längd');
+  assert.equal(t('en', 'length'), 'Length');
+  assert.equal(t('sv', 'wingspan'), 'Vingbredd');
+  assert.equal(t('en', 'wingspan'), 'Wingspan');
+  assert.equal(t('sv', 'weight'), 'Vikt');
+  assert.equal(t('en', 'weight'), 'Weight');
+  assert.equal(t('sv', 'about'), 'ungefär');
+  assert.equal(t('en', 'about'), 'about');
+});
+
+test('when formats dinosaur period and time span in Swedish and English', () => {
+  const rex = DINOS.find((d) => d.id === 'tyrannosaurus-rex')!;
+  assert.equal(when('sv', rex), 'Krita, för 68 till 66 miljoner år sedan');
+  assert.equal(when('en', rex), 'Cretaceous, 68 to 66 million years ago');
 });
