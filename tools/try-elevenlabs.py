@@ -12,17 +12,28 @@ import urllib.request
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "audio-src" / "elevenlabs"
+PICKED = OUT.parent / "elevenlabs-roars"  # chosen already: left off the listening page
 DRAFTS, SECONDS = 3, 3.0
 TAIL = ", single creature, close up, cinematic movie monster sound design, no music, no speech"
 PROMPTS = {
     "tyrannosaurus-rex": "Tyrannosaurus rex roar, huge and terrifying, deep throaty bellow with a rattling growl",
     "triceratops": "Triceratops bellow, large horned dinosaur, deep snorting grunt into a powerful bull-like roar",
     "stegosaurus": "Stegosaurus call, big plated dinosaur, low rumbling moan with a huffing snort",
-    "brachiosaurus": "Brachiosaurus call, enormous long-necked dinosaur, majestic deep trumpeting hoot that echoes",
-    "velociraptor": "Velociraptor screech, small fierce predator dinosaur, sharp hissing shriek with clicking barks, scary",
+    # Second round 2026-10-27, none of the first three was good: bigger and more dramatic.
+    "brachiosaurus": "Brachiosaurus bellow, colossal long-necked giant dinosaur, awe-inspiring deep majestic trumpeting roar that swells and echoes across a valley",
+    "velociraptor": "Velociraptor attack call, menacing pack-hunting dinosaur, aggressive high screeching bark with a rattling hiss and snarl, terrifying",
     "diplodocus": "Diplodocus call, giant long-necked dinosaur, deep resonant foghorn-like bellow",
     "ankylosaurus": "Ankylosaurus growl, heavy armoured dinosaur, gravelly low grunting roar with a snort",
     "pteranodon": "Pteranodon screech, giant flying reptile, piercing raspy cry like a huge eagle",
+    # The next eight to win (toWin() in src/main.ts), 2026-10-27.
+    "oviraptor": "Oviraptor call, feathered dinosaur the size of a turkey, sharp honking squawk with a throaty hiss, alarmed and fierce",
+    "parasaurolophus": "Parasaurolophus call, duck-billed dinosaur with a long hollow crest, deep resonant trombone-like horn blast that echoes",
+    "maiasaura": "Maiasaura bellow, big duck-billed mother dinosaur guarding her nest, loud warning honk into a deep protective roar",
+    "protoceratops": "Protoceratops call, small sturdy frilled dinosaur, angry snorting grunt into a short squealing bellow",
+    "spinosaurus": "Spinosaurus roar, gigantic sail-backed river predator dinosaur, wet gurgling growl into a monstrous crocodile-like roar",
+    "allosaurus": "Allosaurus roar, large fierce predator dinosaur, savage snarling roar with a raspy rattle",
+    "giganotosaurus": "Giganotosaurus roar, colossal predator dinosaur bigger than T. rex, earth-shaking deep thunderous roar",
+    "carnotaurus": "Carnotaurus roar, horned fast predator dinosaur, harsh barking roar with a vicious bull-like snort",
 }
 
 
@@ -39,8 +50,10 @@ def generate(text: str) -> bytes:
 
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
+    more = sys.argv[1:]  # ids that get DRAFTS new drafts after the ones they have: `uv run tools/try-elevenlabs.py velociraptor`
     for id_, text in PROMPTS.items():
-        for n in range(1, DRAFTS + 1):
+        have = len(list(OUT.glob(f"{id_}-*.mp3")))
+        for n in range(have + 1 if id_ in more else 1, (have if id_ in more else 0) + DRAFTS + 1):
             path = OUT / f"{id_}-{n}.mp3"
             if path.exists():
                 continue  # rerun only fills the gaps, never pays twice
@@ -65,7 +78,7 @@ document.addEventListener('change', () => { out.value = [...new Set([...document
 </script>"""
     (OUT / "listen.html").write_text(
         f"<!doctype html><meta charset=utf-8><title>Vrål</title><body style='font-family:sans-serif;max-width:40em;margin:auto'>"
-        f"{''.join(row(i) for i in PROMPTS)}<h2>Klistra in till Claude</h2><textarea rows=10 cols=40 readonly></textarea>{script}",
+        f"{''.join(row(i) for i in PROMPTS if not (PICKED / f'{i}.mp3').exists())}<h2>Klistra in till Claude</h2><textarea rows=10 cols=40 readonly></textarea>{script}",
         encoding="utf-8",
     )
     return 0
