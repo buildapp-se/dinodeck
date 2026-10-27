@@ -59,4 +59,5 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Database: 2026-10-25, none, localStorage
 - Actions: 2026-10-26, pass, zizmor 0 high, 0 medium, 0 low
+- ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
 
