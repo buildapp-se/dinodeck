@@ -2,12 +2,19 @@
 schemaVersion: 1
 status: active
 currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
-nextAction: Patrik provar ägget och liggande läge på telefon, skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
+nextAction: Patrik provar uppläsningen på T. rex, ägget och liggande läge på telefon, skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
 blockers: []
 reviewedAt: 2026-10-27
 ---
 
 # Handoff: Dinodeck
+
+## 2026-10-27: uppläsning med ordmarkering, prov på T. rex
+
+- **Live:** T. rex detaljsida på svenska, högtalarknapp efter ingressen och varje faktarad; orden lyser (ockra) medan OmniVoice läser. Knapparna döljs när ljudet är av. Andra djur och engelska visar texten som förut.
+- **Hur:** `tools/make-read-sv.py` gör klipp (`public/audio/read/`) och ordtider (`src/read-sv.json`, importeras av `main.ts`, `readable()`). `play()` i `src/sound.ts` ger nu en klocka till den som vill följa ljudet.
+- **Verifierat:** Playwright på buildapp.se: orden tänds i ordning och pausen mellan meningarna hålls. Ej verifierat: att markeringen följer rösten för örat, på riktig telefon.
+- **Fälla:** KB-Whispers ordtider (`return_timestamps="word"`) ger CUDA out of memory i WSL fast 7 GB är ledigt; vanlig transkribering fungerar.
 
 ## 2026-10-27: filmvrål från ElevenLabs, 29 av 40 live
 
