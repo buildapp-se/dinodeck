@@ -9,6 +9,8 @@ export interface SceneContext {
   open: readonly Dino[];
   scene: Scene;
   selectId?: string;
+  /** Image path per animal: the cute style swaps some (src/cute.ts). */
+  art(id: string): string;
   save(): void;
   /** The scene as a colouring page. */
   print(): void;
@@ -48,7 +50,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
         <button type="button" data-tool="remove" aria-label="${t(l, 'takeAway')}">${icon('close')}</button>
       </div>
       <div class="tray">
-        ${ctx.open.map((d) => `<button type="button" data-add="${d.id}" aria-label="${d.name}"><img src="img/${d.id}.webp" alt=""></button>`).join('')}
+        ${ctx.open.map((d) => `<button type="button" data-add="${d.id}" aria-label="${d.name}"><img src="${ctx.art(d.id)}" alt=""></button>`).join('')}
       </div>
     </section>`;
 
@@ -84,7 +86,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     for (const item of scene.items) {
       const el = document.createElement('img');
       el.className = 'item';
-      el.src = `img/${item.id}.webp`;
+      el.src = ctx.art(item.id);
       el.alt = '';
       el.draggable = false;
       place(el, item);

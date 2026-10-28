@@ -49,6 +49,8 @@ export interface State {
   /** Parent mode: every card open without touching what has been won. */
   unlockAll: boolean;
   muted: boolean;
+  /** Parent mode: the cute art and roars where a card has them (src/cute.ts). */
+  cute: boolean;
   onboarded: boolean;
   /** Babies hatched from the daily egg, in the order they came. */
   hatched: string[];
@@ -60,7 +62,7 @@ export const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {
-  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' };
+  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' };
   if (!raw) return fresh;
   let data: unknown;
   try {
@@ -80,15 +82,16 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
     scene: parseScene(d.scene, knownIds),
     unlockAll: d.unlockAll === true,
     muted: d.muted === true,
+    cute: d.cute === true,
     onboarded: d.onboarded === true,
     hatched: idList(d.hatched),
     eggDay: typeof d.eggDay === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.eggDay) ? d.eggDay : '',
   };
 }
 
-/** Parent mode's reset: the collection starts over, the device's settings (language, sound) stay. */
+/** Parent mode's reset: the collection starts over, the device's settings (language, sound, style) stay. */
 export function resetCollection(state: State): State {
-  return { v: 1, lang: state.lang, muted: state.muted, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '' };
+  return { v: 1, lang: state.lang, muted: state.muted, cute: state.cute, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '' };
 }
 
 export function toggleFavorite(favorites: readonly string[], id: string): string[] {

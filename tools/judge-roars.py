@@ -30,6 +30,16 @@ Answer with JSON only: {{"best": <number>, "reason": "<one short sentence>"}}"""
 # Drafts Patrik has already turned down are never offered again.
 REJECTED = {"brachiosaurus": range(1, 7)}
 
+# `--cute`: the cute style's drafts from `try-elevenlabs.py --cute`, judged for a giggle instead of a scare.
+if "--cute" in sys.argv:
+    sys.argv.remove("--cute")
+    DRAFTS, PICKED, REJECTED = DRAFTS.parent / "elevenlabs-cute", DRAFTS.parent / "elevenlabs-cute-roars", {}
+    BRIEF = BRIEF.replace(
+        "It should sound fun, exciting and a bit dangerous,\nlike a dinosaur in a blockbuster film.",
+        "The card shows a cute toy-like baby dinosaur. The sound should be adorable, funny and friendly,\nsomething a small child giggles at. Never scary.",
+    ).replace("exciting and cinematic, fits", "cute and funny, fits")
+    assert "giggles" in BRIEF and "cute and funny" in BRIEF  # the replace silently does nothing if the brief changes
+
 
 def drafts(id_: str) -> list[Path]:
     found = sorted(DRAFTS.glob(f"{id_}-*.mp3"), key=lambda p: int(p.stem.rsplit("-", 1)[1]))

@@ -6,12 +6,12 @@ import { advance, deckOrder, KEY, loadState, MAX_SCENE_ITEMS, parseState, resetC
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
-  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
   const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
   assert.deepEqual(s, {
@@ -22,6 +22,7 @@ test('parseState survives junk and drops unknown ids', () => {
     scene: { bg: 'jurassic', items: [{ id: 'triceratops', x: 1, y: 0.7, size: 0.12, flip: false }] },
     unlockAll: false,
     muted: true,
+    cute: false,
     onboarded: false,
     hatched: ['triceratops'],
     eggDay: '',
@@ -145,9 +146,9 @@ test('loadState and saveState handle unavailable localStorage gracefully', () =>
 });
 
 test('resetCollection empties the collection and keeps language and sound', () => {
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], unlockAll: true, muted: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
   assert.equal(s.unlockAll, true);
-  assert.deepEqual(resetCollection(s), parseState(JSON.stringify({ lang: 'en', muted: true }), ids, 'sv'));
+  assert.deepEqual(resetCollection(s), parseState(JSON.stringify({ lang: 'en', muted: true, cute: true }), ids, 'sv'));
 });
 
 test('toggleFavorite adds then removes', () => {

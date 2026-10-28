@@ -86,6 +86,7 @@ const UI = {
   holdHint: { sv: 'Håll in i 3 sekunder', en: 'Hold for 3 seconds' },
   unlockAll: { sv: 'Alla kort öppna', en: 'All cards open' },
   soundOn: { sv: 'Ljud', en: 'Sound' },
+  cute: { sv: 'Söta dinosaurier', en: 'Cute dinosaurs' },
   language: { sv: 'Språk', en: 'Language' },
   thisLang: { sv: 'Svenska', en: 'English' },
   on: { sv: 'På', en: 'On' },

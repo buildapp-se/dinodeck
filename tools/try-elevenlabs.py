@@ -61,6 +61,21 @@ PROMPTS = {
     "quetzalcoatlus": "Quetzalcoatlus call, giraffe-tall flying reptile, deep croaking screech with leathery wing beats",
 }
 
+# The cute style (parent mode, 2026-10-28): the same cards as toy figures, roars a small child giggles at.
+# `uv run tools/try-elevenlabs.py --cute` writes audio-src/elevenlabs-cute/, 5 x 3 x 2 s = 330 credits.
+CUTE = "--cute" in sys.argv
+if CUTE:
+    sys.argv.remove("--cute")
+    OUT, PICKED, SECONDS = OUT.parent / "elevenlabs-cute", OUT.parent / "elevenlabs-cute-roars", 2.0
+    TAIL = ", single tiny creature, adorable cartoon sound effect for a toddler app, playful and silly, no music, no speech"
+    PROMPTS = {
+        "tyrannosaurus-rex": "baby T. rex trying its very best to roar, a squeaky little rawr that ends in a happy giggle",
+        "triceratops": "baby triceratops, a bouncy snorting oink-like grunt and a happy little honk",
+        "stegosaurus": "baby stegosaurus, a sleepy cooing hum and a soft squeaky toy squeak",
+        "brachiosaurus": "baby brachiosaurus, a long gentle wobbly hoot like a cartoon trumpet, sweet and friendly",
+        "velociraptor": "baby velociraptor, quick excited chirps and squeaks like a happy chick",
+    }
+
 
 def generate(text: str) -> bytes:
     body = json.dumps({"text": text + TAIL, "duration_seconds": SECONDS, "prompt_influence": 0.5}).encode()

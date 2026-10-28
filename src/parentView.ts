@@ -10,6 +10,7 @@ export interface ParentContext {
   /** Each changes the state and saves it; the view then redraws itself. */
   toggleUnlock(): void;
   toggleMute(): void;
+  toggleCute(): void;
   toggleLang(): void;
   reset(): void;
 }
@@ -65,6 +66,7 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
       ${summaryHtml(ctx)}
       <button type="button" class="row" data-act="unlock" role="switch" aria-checked="${state.unlockAll}">${t(l, 'unlockAll')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="mute" role="switch" aria-checked="${!state.muted}">${t(l, 'soundOn')} <span class="switch" aria-hidden="true"></span></button>
+      <button type="button" class="row" data-act="cute" role="switch" aria-checked="${state.cute}">${t(l, 'cute')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="lang">${t(l, 'language')} <b>${t(l, 'thisLang')}</b></button>
       <a class="big" href="#/">${t(l, 'done')}</a>
       <button type="button" class="row danger" data-act="reset">${t(l, 'reset')}</button>
@@ -90,6 +92,7 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
     }
     if (act === 'unlock') ctx.toggleUnlock();
     if (act === 'mute') ctx.toggleMute();
+    if (act === 'cute') ctx.toggleCute();
     if (act === 'lang') ctx.toggleLang();
     if (act === 'reset') { clearTimeout(resetTimer); ctx.reset(); }
     renderParent(view, ctx, act === 'reset' ? t(state.lang, 'resetDone') : '');

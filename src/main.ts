@@ -16,6 +16,7 @@ import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { KEY, advance, deckOrder, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { artSrc, roarSrc } from './cute.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
@@ -50,7 +51,7 @@ let parentOpen = false;
 function artHtml(d: Dino, withBaby = false): string {
   const baby = withBaby && state.hatched.includes(d.id) ? `<img class="baby" src="img/baby/${d.id}.webp" alt="${t(lang(), 'baby')}">` : '';
   // The placeholder sits behind the image and stays if the image is missing.
-  return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="img/${d.id}.webp" alt="" decoding="async">${baby}</div>`;
+  return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="${artSrc(d.id, state.cute)}" alt="" decoding="async">${baby}</div>`;
 }
 
 /** Animal as a dark shape beside a child, same scale. Sized by fitScale once it is in the page. */
@@ -178,7 +179,7 @@ function buildCard(d: Dino, depth: number): HTMLElement {
 
 /** The film roar, and a small jump so the tap is seen as well as heard. */
 function roar(id: string, picture: HTMLElement): void {
-  play(`audio/${id}-roar.mp3`);
+  play(roarSrc(id, state.cute));
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   picture.animate([{ transform: 'none' }, { transform: 'scale(1.07) rotate(-2deg)' }, { transform: 'none' }], 350);
 }
@@ -456,7 +457,7 @@ function renderChallenge(id: string, level?: Level): void {
       queue = [d.id, ...freshQueue().filter((x) => x !== d.id)]; // the new card on top, and the next to win dealt in
       renderNav();
     },
-    roar(d) { if (!state.muted) play(`audio/${d.id}-roar.mp3`); },
+    roar(d) { if (!state.muted) play(roarSrc(d.id, state.cute)); },
     chime(kind, step) { if (!state.muted) chime(kind, step); },
     say(key) { if (!state.muted) play(`audio/prompt-${key}-${l}.mp3`); },
   });
@@ -515,13 +516,14 @@ function render(): void {
       },
       toggleUnlock: saved(() => { state.unlockAll = !state.unlockAll; }),
       toggleMute: saved(() => { state.muted = !state.muted; }),
+      toggleCute: saved(() => { state.cute = !state.cute; }),
       toggleLang: saved(() => { state.lang = state.lang === 'sv' ? 'en' : 'sv'; }),
       reset: saved(() => { Object.assign(state, resetCollection(state)); }),
     });
   } else if (dino && isOpen(dino)) renderDetail(dino);
   else if (dino) renderChallenge(dino.id);
   else if (hash.startsWith('#/utmaning')) renderChallenge(hash.slice('#/utmaning/'.length));
-  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, selectId: hash.split('/')[2], save: () => saveState(state), print: () => void printSheet(sceneSheet(state.scene)), roar: (id, el) => { if (!state.muted) roar(id, el); } });
+  else if (hash.startsWith('#/scen')) renderScene(view, { lang: lang(), open: DINOS.filter(isOpen), scene: state.scene, selectId: hash.split('/')[2], art: (id) => artSrc(id, state.cute), save: () => saveState(state), print: () => void printSheet(sceneSheet(state.scene)), roar: (id, el) => { if (!state.muted) roar(id, el); } });
   else if (hash.startsWith('#/tidslinje')) renderTimeline(view, { lang: lang(), dinos: DINOS, isOpen });
   else if (hash.startsWith('#/favoriter')) renderFavorites();
   else renderDeck();
