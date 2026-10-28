@@ -1,13 +1,21 @@
 ---
 schemaVersion: 1
 status: active
-currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
-nextAction: Kör `uv run tools/retake-read.py audio-src/read/check.log` (omtagning av 46 klipp som Gemini flaggade; skriptet är oprovat, stoppades av minnesbrist innan något gjordes 2026-10-28), sedan `check-read.py` igen; Patrik provar uppläsningen på telefon
+currentGoal: 40 djur live med söt stil i föräldraläget (bilder och vrål för alla 40, live 2026-10-28 22:06, inte bekräftad av Patrik). 10 nya djur klara på grenen `batch-4` utom målarbilder. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
+nextAction: När Codex-kvoten är tillbaka (29 okt 02:01): målarbilder för de 10 på grenen `batch-4` (`img-src/BRIEF-line.md`, sedan `tools/make-outlines.py <id>`), `npm test` grönt, slå ihop med main och pusha. Äldre: `uv run tools/retake-read.py audio-src/read/check.log` (46 omtagningar, oprovat)
 blockers: []
 reviewedAt: 2026-10-28
 ---
 
 # Handoff: Dinodeck
+
+## 2026-10-28: söt stil, och tio nya djur på en gren
+
+- **Live (22:06, verifierat på buildapp.se):** föräldraläget har "Söta dinosaurier". På: varje kort, scenen och utmaningarna visar leksaksfiguren (`public/img/cute/<id>.webp`) och spelar ett sött vrål (`public/audio/cute/<id>-roar.mp3`). Storleksjämförelsen och målarbilderna behåller målningen. Valet överlever nollställning. `src/cute.ts`, `cute.test.ts` kräver båda filerna för varje djur i katalogen. **Inte avlyssnat eller provat av Patrik.**
+- **Bilder:** Codex i stilen `r2-f-vinyl-toy` (stilrunda 2), brief `img-src/cute/BRIEF-all.md`, färger från varje djurs målning. Körs i batchar med en mapp per jobb (`img-src/cute/b<n>/`) via `img-src/cute/run-batches.sh`. "Selected model is at capacity" hos OpenAI: kör om batchen, det är inte kvoten.
+- **Vrål:** ElevenLabs, `uv run tools/try-elevenlabs.py --cute` (2 utkast à 2 s). **Fälla: "baby" eller "toddler" i prompten gav gråtande människobebisar** (10 av 15, Patrik hörde det); prompter per djurtyp gav 67 av 70 dinosaurieljud. Varje utkast klassas av `tools/review-cute-roars.py` (dinosaurie, människobebis eller annat), sedan väljer `tools/judge-roars.py --cute`. Valda filer i `audio-src/elevenlabs-cute-roars/`. Gratisplanen: cirka 530 krediter kvar, återställs 2026-11-06 20:56. Söta vrål för nya djur är pausade tills dess (Patrik).
+- **Grenen `batch-4` (`e804664`, ej pushad):** tio djur ur `docs/research/batch-4.md` (Codex med webbsök, höjder uppskattade som i batch 3): data, målning, söt bild, vrål och läte (`make-sounds.py`, 101/101 par), uttal (Piper; Piper skrev om befintliga namnklipp byte för byte, de återställdes, bara nya behölls), sött vrål. `when()` klarar ett enda datum (Shonisaurus 227) och skriver decimalkomma (Anurognathus 150,8). Saknas: målarbilder (Codex-kvoten slut 22:22) och uppläsning (OmniVoice, `tools/make-read-sv.py`). Inga ungar: researchen hittade inget säkert.
+- **Batch 5:** `docs/research/BRIEF-batch-5.md` och `run-batch-5.sh` (två jobb, trias och jura respektive krita). Avbröts av kvoten: `batch-5b.md` på grenen har 4 djur som utkast, 5a inget.
 
 ## 2026-10-28: uppläsning för alla 40 djur
 
