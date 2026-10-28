@@ -160,6 +160,8 @@ export function weight(lang: Lang, kg: number): string {
   return kg >= 1000 ? `${num(lang, kg / 1000)} ${lang === 'sv' ? 'ton' : 'tonnes'}` : `${num(lang, kg)} kg`;
 }
 
+/** A single date when only one is known (Shonisaurus), and decimal commas in Swedish. */
 export function when(lang: Lang, d: Dino): string {
-  return `${periodName(lang, d.period)}, ${lang === 'sv' ? 'för ' : ''}${d.fromMya} ${lang === 'sv' ? 'till' : 'to'} ${d.toMya} ${t(lang, 'mya')}`;
+  const span = d.fromMya === d.toMya ? num(lang, d.fromMya) : `${num(lang, d.fromMya)} ${lang === 'sv' ? 'till' : 'to'} ${num(lang, d.toMya)}`;
+  return `${periodName(lang, d.period)}, ${lang === 'sv' ? 'för ' : ''}${span} ${t(lang, 'mya')}`;
 }

@@ -88,6 +88,18 @@ RECIPES: dict[str, dict[str, list | str]] = {
     "plesiosaurus": {"roar": [L("alligator", 1)], "call": [L("alligator", 1)]},
     "ichthyosaurus": {"roar": [L("alligator", 1, tune=1.2)], "call": [L("dove", tune=1.1)]},
     "quetzalcoatlus": {"roar": [L("crane", tune=0.9)], "call": [L("grouse")]},
+    # Batch 4, 2026-10-28.
+    "shonisaurus": {"roar": [L("alligator", 1, tune=0.9)], "call": [L("alligator", 2, tune=0.9)]},
+    "liopleurodon": {"roar": [L("lion", tune=0.95)], "call": [L("alligator", 2, tune=0.95)]},
+    "anurognathus": {"roar": [L("gull", 1, tune=1.4)], "call": [L("raven", tune=1.4)]},
+    "cryolophosaurus": {"roar": [L("lion", 1, tune=1.1)], "call": [L("alligator", 1, tune=1.1)]},
+    "amargasaurus": {"roar": [L("elephant", tune=1.05)], "call": [L("bison")]},
+    "ouranosaurus": {"roar": [L("elephant", tune=1.1)], "call": [L("bison", tune=1.1)]},
+    "deinocheirus": {"roar": [L("bison", tune=0.9)], "call": [L("dove", 1, tune=0.9)]},
+    "psittacosaurus": {"roar": [L("crane", tune=1.15)], "call": [L("grouse", tune=1.2)]},
+    "borealopelta": {"roar": [L("bison")], "call": [L("alligator", 1, tune=1.05)]},
+    # Its card says the hollow crest worked like a wind instrument, as for Parasaurolophus.
+    "corythosaurus": {"roar": [L("elephant", tune=1.05)], "call": "horn"},
 }
 
 

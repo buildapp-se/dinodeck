@@ -80,16 +80,16 @@ if CUTE:
         "sea": "a bubbly squeaky whistle with a little splash",
     }
     KIND = {
-        "sauropod": "brachiosaurus diplodocus argentinosaurus apatosaurus plateosaurus",
-        "armoured": "triceratops stegosaurus ankylosaurus pachycephalosaurus protoceratops kentrosaurus styracosaurus",
-        "duckbill": "iguanodon parasaurolophus maiasaura edmontosaurus",
-        "big": "tyrannosaurus-rex spinosaurus allosaurus giganotosaurus carnotaurus ceratosaurus baryonyx",
-        "small": "velociraptor dilophosaurus deinonychus compsognathus gallimimus oviraptor therizinosaurus archaeopteryx microraptor coelophysis herrerasaurus eoraptor",
-        "flyer": "pteranodon quetzalcoatlus",
-        "sea": "mosasaurus plesiosaurus ichthyosaurus",
+        "sauropod": "brachiosaurus diplodocus argentinosaurus apatosaurus plateosaurus amargasaurus",
+        "armoured": "triceratops stegosaurus ankylosaurus pachycephalosaurus protoceratops kentrosaurus styracosaurus borealopelta",
+        "duckbill": "iguanodon parasaurolophus maiasaura edmontosaurus ouranosaurus corythosaurus deinocheirus",
+        "big": "tyrannosaurus-rex spinosaurus allosaurus giganotosaurus carnotaurus ceratosaurus baryonyx cryolophosaurus",
+        "small": "velociraptor dilophosaurus deinonychus compsognathus gallimimus oviraptor therizinosaurus archaeopteryx microraptor coelophysis herrerasaurus eoraptor psittacosaurus",
+        "flyer": "pteranodon quetzalcoatlus anurognathus",
+        "sea": "mosasaurus plesiosaurus ichthyosaurus shonisaurus liopleurodon",
     }
     PROMPTS = {id_: f"tiny cute cartoon {id_.replace('-', ' ')} dinosaur, {SOUND[kind]}" for kind, ids in KIND.items() for id_ in ids.split()}
-    assert len(PROMPTS) == 40, len(PROMPTS)
+    assert len(PROMPTS) == 50, len(PROMPTS)
 
 
 def generate(text: str) -> bytes:
