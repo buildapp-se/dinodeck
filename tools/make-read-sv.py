@@ -62,11 +62,11 @@ def word_times(said: str, y: np.ndarray, sr: int) -> list[list[float]]:
 
     if _fa is None:
         b = torchaudio.pipelines.MMS_FA
-        _fa = (b.get_model().to("cuda:0"), b.get_tokenizer(), b.get_aligner(), b.sample_rate)
+        _fa = (b.get_model(), b.get_tokenizer(), b.get_aligner(), b.sample_rate)
     model, tokenizer, aligner, rate = _fa
     words = said.split()
     norm = ["".join(c for c in w.lower().translate(str.maketrans("åäöéü", "aaoeu")) if "a" <= c <= "z") for w in words]
-    wave = torchaudio.functional.resample(torch.from_numpy(y).unsqueeze(0), sr, rate).to("cuda:0")
+    wave = torchaudio.functional.resample(torch.from_numpy(y).unsqueeze(0), sr, rate)  # on the CPU: beside Whisper on the 8 GB card it ran out of memory (2026-10-28)
     with torch.inference_mode():
         emission, _ = model(wave)
         spans = aligner(emission[0], tokenizer([n for n in norm if n]))
@@ -115,7 +115,7 @@ def main() -> None:
 
     from transformers import pipeline
 
-    asr = pipeline("automatic-speech-recognition", model="KBLab/kb-whisper-large", device="cuda:0", torch_dtype=torch.float16)
+    asr = pipeline("automatic-speech-recognition", model="KBLab/kb-whisper-large", device="cuda:0", torch_dtype=torch.float16, chunk_length_s=30)  # some clips run past 30 s
     problems = []
     for u in todo:
         y, sr = sf.read(SRC / f"{u['id']}-{u['key']}.wav", dtype="float32")
@@ -129,6 +129,7 @@ def main() -> None:
         if any(b[0] < a[0] for a, b in zip(times, times[1:])) or times[-1][1] > secs + 0.2:
             problems.append(f"{u['id']}-{u['key']}: word times out of order or past the end")
         old.setdefault(u["id"], {})[u["key"]] = {"text": u["text"], "words": times} | ({"said": u["said"]} if u["said"] != u["text"] else {})
+        TIMES.write_text(json.dumps(old, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")  # a crash keeps what is done
     for id_ in {u["id"] for u in units}:
         keys = [u["key"] for u in units if u["id"] == id_]
         # Texts no longer read aloud (the sound paragraph, Patrik 2026-10-27) leave the app's data.

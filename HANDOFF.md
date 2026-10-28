@@ -2,12 +2,19 @@
 schemaVersion: 1
 status: active
 currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
-nextAction: Kör make-read-sv.py igen (klippen för alla 40 djur finns, ordtiderna sparades inte när jobbet stoppades för minnesbrist 2026-10-27), sedan check-read.py och omtagning av flaggade klipp, nya namntagningar för 19 namn (make-names-sv-omni.py <id ...>, check-read.py --names); Patrik provar på telefon
+nextAction: Kör `uv run tools/retake-read.py audio-src/read/check.log` (omtagning av 46 klipp som Gemini flaggade; skriptet är oprovat, stoppades av minnesbrist innan något gjordes 2026-10-28), sedan `check-read.py` igen; Patrik provar uppläsningen på telefon
 blockers: []
-reviewedAt: 2026-10-27
+reviewedAt: 2026-10-28
 ---
 
 # Handoff: Dinodeck
+
+## 2026-10-28: uppläsning för alla 40 djur
+
+- **Live:** alla 40 djur läses upp på svenska (ingress, Visste du?, ungen, färg, Mer att läsa), 172 klipp, 12 MB (appen 23 MB offline). 29 av 40 namn i kortets röst.
+- **Geminis lyssning** (`check-read.py`, svar sparas i `audio-src/read/checked.json`): 52 av 172 klipp flaggade, 6 fick inget svar. Lista i `audio-src/read/check.log` (gitignorerad). Vanligast: "växtätare" och "köttätare" med dubbel konsonant, enstaka upprepade ord ("att att", "hade lång hal had lång hals" i Plateosaurus Mer att läsa).
+- **Fällor:** MMS-alignern körs på CPU (på grafikkortet bredvid Whisper: out of memory); Whisper behöver `chunk_length_s=30` för klipp över 30 s; `check-read.py` måste skriva UTF-8, annars läser `retake-read.py` fel ord.
+- **Ej verifierat:** omtagningen (`tools/retake-read.py`), ordmarkeringen för örat, riktig telefon.
 
 ## 2026-10-27: uppläsning med ordmarkering, prov på T. rex
 

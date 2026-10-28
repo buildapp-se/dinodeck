@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -48,8 +49,10 @@ def check(model: str, clip: Path, text: str, brief: str = BRIEF, field: str = "p
             time.sleep(5 * (attempt + 1))
             continue
         found = re.search(r"\{.*\}", answer, re.S)
-        if found:
-            return json.loads(found.group(0))[field]
+        try:
+            return json.loads(found.group(0))[field]  # type: ignore[union-attr]
+        except (AttributeError, ValueError, KeyError):
+            continue  # no JSON, broken JSON or another shape: ask again
     raise ValueError(f"{clip.name}: no usable answer in six tries")
 
 
@@ -80,6 +83,7 @@ def names(model: str) -> int:
 
 
 def main() -> int:
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]  # Windows would write å, ä, ö in its own code page
     args = sys.argv[1:]
     if args and args[0] == "--names":
         return names(args[1] if len(args) > 1 else "google/gemini-4-argon")
@@ -92,13 +96,28 @@ def main() -> int:
         id_, key = re.match(r"(.+)-(short|long|baby|colour|facts)$", clip.stem).groups()  # type: ignore[union-attr]
         return times[id_][key]["text"]
 
+    # Verdicts are kept per clip (by its size and text), so a crash or a second run pays only for what changed.
+    cache_file = ROOT / "audio-src" / "read" / "checked.json"
+    cache = json.loads(cache_file.read_text(encoding="utf-8")) if cache_file.exists() else {}
+    lock = threading.Lock()
+
     def votes(clip: Path) -> tuple[Path, list[dict]]:
+        key = f"{clip.name}:{clip.stat().st_size}:{text(clip)}"
+        if key in cache:
+            return clip, cache[key]
         # One answer alone is noise: three runs on the same T. rex clips flagged three different sets of words
         # (2026-10-27). A word counts when two of three listens name it.
-        runs = [check(model, clip, text(clip)) for _ in range(VOTES)]
+        try:
+            runs = [check(model, clip, text(clip)) for _ in range(VOTES)]
+        except ValueError:
+            return clip, [{"word": "?", "heard": "no answer from the model, not checked"}]  # not cached: tried again next run
         named = [{p["word"].lower().strip(".,!?") for p in run} for run in runs]
-        return clip, [p for p in {p["word"].lower().strip(".,!?"): p for run in runs for p in run}.values()
-                      if sum(p["word"].lower().strip(".,!?") in n for n in named) >= 2]
+        found = [p for p in {p["word"].lower().strip(".,!?"): p for run in runs for p in run}.values()
+                 if sum(p["word"].lower().strip(".,!?") in n for n in named) >= 2]
+        with lock:
+            cache[key] = found
+            cache_file.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+        return clip, found
 
     with ThreadPoolExecutor(8) as pool:
         results = list(pool.map(votes, clips))
