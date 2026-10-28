@@ -62,19 +62,34 @@ PROMPTS = {
 }
 
 # The cute style (parent mode, 2026-10-28): the same cards as toy figures, roars a small child giggles at.
-# `uv run tools/try-elevenlabs.py --cute` writes audio-src/elevenlabs-cute/, 5 x 3 x 2 s = 330 credits.
+# `uv run tools/try-elevenlabs.py --cute` writes audio-src/elevenlabs-cute/, 2 drafts x 2 s = 44 credits per animal.
+# Trap: "baby" or "toddler" in the prompt gives a crying human infant (10 of 15 first drafts, Gemini 2026-10-28).
+# Check every draft with tools/review-cute-roars.py before picking.
 CUTE = "--cute" in sys.argv
 if CUTE:
     sys.argv.remove("--cute")
-    OUT, PICKED, SECONDS = OUT.parent / "elevenlabs-cute", OUT.parent / "elevenlabs-cute-roars", 2.0
-    TAIL = ", single tiny creature, adorable cartoon sound effect for a toddler app, playful and silly, no music, no speech"
-    PROMPTS = {
-        "tyrannosaurus-rex": "baby T. rex trying its very best to roar, a squeaky little rawr that ends in a happy giggle",
-        "triceratops": "baby triceratops, a bouncy snorting oink-like grunt and a happy little honk",
-        "stegosaurus": "baby stegosaurus, a sleepy cooing hum and a soft squeaky toy squeak",
-        "brachiosaurus": "baby brachiosaurus, a long gentle wobbly hoot like a cartoon trumpet, sweet and friendly",
-        "velociraptor": "baby velociraptor, quick excited chirps and squeaks like a happy chick",
+    OUT, PICKED, SECONDS, DRAFTS = OUT.parent / "elevenlabs-cute", OUT.parent / "elevenlabs-cute-roars", 2.0, 2
+    TAIL = ", cartoon animal creature sound effect for a children's game, chirpy reptile and bird-like, playful, no music, no speech"
+    SOUND = {
+        "sauropod": "a gentle wobbly hoot like a soft toy trumpet",
+        "armoured": "a bouncy snorty grunt and a short happy honk",
+        "duckbill": "a cheerful squeaky toy-horn honk",
+        "big": "a small squeaky growl that tries hard to be a roar, like a cartoon lizard",
+        "small": "quick excited chirps and squeaks, like a cartoon bird-lizard",
+        "flyer": "a squeaky cartoon screech and a flappy chirp",
+        "sea": "a bubbly squeaky whistle with a little splash",
     }
+    KIND = {
+        "sauropod": "brachiosaurus diplodocus argentinosaurus apatosaurus plateosaurus",
+        "armoured": "triceratops stegosaurus ankylosaurus pachycephalosaurus protoceratops kentrosaurus styracosaurus",
+        "duckbill": "iguanodon parasaurolophus maiasaura edmontosaurus",
+        "big": "tyrannosaurus-rex spinosaurus allosaurus giganotosaurus carnotaurus ceratosaurus baryonyx",
+        "small": "velociraptor dilophosaurus deinonychus compsognathus gallimimus oviraptor therizinosaurus archaeopteryx microraptor coelophysis herrerasaurus eoraptor",
+        "flyer": "pteranodon quetzalcoatlus",
+        "sea": "mosasaurus plesiosaurus ichthyosaurus",
+    }
+    PROMPTS = {id_: f"tiny cute cartoon {id_.replace('-', ' ')} dinosaur, {SOUND[kind]}" for kind, ids in KIND.items() for id_ in ids.split()}
+    assert len(PROMPTS) == 40, len(PROMPTS)
 
 
 def generate(text: str) -> bytes:
