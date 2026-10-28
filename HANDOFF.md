@@ -2,7 +2,7 @@
 schemaVersion: 1
 status: active
 currentGoal: 40 djur live, Dagens ägg med tolv ungar live. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
-nextAction: Patrik provar uppläsningen på T. rex, ägget och liggande läge på telefon, skriver ut en målarbild och lyssnar igenom ljuden; beslut om appbutikerna
+nextAction: Kör make-read-sv.py igen (klippen för alla 40 djur finns, ordtiderna sparades inte när jobbet stoppades för minnesbrist 2026-10-27), sedan check-read.py och omtagning av flaggade klipp, nya namntagningar för 19 namn (make-names-sv-omni.py <id ...>, check-read.py --names); Patrik provar på telefon
 blockers: []
 reviewedAt: 2026-10-27
 ---

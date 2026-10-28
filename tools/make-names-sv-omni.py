@@ -15,6 +15,7 @@ the rest stay with Piper.
 """
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -34,9 +35,13 @@ def main() -> None:
 
     model = OmniVoice.from_pretrained("k2-fsa/OmniVoice", device_map="cuda:0", dtype=torch.float16)
     sr = model.sampling_rate
+    only = set(sys.argv[1:])  # ids given: two more takes of each spelling, numbered after the drafts already there
     for id_, name, hint in json.loads((OUT / "names.json").read_text(encoding="utf-8")):
+        if only and id_ not in only:
+            continue
         respelled = " ".join(w.replace("-", "").lower().capitalize() for w in hint.split())
-        for n, text in enumerate([name, respelled], 1):
+        start = 1 + max((int(p.stem.rsplit("-", 1)[1]) for p in OUT.glob(f"{id_}-*.wav")), default=0) if only else 1
+        for n, text in enumerate([name, respelled] * (2 if only else 1), start):
             for _ in range(3):  # the model now and then returns nothing
                 y = np.asarray(model.generate(text=text + ".", language="sv", ref_audio=str(voice.REF), ref_text=voice.REF_TEXT, duration=voice.PACE * len(text) * SLOWER + 0.3)[0], dtype=np.float32).reshape(-1)
                 if y.size:

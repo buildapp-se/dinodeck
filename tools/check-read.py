@@ -60,11 +60,14 @@ Answer with JSON only: {{"right": true or false}}"""
 
 
 def names(model: str) -> int:
-    """--names: for each animal, the OmniVoice draft (tools/make-names-sv-omni.py) that says the name as the card's
+    """--names: for each animal not yet in OMNI (tools/make-names.py), the OmniVoice draft (tools/make-names-sv-omni.py) that says the name as the card's
     hint does in all three listens, or none, and then Piper's clip stays."""
     drafts = ROOT / "audio-src" / "names-omni"
     rows = json.loads((drafts / "names.json").read_text(encoding="utf-8"))
-    jobs = [(id_, n, f'"{name}", pronounced "{hint}"') for id_, name, hint in rows for n in (1, 2)]
+    src = (ROOT / "tools" / "make-names.py").read_text(encoding="utf-8")
+    done = set(re.findall(r'"([a-z-]+)": \d', src[src.index("OMNI = {"):src.index("}", src.index("OMNI = {"))]))
+    jobs = [(id_, int(p.stem.rsplit("-", 1)[1]), f'"{name}", pronounced "{hint}"') for id_, name, hint in rows if id_ not in done
+            for p in sorted(drafts.glob(f"{id_}-*.wav"), key=lambda p: int(p.stem.rsplit("-", 1)[1]))]
     with ThreadPoolExecutor(8) as pool:
         got = list(pool.map(lambda j: sum(bool(check(model, drafts / f"{j[0]}-{j[1]}.wav", j[2], NAME_BRIEF, "right")) for _ in range(VOTES)), jobs))
     picks = {}
