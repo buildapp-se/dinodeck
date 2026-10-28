@@ -42,6 +42,9 @@ OMNI = {
     "allosaurus": 1, "carnotaurus": 2, "dilophosaurus": 1, "compsognathus": 2, "archaeopteryx": 1, "microraptor": 1,
     "apatosaurus": 2, "iguanodon": 1, "maiasaura": 1, "protoceratops": 1, "eoraptor": 1, "ceratosaurus": 1,
     "kentrosaurus": 1, "ichthyosaurus": 1, "quetzalcoatlus": 1,
+    # Second round, 2026-10-28: two more takes of each spelling for the 19 left, these passed.
+    "pteranodon": 6, "gallimimus": 5, "oviraptor": 4, "therizinosaurus": 1, "pachycephalosaurus": 1, "plesiosaurus": 2,
+    "coelophysis": 4, "styracosaurus": 5,
 }
 SLOWER = 1.15  # a little slower than the voice's normal pace: these are for children learning a long word
 
