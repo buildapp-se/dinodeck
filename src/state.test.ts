@@ -173,7 +173,7 @@ test('catalog is complete in both languages', () => {
   assert.equal(new Set(ids).size, ids.length, 'duplicate id');
   for (const d of DINOS) {
     assert.match(d.id, /^[a-z]+(-[a-z]+)*$/, d.id);
-    assert.ok(d.fromMya > d.toMya, `${d.id}: fromMya must be older than toMya`);
+    assert.ok(d.fromMya >= d.toMya, `${d.id}: fromMya must not be younger than toMya`); // equal: one known date
     assert.ok(d.lengthM > 0 && d.weightKg > 0, `${d.id}: size`);
     assert.ok(d.facts.length >= 2, `${d.id}: facts`);
     assert.match(d.source.url, /^https:\/\//, `${d.id}: source`);

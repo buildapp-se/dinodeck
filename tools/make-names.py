@@ -91,6 +91,17 @@ NAMES: dict[str, dict[str, str]] = {
     "styracosaurus": {"sv": f"stˌyrakuː{S}", "en": f"staɪɹˌakə{E}"},
     "edmontosaurus": {"sv": f"ˌɛdmɔntuː{S}", "en": f"ɛdmˌɒntə{E}"},
     "quetzalcoatlus": {"sv": "kˌɛtsalkuːˈatlʉs", "en": "kwˌɛtsəlkəʊˈatləs"},
+    # Batch 4, 2026-10-28, from the cards' pronunciation help.
+    "shonisaurus": {"sv": f"ɧˌuːnɪ{S}", "en": f"ʃˌəʊnɪ{E}"},
+    "cryolophosaurus": {"sv": f"krˌyːuːlˌuːfuː{S}", "en": f"kɹˌaɪəlˌəʊfə{E}"},
+    "anurognathus": {"sv": "ˌanʉːrɔɡnˈɑːtʉːs", "en": "ˌanʊəɹɒɡnˈaθəs"},
+    "liopleurodon": {"sv": "lˌiːuːplˈɛʉːruːdɔn", "en": "lˌaɪəʊplˈʊəɹədˌɒn"},
+    "amargasaurus": {"sv": f"ˌamarɡa{S}", "en": f"əmˌɑːɡə{E}"},
+    "ouranosaurus": {"sv": f"ʉːrˌɑːnuː{S}", "en": f"uːɹˌɑːnə{E}"},
+    "deinocheirus": {"sv": "dˌɛjnuːkˈɛjrʉːs", "en": "dˌaɪnəʊkˈaɪəɹəs"},
+    "psittacosaurus": {"sv": f"sˌɪtakuː{S}", "en": f"sˌɪtəkə{E}"},
+    "borealopelta": {"sv": "bˌuːrɛˌaluːpˈɛlta", "en": "bˌɔːɹiːˌaləʊpˈɛltə"},
+    "corythosaurus": {"sv": f"kˌuːrytuː{S}", "en": f"kəɹˌɪθə{E}"},
 }
 
 

@@ -2,17 +2,18 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
 import { colourNote, t, when } from './text.ts';
+import type { Dino } from './dinos.ts';
 
 const ids = (level: string): string[] => DINOS.filter((d) => d.colour === level).map((d) => d.id).sort();
 
 test('colour evidence follows docs/research/dinosaur-colour.md section 6', () => {
-  assert.deepEqual(ids('known'), ['archaeopteryx', 'microraptor']);
+  assert.deepEqual(ids('known'), ['archaeopteryx', 'borealopelta', 'microraptor', 'psittacosaurus']);
   assert.deepEqual(ids('relatives'), [
-    'ankylosaurus', 'apatosaurus', 'compsognathus', 'deinonychus', 'ichthyosaurus', 'mosasaurus', 'oviraptor',
-    'plesiosaurus', 'protoceratops', 'pteranodon', 'quetzalcoatlus', 'styracosaurus', 'therizinosaurus', 'triceratops',
+    'ankylosaurus', 'anurognathus', 'apatosaurus', 'compsognathus', 'deinonychus', 'ichthyosaurus', 'liopleurodon', 'mosasaurus', 'oviraptor',
+    'plesiosaurus', 'protoceratops', 'pteranodon', 'quetzalcoatlus', 'shonisaurus', 'styracosaurus', 'therizinosaurus', 'triceratops',
     'velociraptor',
   ]);
-  assert.equal(ids('guess').length, 23);
+  assert.equal(ids('guess').length, 28);
   assert.deepEqual(DINOS.filter((d) => d.colourDisputed).map((d) => d.id).sort(), ['archaeopteryx', 'diplodocus', 'ichthyosaurus']);
 });
 
@@ -70,4 +71,7 @@ test('when formats dinosaur period and time span in Swedish and English', () => 
   const rex = DINOS.find((d) => d.id === 'tyrannosaurus-rex')!;
   assert.equal(when('sv', rex), 'Krita, för 68 till 66 miljoner år sedan');
   assert.equal(when('en', rex), 'Cretaceous, 68 to 66 million years ago');
+  const at = (id: string): Dino => DINOS.find((d) => d.id === id)!;
+  assert.equal(when('sv', at('shonisaurus')), 'Trias, för 227 miljoner år sedan');
+  assert.equal(when('sv', at('anurognathus')), 'Jura, för 150,8 till 148,5 miljoner år sedan');
 });
