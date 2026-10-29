@@ -16,7 +16,7 @@ import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
 import { KEY, advance, deckOrder, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
-import { artSrc, roarSrc } from './cute.ts';
+import { artSrc, babySrc, roarSrc } from './cute.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
 const ids = DINOS.map((d) => d.id);
@@ -49,7 +49,7 @@ let parentOpen = false;
 
 /** `withBaby`: the hatched baby stands beside the adult (open cards and the detail view only, never a silhouette). */
 function artHtml(d: Dino, withBaby = false): string {
-  const baby = withBaby && state.hatched.includes(d.id) ? `<img class="baby" src="img/baby/${d.id}.webp" alt="${t(lang(), 'baby')}">` : '';
+  const baby = withBaby && state.hatched.includes(d.id) ? `<img class="baby" src="${babySrc(d.id, state.cute)}" alt="${t(lang(), 'baby')}">` : '';
   // The placeholder sits behind the image and stays if the image is missing.
   return `<div class="art"><span class="art-missing" aria-hidden="true">${icon('lock')}</span><img src="${artSrc(d.id, state.cute)}" alt="" decoding="async">${baby}</div>`;
 }
@@ -313,7 +313,7 @@ function hatch(): void {
   dialog.innerHTML = `
     <p class="hint">${t(l, 'tapEgg')}</p>
     <button type="button" class="egg" aria-label="${t(l, 'tapEgg')}">
-      <img class="baby-big" src="img/baby/${id}.webp" alt="">
+      <img class="baby-big" src="${babySrc(id, state.cute)}" alt="">
       <img class="half upper" src="img/baby/egg.webp" alt="">
       <img class="half lower" src="img/baby/egg.webp" alt="">
       <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${CRACK.map((p, i) => `<polyline class="${i < 2 ? 'main' : 'branch'}" pathLength="100" points="${p}"/>`).join('')}</svg>
