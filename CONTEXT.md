@@ -10,8 +10,8 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 | Sparande | Bara `localStorage` (nyckel `dinodeck`). Ingen backend, ingen Cloudflare. |
 | Språk | Svenska och engelska från start. Varje text i katalogen är `{ sv, en }`. |
 | Ålder | 3 till 10 år. Kort barntext överst, längre text under. Uppläsning av texter är v2. |
-| Urval | 40 kända djur (30 från start, 10 tillagda 2026-10-25, underlag i `docs/research/batch-3.md`). Flygödlor och havsreptiler är med, märkta "inte en dinosaurie". |
-| Låsning | 8 startkort öppna, 32 vinns i utmaningar. Låsta kort visas som silhuett med "Vinn mig". Föräldraläge kan låsa upp allt. Kortleken visar bara de tre nästa att vinna, varvade med öppna kort (2026-10-26). |
+| Urval | 50 kända djur (30 från start, 10 tillagda 2026-10-25 och 10 tillagda 2026-10-29, underlag i `docs/research/batch-3.md` och `batch-4.md`). Flygödlor och havsreptiler är med, märkta "inte en dinosaurie". |
+| Låsning | 8 startkort öppna, 42 vinns i utmaningar. Låsta kort visas som silhuett med "Vinn mig". Föräldraläge kan låsa upp allt. Kortleken visar bara de tre nästa att vinna, varvade med öppna kort (2026-10-26). |
 | Dagens ägg | Ett ägg per dag (lokalt datum) kläcker en unge till ett kort barnet redan har; ungen syns på kortet med ett faktum. Ingen streak, missad dag kostar inget. Havsreptiler får inget ägg (födde levande). Kort med unge vinns först. (Patrik 2026-10-26) |
 | Bläddring | Som Tinder: höger = favorit, vänster = nästa. Inget kort försvinner, det läggs sist. Tryck på djuret ger vrål, tryck på resten av kortet eller vändknappen vänder. Med ljudet av vänder även tryck på djuret. |
 | Scen | Bara öppna eller vunna djur. Tre bakgrunder (trias, jura, krita). Flytta och ändra storlek. Sparas lokalt. |
