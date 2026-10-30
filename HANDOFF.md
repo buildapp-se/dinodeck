@@ -4,10 +4,19 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-10-28
+reviewedAt: 2026-10-30
 ---
 
 # Handoff: Dinodeck
+
+## 2026-10-30: målarbilden vrids på stående papper
+
+- **Problem (Patrik):** på mobilen blev utskriften stående fast den ska vara liggande. Webbläsare som struntar i `@page size` ger stående papper. Vilken telefon det gällde är inte känt.
+- **Lösning:** `style.css`, `@container (max-width: 200mm)` på `body`: blir sidan smal vrids det breda arket 90 grader. Höga djur (`.tall`) rörs inte.
+- **Fälla:** `@media print and (orientation)` följer pappersinställningen, inte `@page`: Chromium svarar `portrait` på en liggande sida. Vridning via mediefrågan hade förstört datorutskriften. Mätt med PDF.
+- **Verifierat:** PDF i Chromium med telefonbredd, tittat på resultatet: med `@page` som förut (T. rex och scen liggande, Brachiosaurus stående), utan `size` i `@page` (simulerar telefonen) ligger T. rex och scen vridna på stående A4, en sida var. `npm test`, `npm run build`.
+- **Inte verifierat:** riktig telefon. iOS och Android har egna utskriftsdialoger, och reglen hjälper bara om deras layout faktiskt blir stående bredd.
+- **Linjetjocklek:** 1,1 till 2,3 mm på papper, median 1,8 mm över 50 djur (uppmätt på `public/img/line/`). Avsiktligt: briefen ber om 1 % av bildbredden, `make-outlines.py` förtjockar ytterligare. Oförändrat.
 
 ## 2026-10-28: söt stil, och tio nya djur på en gren
 

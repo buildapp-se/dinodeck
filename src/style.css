@@ -645,10 +645,15 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 @media print {
   /* Most animals and every scene are wider than tall: A4 landscape, 273 x 186 mm inside the margins.
      A tall animal (printSheet decides) asks for portrait. The sheet is a fixed box a little short of the page,
-     so it never spills onto a second sheet. Phones may print portrait anyway: the drawing then shrinks to fit. */
+     so it never spills onto a second sheet. */
   @page { size: A4 landscape; margin: 12mm; }
   @page tall { size: A4 portrait; margin: 12mm; }
-  .colouring body { display: block; height: auto; min-height: 0; background: #fff; }
+  .colouring body { display: block; height: auto; min-height: 0; background: #fff; container-type: inline-size; }
+  /* Some phones ignore @page and lay out on portrait paper: turn the wide sheet instead. This measures the real width,
+     since @media (orientation) follows the paper setting and answers portrait on a landscape page in Chromium. */
+  @container (max-width: 200mm) {
+    .colouring #print:not(.tall) { width: 265mm; max-width: none; height: 180mm; transform-origin: 0 0; transform: translateX(180mm) rotate(90deg); }
+  }
   .colouring body > :not(#print) { display: none !important; }
   .colouring #print { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 273mm; height: 180mm; color: #000; text-align: center; }
   .colouring #print.tall { page: tall; max-width: 186mm; height: 265mm; }
