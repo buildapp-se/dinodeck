@@ -61,4 +61,5 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - Database: 2026-10-25, none, localStorage
 - Actions: 2026-10-26, pass, zizmor 0 high, 0 medium, 0 low
 - ZAP baseline: 2026-10-27, n/a, static site on GitHub Pages with no server, cookies or forms; headers, TLS and markup are covered by their own columns, so a passive ZAP scan would repeat them
+- Dependabot: 2026-10-30, pass, 0 open alerts
 
