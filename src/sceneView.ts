@@ -21,15 +21,32 @@ export interface SceneContext {
 const PERIODS: readonly Period[] = ['triassic', 'jurassic', 'cretaceous'];
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
 
+export interface StageFrame {
+  worldWidth: number;
+  worldHeight: number;
+  left: number;
+  top: number;
+}
+
+/** How an item sits on the stage. The position goes in `translate`, never left/top: left/top would run layout on every pointermove while dragging. */
+export const itemStyle = (f: StageFrame, item: SceneItem): { translate: string; width: string; transform: string } => ({
+  translate: `${f.left + item.x * f.worldWidth}px ${f.top + item.y * f.worldHeight}px`,
+  width: `${item.size * f.worldWidth}px`,
+  transform: `translate(-50%, -50%) scaleX(${item.flip ? -1 : 1})`,
+});
+
 /** Bigger animals start bigger, so a Diplodocus dwarfs a Velociraptor before anyone resizes anything. */
 const startSize = (d: Dino): number => clamp(0.12 + (d.lengthM / 35) * 0.5, MIN_SIZE, MAX_SIZE);
 
 export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   const { lang: l, scene } = ctx;
   let selected: SceneItem | null = null;
+  // Set when an animal is placed right now: it drops in with a bounce instead of just appearing.
+  let fresh: SceneItem | null = null;
   const fromPrize = ctx.open.find((animal) => animal.id === ctx.selectId);
   if (fromPrize && scene.items.length < MAX_SCENE_ITEMS) {
     selected = { id: fromPrize.id, x: 0.5, y: 0.7, size: startSize(fromPrize), flip: false };
+    fresh = selected;
     scene.items.push(selected);
     ctx.save();
   }
@@ -56,7 +73,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
 
   const stage = view.querySelector<HTMLElement>('.stage')!;
   const tools = view.querySelector<HTMLElement>('.tools')!;
-  const frame = () => {
+  const frame = (): StageFrame => {
     const { width, height } = stage.getBoundingClientRect();
     const worldHeight = Math.max(height, width / 1.5);
     const worldWidth = worldHeight * 1.5;
@@ -71,11 +88,10 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   });
 
   const place = (el: HTMLElement, item: SceneItem): void => {
-    const f = frame();
-    el.style.left = `${f.left + item.x * f.worldWidth}px`;
-    el.style.top = `${f.top + item.y * f.worldHeight}px`;
-    el.style.width = `${item.size * f.worldWidth}px`;
-    el.style.transform = `translate(-50%, -50%) scaleX(${item.flip ? -1 : 1})`;
+    const s = itemStyle(frame(), item);
+    el.style.translate = s.translate;
+    el.style.width = s.width;
+    el.style.transform = s.transform;
     el.classList.toggle('selected', item === selected);
   };
 
@@ -97,6 +113,20 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     view.querySelectorAll<HTMLButtonElement>('[data-bg]').forEach((b) =>
       b.setAttribute('aria-pressed', String(b.dataset.bg === scene.bg)),
     );
+  };
+
+  /** A new animal falls in from above and lands with a bounce. The last keyframe is place()'s own transform. */
+  const dropIn = (item: SceneItem): void => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = stage.querySelectorAll<HTMLElement>('.item')[scene.items.indexOf(item)];
+    if (!el) return;
+    const s = item.flip ? -1 : 1;
+    el.animate([
+      { transform: `translate(-50%, -50%) translateY(-140%) scaleX(${s})`, easing: 'ease-in' },
+      { transform: `translate(-50%, -50%) translateY(5%) scaleX(${s})`, offset: 0.65, easing: 'ease-out' },
+      { transform: `translate(-50%, -50%) translateY(-2.5%) scaleX(${s})`, offset: 0.82 },
+      { transform: `translate(-50%, -50%) scaleX(${s})` },
+    ], 600);
   };
 
   const drag = (el: HTMLElement, item: SceneItem): void => {
@@ -166,6 +196,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       scene.items.push(selected);
       ctx.save();
       draw();
+      dropIn(selected);
     }),
   );
 
@@ -203,7 +234,16 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   document.addEventListener('keydown', onKey);
 
   draw();
+  if (fresh) dropIn(fresh);
   // Redraw rather than re-place by index: a picture that failed to load is removed, which would shift the indexes.
-  const watch = new ResizeObserver(() => (stage.isConnected ? draw() : watch.disconnect()));
+  // The first notification only repeats the size draw() already drew with, and would replace a dropping animal mid-bounce.
+  let size = stage.getBoundingClientRect();
+  const watch = new ResizeObserver(() => {
+    if (!stage.isConnected) return watch.disconnect();
+    const r = stage.getBoundingClientRect();
+    if (r.width === size.width && r.height === size.height) return;
+    size = r;
+    draw();
+  });
   watch.observe(stage);
 }

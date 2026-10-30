@@ -91,6 +91,7 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
   const ask = (): void => {
     if (gone()) return;
     const q = makeQuestion(level, Math.random, ctx.target, ctx.dinos, withImage);
+    let misses = 0;
     view.innerHTML = `
       <section class="challenge">
         <p class="win-count" aria-label="${ctx.wonCount} ${l === 'sv' ? 'av' : 'of'} ${toWin}"><span class="collect"><i style="width:${Math.round((100 * ctx.wonCount) / toWin)}%"></i></span>${ctx.wonCount} / ${toWin}</p>
@@ -113,6 +114,8 @@ async function play(view: HTMLElement, ctx: ChallengeContext, level: Level): Pro
           ctx.chime('wrong');
           if (level !== 'big') ctx.say('try-again');
           view.querySelector('#msg')!.textContent = t(l, 'tryAgain');
+          // After two misses only the right answer is left: let it pulse.
+          if (++misses === 2) view.querySelector(`[data-i="${q.answer}"]`)?.classList.add('hint');
           return;
         }
         right++;

@@ -81,12 +81,66 @@ test('every question has three distinct options and a correct answer', () => {
       }
     }
   }
-  assert.deepEqual([...kinds].sort(), ['big:fact', 'big:math', 'mid:math', 'mid:silhouette', 'small:count', 'small:silhouette']);
+  assert.deepEqual([...kinds].sort(), ['big:fact', 'big:math', 'big:silhouette', 'mid:math', 'mid:silhouette', 'small:count', 'small:silhouette']);
 });
 
 test('no silhouette questions until three pictures exist', () => {
   for (let seed = 1; seed <= 200; seed++) {
     assert.notEqual(makeQuestion('small', seeded(seed), DINOS[0]!, DINOS, ['a', 'b']).kind, 'silhouette');
+  }
+});
+
+test('silhouette questions also on level 8 to 10', () => {
+  let silhouettes = 0;
+  let rest = 0;
+  for (let seed = 1; seed <= 400; seed++) {
+    const q = makeQuestion('big', seeded(seed), DINOS[seed % DINOS.length]!, DINOS, withImage);
+    if (q.kind !== 'silhouette') {
+      rest++;
+      continue;
+    }
+    silhouettes++;
+    assert.ok(q.show && 'silhouette' in q.show, `big seed ${seed}`);
+    const right = q.options[q.answer];
+    assert.ok(right && 'dino' in right, `big seed ${seed}`);
+    assert.equal(right.dino, q.show.silhouette, `big seed ${seed}`);
+  }
+  assert.ok(silhouettes > 0, 'big level must sometimes ask silhouette questions');
+  assert.ok(rest > 0, 'big level must still ask math and fact questions');
+});
+
+test('silhouette questions: wrong options have another body shape than the one shown', () => {
+  const dinoA: Dino = { ...DINOS[0]!, id: 'dino-a', group: 'dinosaur' };
+  const dinoB: Dino = { ...DINOS[0]!, id: 'dino-b', group: 'dinosaur' };
+  const ptero: Dino = { ...DINOS[0]!, id: 'ptero', group: 'pterosaur', wingspan: true };
+  const marine: Dino = { ...DINOS[0]!, id: 'marine', group: 'marine' };
+  const pool = [dinoA, dinoB, ptero, marine];
+  const ids = pool.map((d) => d.id);
+  const byId = new Map(pool.map((d) => [d.id, d]));
+
+  for (let seed = 1; seed <= 200; seed++) {
+    const prng = seeded(seed);
+    let first = true;
+    const rand: Rand = () => {
+      if (first) {
+        first = false;
+        return 0.1; // < 0.5 triggers silhouette
+      }
+      return prng();
+    };
+    const q = makeQuestion('small', rand, DINOS[0]!, pool, ids);
+    assert.equal(q.kind, 'silhouette', `seed ${seed}`);
+    assert.ok(q.show && 'silhouette' in q.show, `seed ${seed}`);
+    const shown = byId.get(q.show.silhouette)!;
+    const right = q.options[q.answer];
+    assert.ok(right && 'dino' in right, `seed ${seed}`);
+    assert.equal(right.dino, shown.id, `seed ${seed}`);
+    for (const o of q.options) {
+      if (o === right) continue;
+      assert.ok('dino' in o, `seed ${seed}`);
+      const d = byId.get(o.dino)!;
+      assert.notEqual(d.group, shown.group, `seed ${seed}: option ${d.id} has the same body shape as the shown ${shown.id}`);
+    }
   }
 });
 

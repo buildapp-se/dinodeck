@@ -15,7 +15,7 @@ import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { KEY, advance, deckOrder, loadState, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { KEY, advance, deckOrder, loadState, markSeen, resetCollection, saveState, toggleFavorite } from './state.ts';
 import { artSrc, babySrc, roarSrc } from './cute.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
@@ -161,9 +161,12 @@ function buildCard(d: Dino, depth: number): HTMLElement {
       </div>`;
     return card;
   }
+  // A card just won carries a NY badge until it has been turned over once.
+  const isNew = state.won.includes(d.id) && !state.seen.includes(d.id);
   card.innerHTML = `
     <div class="face front">
       ${artHtml(d, true)}
+      ${isNew ? `<b class="badge new">${t(l, 'newCard')}</b>` : ''}
       <h2 lang="la">${d.name}</h2>
       <p class="tag">${when(l, d)}</p>
       <button type="button" class="snd" aria-label="${t(l, 'listen')}">${icon('sound')}</button>
@@ -215,7 +218,11 @@ const handlers: DragHandlers = {
         return;
       }
     }
-    card.classList.toggle('flipped');
+    const flipped = card.classList.toggle('flipped');
+    if (flipped && card.dataset.id && state.won.includes(card.dataset.id)) {
+      state.seen = markSeen(state.seen, card.dataset.id);
+      saveState(state);
+    }
     markOnboarded();
   },
   swipe(dir) {

@@ -45,6 +45,8 @@ export interface State {
   favorites: string[];
   /** Ids won in challenges. Starters are open without being listed here. */
   won: string[];
+  /** Won cards that have been turned over: the NY badge on the front is gone. */
+  seen: string[];
   scene: Scene;
   /** Parent mode: every card open without touching what has been won. */
   unlockAll: boolean;
@@ -62,7 +64,7 @@ export const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {
-  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' };
+  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], seen: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' };
   if (!raw) return fresh;
   let data: unknown;
   try {
@@ -79,6 +81,7 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
     lang: d.lang === 'sv' || d.lang === 'en' ? d.lang : fallbackLang,
     favorites: idList(d.favorites),
     won: idList(d.won),
+    seen: idList(d.seen),
     scene: parseScene(d.scene, knownIds),
     unlockAll: d.unlockAll === true,
     muted: d.muted === true,
@@ -91,11 +94,16 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
 
 /** Parent mode's reset: the collection starts over, the device's settings (language, sound, style) stay. */
 export function resetCollection(state: State): State {
-  return { v: 1, lang: state.lang, muted: state.muted, cute: state.cute, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '' };
+  return { v: 1, lang: state.lang, muted: state.muted, cute: state.cute, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '' };
 }
 
 export function toggleFavorite(favorites: readonly string[], id: string): string[] {
   return favorites.includes(id) ? favorites.filter((x) => x !== id) : [...favorites, id];
+}
+
+/** A won card keeps its NY badge until it has been turned over once. */
+export function markSeen(seen: readonly string[], id: string): string[] {
+  return seen.includes(id) ? [...seen] : [...seen, id];
 }
 
 /** The top card goes to the back: nothing is ever dismissed for good. */

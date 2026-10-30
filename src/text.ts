@@ -67,6 +67,7 @@ const UI = {
   years: { sv: 'år', en: 'years' },
   tryAgain: { sv: 'Försök igen!', en: 'Try again!' },
   youWon: { sv: 'Du vann', en: 'You won' },
+  newCard: { sv: 'NY', en: 'NEW' },
   seeCard: { sv: 'Visa kortet', en: 'See the card' },
   oneMore: { sv: 'En till', en: 'One more' },
   eggToday: { sv: 'Dagens ägg', en: "Today's egg" },

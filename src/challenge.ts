@@ -80,13 +80,16 @@ function math(rand: Rand, level: Level): Question {
   return numberQuestion(rand, { kind: 'math', prompt: same(`${text} = ?`) }, value);
 }
 
-function silhouette(rand: Rand, withImage: readonly string[]): Question {
-  const [right, ...wrong] = shuffle(rand, withImage).slice(0, 3) as [string, string, string];
+function silhouette(rand: Rand, pool: readonly Dino[]): Question {
+  const right = pool[int(rand, 0, pool.length - 1)]!;
+  // Wrong options with another body shape first, so the dark shape stands apart from them.
+  const rest = shuffle(rand, pool.filter((d) => d !== right));
+  const wrong = [...rest.filter((d) => d.group !== right.group), ...rest.filter((d) => d.group === right.group)].slice(0, 2);
   return build(
     rand,
-    { kind: 'silhouette', prompt: { sv: 'Vilken dinosaurie är det?', en: 'Who is it?' }, show: { silhouette: right }, say: 'who' },
-    { dino: right },
-    wrong.map((dino) => ({ dino })),
+    { kind: 'silhouette', prompt: { sv: 'Vilken dinosaurie är det?', en: 'Who is it?' }, show: { silhouette: right.id }, say: 'who' },
+    { dino: right.id },
+    wrong.map((d) => ({ dino: d.id })),
   );
 }
 
@@ -131,7 +134,7 @@ function fact(rand: Rand, target: Dino, dinos: readonly Dino[]): Question {
 }
 
 /**
- * One question for the level. `withImage` lists the animals whose picture exists:
+ * One question for the level. `withImage` lists the ids of the animals whose picture exists:
  * silhouette questions need three of them and are left out until then.
  */
 export function makeQuestion(
@@ -141,8 +144,9 @@ export function makeQuestion(
   dinos: readonly Dino[],
   withImage: readonly string[],
 ): Question {
-  const canMatch = withImage.length >= 3;
+  const pool = dinos.filter((d) => withImage.includes(d.id));
+  // Silhouettes on every level once three pictures exist; a third of the questions at 8 to 10.
+  if (pool.length >= 3 && rand() < (level === 'big' ? 1 / 3 : 0.5)) return silhouette(rand, pool);
   if (level === 'big') return rand() < 0.5 ? math(rand, level) : fact(rand, target, dinos);
-  if (canMatch && rand() < 0.5) return silhouette(rand, withImage);
   return level === 'small' ? count(rand, level) : math(rand, level);
 }
