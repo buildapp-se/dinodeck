@@ -514,6 +514,11 @@ function render(): void {
           latest: state.won.slice(-3).reverse().map((id) => byId.get(id)?.name ?? id),
         };
       },
+      // A getter as well: unlocking every card changes who can be printed.
+      get printable() {
+        return DINOS.filter(isOpen);
+      },
+      print: (ids) => void printSheet(...ids.flatMap((id) => { const d = byId.get(id); return d ? [dinoSheet(d)] : []; })),
       toggleUnlock: saved(() => { state.unlockAll = !state.unlockAll; }),
       toggleMute: saved(() => { state.muted = !state.muted; }),
       toggleCute: saved(() => { state.cute = !state.cute; }),

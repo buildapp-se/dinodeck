@@ -294,7 +294,7 @@ test('printSheet creates sheet in body, adds colouring class, prints, and cleans
   assert.equal(sheet.id, 'print', 'sheet should have id print');
   assert.equal(sheet.parentElement, mockDoc.body, 'sheet should be appended to body');
   assert.equal(mockDoc.body.contains(sheet), true, 'body should contain sheet');
-  assert.equal(sheet.innerHTML, '<p>colouring page</p>');
+  assert.equal(sheet.innerHTML, '<div class="print-sheet"><p>colouring page</p></div>');
   assert.equal(mockDoc.documentElement.classList.contains('colouring'), true, 'colouring class added to root');
   assert.equal(mockWin.printCallCount, 1, 'window.print called');
 
@@ -312,7 +312,7 @@ test('printSheet reuses existing sheet and avoids duplicate afterprint listeners
   assert.equal(secondSheet, firstSheet, 'should reuse the same sheet element');
   assert.equal(mockDoc.querySelectorAll('#print').length, 1, 'only one print sheet in document');
   assert.equal(mockDoc.body.children.length, 1, 'body only contains one child');
-  assert.equal(secondSheet.innerHTML, '<p>second</p>', 'content updated');
+  assert.equal(secondSheet.innerHTML, '<div class="print-sheet"><p>second</p></div>', 'content updated');
   assert.equal(mockWin.listeners['afterprint']?.length, 1, 'listener not added twice');
 });
 
@@ -340,21 +340,30 @@ test('printSheet toggles tall class for portrait dinosaur and omits it for wide 
 
   // Tall dino (e.g. Brachiosaurus with height > width fitting portrait better): tall class set
   await printSheet(dinoSheet(brachiosaurus));
-  const sheet = mockDoc.querySelector<MockElement>('#print')!;
-  assert.equal(sheet.classList.contains('tall'), true, 'tall dino gets tall class');
+  const page = (): MockElement => mockDoc.querySelector<MockElement>('.print-sheet')!;
+  assert.equal(page().classList.contains('tall'), true, 'tall dino gets tall class');
 
   // Wide dino (e.g. T. rex fitting landscape better): tall class not set
   await printSheet(dinoSheet(trex));
-  assert.equal(sheet.classList.contains('tall'), false, 'wide dino does not get tall class');
+  assert.equal(page().classList.contains('tall'), false, 'wide dino does not get tall class');
 
   // Also test with explicit dimensions (W=100, H=200 vs W=200, H=100)
   await printSheet('<img class="print-dino" width="100" height="200" src="custom-tall.webp">');
-  assert.equal(sheet.classList.contains('tall'), true, 'custom tall image gets tall class');
+  assert.equal(page().classList.contains('tall'), true, 'custom tall image gets tall class');
 
   await printSheet('<img class="print-dino" width="200" height="100" src="custom-wide.webp">');
-  assert.equal(sheet.classList.contains('tall'), false, 'custom wide image does not get tall class');
+  assert.equal(page().classList.contains('tall'), false, 'custom wide image does not get tall class');
 
   // Scene sheet (no .print-dino element): tall class not set
   await printSheet(sceneSheet({ bg: 'triassic', items: [] }));
-  assert.equal(sheet.classList.contains('tall'), false, 'scene sheet does not get tall class');
+  assert.equal(page().classList.contains('tall'), false, 'scene sheet does not get tall class');
+});
+
+test('several animals print as one sheet each, in order, and each chooses its own way round', async () => {
+  const pick = (id: string) => DINOS.find((d) => d.id === id)!;
+  await printSheet(dinoSheet(pick('tyrannosaurus-rex')), dinoSheet(pick('brachiosaurus')), dinoSheet(pick('tyrannosaurus-rex')));
+  const pages = mockDoc.querySelectorAll<MockElement>('.print-sheet');
+  assert.deepEqual(pages.map((p) => p.classList.contains('tall')), [false, true, false]);
+  assert.deepEqual(pages.map((p) => p.querySelector<MockElement>('img')!.src), ['img/line/tyrannosaurus-rex.webp', 'img/line/brachiosaurus.webp', 'img/line/tyrannosaurus-rex.webp']);
+  assert.equal(mockWin.printCallCount, 1, 'one print dialog for the whole batch');
 });

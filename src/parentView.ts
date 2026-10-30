@@ -7,6 +7,9 @@ export interface ParentContext {
   build: string;
   /** How far the child has come, for the summary at the top. Names newest first. */
   progress: { won: number; toWin: number; hatched: number; babies: number; latest: string[] };
+  /** The animals the child has open: only those can be printed, as on their own card. */
+  printable: { id: string; name: string }[];
+  print(ids: string[]): void;
   /** Each changes the state and saves it; the view then redraws itself. */
   toggleUnlock(): void;
   toggleMute(): void;
@@ -57,6 +60,24 @@ function summaryHtml(ctx: ParentContext): string {
     </dl>`;
 }
 
+/** Colouring pages for several animals at once. The child's favourites start ticked. */
+function printPickHtml(ctx: ParentContext): string {
+  const l = ctx.state.lang;
+  const ticked = ctx.printable.filter((d) => ctx.state.favorites.includes(d.id)).length;
+  return `
+    <details class="print-pick">
+      <summary class="row">${t(l, 'printMany')}</summary>
+      <div class="pick-tools">
+        <button type="button" class="chip" data-pick="all">${t(l, 'pickAll')}</button>
+        <button type="button" class="chip" data-pick="none">${t(l, 'pickNone')}</button>
+      </div>
+      <ul class="pick-list">${ctx.printable
+        .map((d) => `<li><label lang="la"><input type="checkbox" value="${d.id}"${ctx.state.favorites.includes(d.id) ? ' checked' : ''}>${d.name}</label></li>`)
+        .join('')}</ul>
+      <button type="button" class="big" data-act="print"${ticked ? '' : ' disabled'}>${t(l, 'printGo')} (${ticked})</button>
+    </details>`;
+}
+
 export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): void {
   const { state } = ctx;
   const l = state.lang;
@@ -68,6 +89,7 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
       <button type="button" class="row" data-act="mute" role="switch" aria-checked="${!state.muted}">${t(l, 'soundOn')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="cute" role="switch" aria-checked="${state.cute}">${t(l, 'cute')} <span class="switch" aria-hidden="true"></span></button>
       <button type="button" class="row" data-act="lang">${t(l, 'language')} <b>${t(l, 'thisLang')}</b></button>
+      ${printPickHtml(ctx)}
       <a class="big" href="#/">${t(l, 'done')}</a>
       <button type="button" class="row danger" data-act="reset">${t(l, 'reset')}</button>
       <p class="hint" role="status">${note}</p>
@@ -77,11 +99,30 @@ export function renderParent(view: HTMLElement, ctx: ParentContext, note = ''): 
 
   let armed = false;
   let resetTimer = 0;
+  const boxes = [...view.querySelectorAll<HTMLInputElement>('.pick-list input')];
+  const go = view.querySelector<HTMLButtonElement>('[data-act="print"]')!;
+  const count = (): void => {
+    const n = boxes.filter((b) => b.checked).length;
+    go.textContent = `${t(l, 'printGo')} (${n})`;
+    go.disabled = n === 0;
+  };
+  view.querySelector('.pick-list')!.addEventListener('change', count);
   // One listener on the section: it is replaced with the markup on every redraw, so nothing piles up.
   view.querySelector('.parent')!.addEventListener('click', (e) => {
+    const pick = (e.target as Element).closest<HTMLElement>('[data-pick]');
+    if (pick) {
+      for (const b of boxes) b.checked = pick.dataset.pick === 'all';
+      count();
+      return;
+    }
     const button = (e.target as Element).closest<HTMLElement>('[data-act]');
     if (!button) return;
     const act = button.dataset.act;
+    // No redraw: the list stays open with the same ticks, to print again or pick others.
+    if (act === 'print') {
+      ctx.print(boxes.filter((b) => b.checked).map((b) => b.value));
+      return;
+    }
     if (act === 'reset' && !armed) {
       // Two taps: the only thing in here that cannot be undone.
       armed = true;

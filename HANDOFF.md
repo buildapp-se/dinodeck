@@ -9,6 +9,14 @@ reviewedAt: 2026-10-30
 
 # Handoff: Dinodeck
 
+## 2026-10-30: flera målarbilder på en gång
+
+- **Live:** föräldraläget har "Skriv ut målarbilder": en utfällbar lista med djuren barnet har öppna (som på kortet, låsta visas inte), favoriterna förvalda, knapparna Alla och Inga, en utskriftsdialog för hela valet.
+- **Så funkar det:** `printSheet(...sheets)` lägger varje ark i en egen `.print-sheet`. `tall` sitter nu per ark, så varje djur väljer riktning själv. Valet sparas inte: omritning av vyn (en brytare) nollställer till favoriterna.
+- **Testfälla:** `page.pdf` utlöser `afterprint`, som tar bort `colouring`. Andra PDF:en i rad skriver därför ut appen: bygg arket på nytt före varje PDF.
+- **Verifierat:** `npm test`; riktigt flöde i Chromium (håll knappen, välj, skriv ut, inga konsolfel); PDF med blandade djur: 4 sidor, rätt riktning per sida, också med `size` borttagen ur `@page`.
+- **Inte verifierat:** riktig telefon, skrivare och papper, och utskrift av alla 50 på en gång.
+
 ## 2026-10-30: målarbilden vrids på stående papper
 
 - **Problem (Patrik):** på mobilen blev utskriften stående fast den ska vara liggande. Webbläsare som struntar i `@page size` ger stående papper. Vilken telefon det gällde är inte känt.

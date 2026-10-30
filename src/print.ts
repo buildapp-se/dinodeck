@@ -18,8 +18,8 @@ export const sceneSheet = (scene: Scene): string =>
     )
     .join('')}</div>`;
 
-/** Opens the print dialog with only `html` on the paper. Waits for the drawings, or the page would print empty. */
-export async function printSheet(html: string): Promise<void> {
+/** Opens the print dialog with only these sheets on the paper, one to a page. Waits for the drawings, or the page would print empty. */
+export async function printSheet(...sheets: string[]): Promise<void> {
   let sheet = document.querySelector<HTMLElement>('#print');
   if (!sheet) {
     sheet = document.createElement('div');
@@ -28,13 +28,15 @@ export async function printSheet(html: string): Promise<void> {
     // Without this a later Ctrl+P from the browser menu would print the old colouring page.
     window.addEventListener('afterprint', () => document.documentElement.classList.remove('colouring'));
   }
-  sheet.innerHTML = html;
+  sheet.innerHTML = sheets.map((html) => `<div class="print-sheet">${html}</div>`).join('');
   // A drawing that fails to load is left out: the rest still prints.
   await Promise.all([...sheet.querySelectorAll('img')].map((img) => img.decode().catch(() => img.remove())));
   // Portrait when the animal prints bigger that way (Brachiosaurus): the space under the name, in mm, either way round.
-  const art = sheet.querySelector<HTMLImageElement>('.print-dino');
-  const fits = (w: number, h: number): number => (art ? Math.min(w / art.naturalWidth, h / art.naturalHeight) : 0);
-  sheet.classList.toggle('tall', fits(186, 251) > fits(273, 164));
+  for (const page of sheet.querySelectorAll<HTMLElement>('.print-sheet')) {
+    const art = page.querySelector<HTMLImageElement>('.print-dino');
+    const fits = (w: number, h: number): number => (art ? Math.min(w / art.naturalWidth, h / art.naturalHeight) : 0);
+    page.classList.toggle('tall', fits(186, 251) > fits(273, 164));
+  }
   document.documentElement.classList.add('colouring');
   window.print();
 }

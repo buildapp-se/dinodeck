@@ -62,7 +62,8 @@ Det mesta från de tre designagenterna är gjort (se HANDOFF, natt 2026-10-25/26
 - [ ] `[P2]` Ungar till de övriga 24 djuren som lägger ägg (havsreptilerna föder levande, inget ägg). Nästa i tur: de mest kända, t.ex. Spinosaurus, Allosaurus, Iguanodon, Edmontosaurus. Fakta per unge måste ha källa (`docs/research/babies.md`); för arter utan kända ungar skrivs det ärligt, med släkting.
 - [ ] `[P3]` Målarbilder av ungarna.
 - [x] `[P2]` (klart 2026-10-26) Föräldraläget: sammanfattning (vunna kort, kläckta ungar, favoriter, tre senast vunna).
-- [ ] `[P3]` Föräldraläget: skriv ut favoriternas målarbilder i ett svep. Veckans kort kräver datum per vinst (sparas inte i dag).
+- [x] `[P3]` (klart 2026-10-30) Föräldraläget: skriv ut flera målarbilder på en gång, favoriterna förvalda.
+- [ ] `[P3]` Föräldraläget: veckans kort. Kräver datum per vinst (sparas inte i dag).
 - [ ] `[P3]` Hjälp efter två fel (rätt svar pulserar); silhuettfrågor på nivå 3-5 med olika kroppsformer; silhuetter även på nivå 8-10.
 - [x] `[P3]` (klart 2026-10-26, agent) Visuellt: faktaruta på baksidan, detaljvyns knappar i två nivåer (utskrift fylld), märke i sidhuvudet, tidslinjen centrerad med periodpiller, solfjäder i kortstapeln, radieskala `--r-s` till `--r-pill`, gamla CSS-lagret sammanslaget.
 - [ ] `[P3]` Nytt djur i scenen: fall in med studs; "NY"-märke på vunna kort tills de vänts.
