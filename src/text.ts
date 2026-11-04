@@ -78,6 +78,7 @@ const UI = {
   cardsWon: { sv: 'Vunna kort', en: 'Cards won' },
   babiesHatched: { sv: 'Kläckta ungar', en: 'Babies hatched' },
   latestWon: { sv: 'Senast vunna', en: 'Latest won' },
+  weekWon: { sv: 'Veckans kort', en: "This week's cards" },
   noneYet: { sv: 'Inga än', en: 'None yet' },
   timeline: { sv: 'Tidslinje', en: 'Timeline' },
   today: { sv: 'I dag', en: 'Today' },

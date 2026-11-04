@@ -4,7 +4,7 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-10-30
+reviewedAt: 2026-11-04
 ---
 
 # Handoff: Dinodeck
@@ -360,3 +360,9 @@ Live (`06db28a` till `65b5f59`), verifierat i Chromium mot `vite preview` på 39
 - Namnen och engelskan stannar hos Piper. Patrik researchar talsyntes med en annan agent.
 - Licens för Boson Higgs Audio 2 (OmniVoices tokenizer) läst i sin helhet: attributionsraderna finns i `public/licenser.txt`, länkade i föräldraläget. Utökad licens krävs först över 100 000 användare per år.
 - ElevenLabs-prov kostade cirka 0,008 USD från OpenRouter-saldot.
+
+## Session: kandidatgranskning på main 2026-11-04
+
+NY-märket tas bort direkt vid första kortvändningen och förblir borta efter omladdning. Föräldraläget visar veckans vunna kort; första vinstdatum sparas lokalt per kort, gamla odaterade vinster tilldelas inget påhittat datum. Utskrift av favoriternas målarbilder fanns redan och är bevarad.
+
+Verifierat: 68 tester, typkontroll och produktionsbygge gröna. Verklig Chromium mot bygget: första vändning, vänd tillbaka, omladdning och sparad seen; veckans daterade vinst visas, förra veckans visas inte; ingen sidledes scroll vid 390/1024 px. Lokalt på main i isolerad worktree. Huvudmappens pausade batch-5 är helt orörd, ingen push eller deploy.
