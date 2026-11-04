@@ -15,7 +15,7 @@ import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { KEY, advance, deckOrder, loadState, markSeen, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { KEY, advance, deckOrder, isNewCard, loadState, markSeen, markWon, resetCollection, saveState, toggleFavorite, wonThisWeek } from './state.ts';
 import { artSrc, babySrc, roarSrc } from './cute.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
@@ -162,7 +162,7 @@ function buildCard(d: Dino, depth: number): HTMLElement {
     return card;
   }
   // A card just won carries a NY badge until it has been turned over once.
-  const isNew = state.won.includes(d.id) && !state.seen.includes(d.id);
+  const isNew = isNewCard(state.won, state.seen, d.id);
   card.innerHTML = `
     <div class="face front">
       ${artHtml(d, true)}
@@ -219,9 +219,10 @@ const handlers: DragHandlers = {
       }
     }
     const flipped = card.classList.toggle('flipped');
-    if (flipped && card.dataset.id && state.won.includes(card.dataset.id)) {
+    if (flipped && card.dataset.id && isNewCard(state.won, state.seen, card.dataset.id)) {
       state.seen = markSeen(state.seen, card.dataset.id);
       saveState(state);
+      card.querySelector('.badge.new')?.remove();
     }
     markOnboarded();
   },
@@ -459,7 +460,11 @@ function renderChallenge(id: string, level?: Level): void {
       renderChallenge('', lv);
     },
     onWin(d) {
-      if (!repeat && !state.won.includes(d.id)) state.won = [...state.won, d.id];
+      if (!repeat) {
+        const w = markWon(state.won, state.wonAt, d.id, today());
+        state.won = w.won;
+        state.wonAt = w.wonAt;
+      }
       saveState(state);
       queue = [d.id, ...freshQueue().filter((x) => x !== d.id)]; // the new card on top, and the next to win dealt in
       renderNav();
@@ -519,6 +524,7 @@ function render(): void {
           hatched: state.hatched.length,
           babies: Object.keys(BABIES).length,
           latest: state.won.slice(-3).reverse().map((id) => byId.get(id)?.name ?? id),
+          week: wonThisWeek(state.won, state.wonAt, today()).map((id) => byId.get(id)?.name ?? id),
         };
       },
       // A getter as well: unlocking every card changes who can be printed.

@@ -5,8 +5,8 @@ export interface ParentContext {
   state: State;
   /** ISO time of the build. */
   build: string;
-  /** How far the child has come, for the summary at the top. Names newest first. */
-  progress: { won: number; toWin: number; hatched: number; babies: number; latest: string[] };
+  /** How far the child has come, for the summary at the top. Names newest first, except the week's cards in the order they were won. */
+  progress: { won: number; toWin: number; hatched: number; babies: number; latest: string[]; week: string[] };
   /** The animals the child has open: only those can be printed, as on their own card. */
   printable: { id: string; name: string }[];
   print(ids: string[]): void;
@@ -57,6 +57,7 @@ function summaryHtml(ctx: ParentContext): string {
       <dt>${t(l, 'babiesHatched')}</dt><dd>${meter(p.hatched, p.babies)} ${p.hatched} / ${p.babies}</dd>
       <dt>${t(l, 'favorites')}</dt><dd>${ctx.state.favorites.length}</dd>
       <dt>${t(l, 'latestWon')}</dt><dd lang="la">${p.latest.length ? p.latest.join(', ') : `<span lang="${l}">${t(l, 'noneYet')}</span>`}</dd>
+      <dt>${t(l, 'weekWon')}</dt><dd lang="la">${p.week.length ? p.week.join(', ') : `<span lang="${l}">${t(l, 'noneYet')}</span>`}</dd>
     </dl>`;
 }
 

@@ -1,24 +1,25 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { advance, deckOrder, KEY, loadState, markSeen, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, type State, toggleFavorite } from './state.ts';
+import { advance, deckOrder, isNewCard, KEY, loadState, markSeen, markWon, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, type State, toggleFavorite, weekStart, wonThisWeek } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
-  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], wonAt: {}, seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], seen: ['spinosaurus', 'dragon', 7, 'spinosaurus'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], wonAt: { spinosaurus: '2026-10-26', dragon: '2026-10-26', triceratops: 'igår', allosaurus: 7 }, seen: ['spinosaurus', 'dragon', 7, 'spinosaurus'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
   assert.deepEqual(s, {
     v: 1,
     lang: 'en',
     favorites: ['triceratops'],
     won: ['spinosaurus'],
+    wonAt: { spinosaurus: '2026-10-26' },
     seen: ['spinosaurus'],
     scene: { bg: 'jurassic', items: [{ id: 'triceratops', x: 1, y: 0.7, size: 0.12, flip: false }] },
     unlockAll: false,
@@ -112,6 +113,7 @@ test('KEY is dinodeck and loadState/saveState persist to localStorage', () => {
       muted: true,
       unlockAll: true,
       won: ['triceratops'],
+      wonAt: { triceratops: '2026-10-27' },
       favorites: ['triceratops'],
       eggDay: '2026-10-27',
     };
@@ -147,7 +149,7 @@ test('loadState and saveState handle unavailable localStorage gracefully', () =>
 });
 
 test('resetCollection empties the collection and keeps language and sound', () => {
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], seen: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], wonAt: { spinosaurus: '2026-10-26' }, seen: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
   assert.equal(s.unlockAll, true);
   assert.deepEqual(resetCollection(s), parseState(JSON.stringify({ lang: 'en', muted: true, cute: true }), ids, 'sv'));
 });
@@ -160,6 +162,39 @@ test('markSeen records a won card once, and parseState keeps only known ids in s
   const s = parseState(JSON.stringify({ won: ['spinosaurus'], seen: ['spinosaurus', 'dragon', 7] }), ids, 'sv');
   assert.deepEqual(s.won, ['spinosaurus']);
   assert.deepEqual(s.seen, ['spinosaurus']);
+});
+
+test('parseState keeps only known ids with valid dates in wonAt', () => {
+  assert.deepEqual(parseState('{}', ids, 'sv').wonAt, {});
+  assert.deepEqual(parseState(JSON.stringify({ wonAt: null }), ids, 'sv').wonAt, {});
+  assert.deepEqual(parseState(JSON.stringify({ wonAt: ['2026-10-26'] }), ids, 'sv').wonAt, {});
+  const s = parseState(JSON.stringify({ won: ['spinosaurus'], wonAt: { spinosaurus: '2026-10-26', dragon: '2026-10-26', triceratops: 'igår', allosaurus: 7, giganotosaurus: '2026-10-26T10:00' } }), ids, 'sv');
+  assert.deepEqual(s.wonAt, { spinosaurus: '2026-10-26' });
+  // Right shape but no real calendar date: rejected, not rolled over into a later month.
+  assert.deepEqual(parseState(JSON.stringify({ wonAt: { spinosaurus: '2026-13-45', allosaurus: '2026-02-30', triceratops: '2026-00-10' } }), ids, 'sv').wonAt, {});
+});
+
+test('markWon records the win and its date once', () => {
+  assert.deepEqual(markWon([], {}, 'spinosaurus', '2026-10-26'), { won: ['spinosaurus'], wonAt: { spinosaurus: '2026-10-26' } });
+  assert.deepEqual(markWon(['spinosaurus'], { spinosaurus: '2026-10-26' }, 'spinosaurus', '2026-10-27'), { won: ['spinosaurus'], wonAt: { spinosaurus: '2026-10-26' } });
+  assert.deepEqual(markWon(['spinosaurus'], { spinosaurus: '2026-10-26' }, 'allosaurus', '2026-10-27'), { won: ['spinosaurus', 'allosaurus'], wonAt: { spinosaurus: '2026-10-26', allosaurus: '2026-10-27' } });
+});
+
+test('weekStart returns the Monday of the week, and wonThisWeek only the cards won that week', () => {
+  assert.equal(weekStart('2026-10-26'), '2026-10-26'); // Monday
+  assert.equal(weekStart('2026-10-31'), '2026-10-26'); // Saturday
+  assert.equal(weekStart('2026-11-01'), '2026-10-26'); // Sunday
+  assert.equal(weekStart('2026-11-02'), '2026-11-02'); // the next Monday
+  assert.equal(weekStart('2026-10-25'), '2026-10-19'); // a Sunday belongs to the week that started the Monday before
+  assert.equal(weekStart('2026-13-45'), '2026-13-45'); // not a real date: unchanged, no rollover
+  const won = ['spinosaurus', 'allosaurus', 'triceratops', 'giganotosaurus'];
+  const wonAt = { spinosaurus: '2026-10-25', allosaurus: '2026-10-26', triceratops: '2026-11-01', giganotosaurus: '2026-11-02' };
+  assert.deepEqual(wonThisWeek(won, wonAt, '2026-10-28'), ['allosaurus', 'triceratops']); // Wednesday: the whole Monday-Sunday week counts, also the Sunday after it
+  assert.deepEqual(wonThisWeek(won, wonAt, '2026-10-31'), ['allosaurus', 'triceratops']); // Saturday, same week as the Sunday win
+  assert.deepEqual(wonThisWeek(won, wonAt, '2026-11-01'), ['allosaurus', 'triceratops']); // Sunday, same week
+  assert.deepEqual(wonThisWeek(won, wonAt, '2026-10-25'), ['spinosaurus']);
+  assert.deepEqual(wonThisWeek(won, wonAt, '2026-11-02'), ['giganotosaurus']);
+  assert.deepEqual(wonThisWeek(won, {}, '2026-10-31'), []); // won before dates were saved
 });
 
 test('toggleFavorite adds then removes', () => {
@@ -194,4 +229,10 @@ test('catalog is complete in both languages', () => {
       assert.ok(!/[—–]/.test(t.sv + t.en), `${d.id}: dash in text`);
     }
   }
+});
+
+test('a won card loses its new badge on its first turn', () => {
+  assert.equal(isNewCard(['a'], [], 'a'), true);
+  assert.equal(isNewCard(['a'], markSeen([], 'a'), 'a'), false);
+  assert.equal(isNewCard([], [], 'a'), false);
 });
