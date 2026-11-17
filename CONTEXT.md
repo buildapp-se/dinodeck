@@ -56,7 +56,7 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 - OG image: 2026-10-27, pass, 1200x630 PNG, https://buildapp.se/dinodeck/og.png, checked by eye
 - Search Console: 2026-10-27, warn, /dinodeck/ is in the buildapp.se sitemap but unknown to Google (URL inspection 2026-10-27); sitemap resubmitted 14:00
 - Git history: 2026-10-27, warn, public repo; no names of children or third parties in any commit, but the author email patz.lofgren@gmail.com is on 31 older commits (the 57 newer use the GitHub noreply address) and the first name Patrik appears in docs (owner, deliberate); cleaning the email needs a history rewrite, not done
-- npm audit (automated): 2026-10-06, pass, 1 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
+- npm audit: 2026-11-17, fail, 0 in production, 4 high in the dev chain (picomatch via vite, no patched version)
 - Secrets (automated): 2026-10-06, pass, 2 targets; 0 failed, 0 blocked; evidence C:/dev/aifabriken/.runs/audits/2026-10-06-batch-b/dinodeck.json
 - Database: 2026-10-25, none, localStorage
 - Actions: 2026-10-26, pass, zizmor 0 high, 0 medium, 0 low

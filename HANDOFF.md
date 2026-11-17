@@ -4,10 +4,14 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-10-30
+reviewedAt: 2026-11-17
 ---
 
 # Handoff: Dinodeck
+
+## 2026-11-17: uppdateringsrunda
+
+- vite 8.3.8 och @types/node 26.6.6 inom intervallen. `npm test` 64/64 och `npm run build` gröna. Kvar 4 high i dev-kedjan (picomatch, ingen fix finns), se BACKLOG P3. Pushad till main, som deployar.
 
 ## 2026-10-30: flera målarbilder på en gång
 

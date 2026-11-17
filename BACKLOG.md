@@ -33,6 +33,7 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 ## P3
 
+- npm audit 2026-11-17: picomatch <= 4.0.7 (GHSA-fc5q-39xc-vjpf, ReDoS) via vite i dev-kedjan, 4 high, 0 i produktion. Ingen patchad version finns; `npm audit fix --force` föreslår bara nedgradering av vite. Kör `npm audit fix` när picomatch släpper en fix.
 - Silhuettfrågan: kontrollera att Coelophysis, Herrerasaurus, Eoraptor och Compsognathus inte hamnar som svarsalternativ till varandra, eller byt ett triasdjur mot en flygödla (Eudimorphodon).
 
 - ✅ **Skriv ut för att färglägga** (konturerna omgjorda 2026-10-25 som rena linjeteckningar av Codex, se `HANDOFF.md`) (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Konturerna gick att ta fram ur de färdiga bilderna (`tools/make-outlines.py`), inga nya bilder från Codex behövdes. **Patrik tittar på en utskrift**: konturerna är granskade av Claude på skärm, inte på papper. Ursprunglig beskrivning: två delar: (1) den egna scenen som målarbild, med bakgrund och utställda djur som konturer, (2) enskilda dinosaurier som målarbild. Kräver konturversioner (svartvit linjeteckning) av djur och bakgrunder: nya bilder från Codex, eller prova först om de går att ta fram ur de färdiga bilderna. Utskrift via webbläsarens egen utskriftsfunktion och en utskriftsstilmall.
