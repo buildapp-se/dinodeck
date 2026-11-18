@@ -20,7 +20,8 @@ Uppifrån och ned. Beslut och ordlista står i `CONTEXT.md`, läget i `HANDOFF.m
 
 - Portera Sipdecks `promoteDeck` om nästa kort syns hoppa på riktig telefon (markerat `ponytail:` i `src/main.ts`).
 - Palett och typsnitt sätts efter vald bildstil (`src/style.css` är provisorisk).
-- Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera.
+- Källa för Pteranodon är Wikipedia: byt till museum när en hittas som går att kontrollera. Sökt 2026-11-18: NHM:s Dino Directory har inga flygödlor, AMNH:s Pteranodon-sidor och Museums Victoria svarar 403 på automatisk hämtning, och Hooper Museums sida (Carleton, 1998) saknar könsskillnaden och vingfingret. Ingen bytt.
+- Dagens ägg täcker kortets ljudknapp (hittat 2026-11-18 i skärmbilder på 390 och 1 280 px): `.egg-btn` (72 px, `z-index: 5`, uppe till vänster i leken) ligger över `.snd` (48 px, `top/left: 16px`), så den som trycker där kläcker ägget i stället för att höra vrålet. Var ägget ska sitta i stället är ett val.
 - ✅ **En rad på kortets baksida om att färgen är en gissning** (byggd 2026-10-06 på grenen `batch/2026-10-06`, sammanslagen med `main` och utlagd 2026-10-07). Fältet heter `colour` (plus `colourDisputed`) i katalogen, texterna står i `src/text.ts`. Samma grepp som raden vid ljudet ("Ingen har hört djuret på riktigt"). Tre nivåer, ett nytt fält per djur i katalogen. Vilken nivå varje djur har står i kolumnen Tag i `docs/research/dinosaur-colour.md` avsnitt 6, texterna i avsnitt 7:
   - **Känt** (Microraptor, Archaeopteryx): "Forskare har hittat spår av färg i fossilen, så de här färgerna vet vi faktiskt en hel del om." / "Scientists have found traces of colour in the fossils, so we really do know quite a lot about these colours."
   - **Från släktingar:** "Ingen har hittat färgen hos just det här djuret, men vi vet hur nära släktingar såg ut och har utgått från dem." / "Nobody has found the colour of this animal itself, but we know what close relatives looked like and have used them as a guide."
@@ -48,7 +49,8 @@ Rekommenderad väg: Capacitor med `dist/` inbakat, för båda butikerna (fungera
 - [x] `[P1]` (klart 2026-10-26, multiplikationsfråga i `<dialog>`) Källänken på kortets baksida bakom en föräldraspärr.
 - [x] `[P1]` (klart 2026-10-26, `public/integritet.html`) Integritetspolicy för Dinodeck, länkad från föräldraläget.
 - [ ] `[P2]` Capacitor: spegla sparat läge till `@capacitor/preferences` (iOS kan rensa webbvyns lagring vid lite utrymme).
-- [ ] `[P2]` Manifest: `screenshots`, featuregrafik 1024×500. (Ikon 1024 i `store/icon-1024.png` och 512 i `public/icons/` klara 2026-10-26, `tools/make-icons.py`.)
+- [x] `[P2]` (klart 2026-11-18, `public/screenshots/`, `src/manifest.test.ts`; Chromiums `Page.getAppManifest` utan fel) Manifest: `screenshots`, tre för telefon (kortleken, baksidan, utmaningen) och två breda.
+- [ ] `[P2]` `[needs-info]` Featuregrafik 1024×500 för Play: en bild att visa upp, alltså Patriks smak och bara aktuell om butiksbeslutet ovan blir ja. Motiv och text? (Ikon 1024 i `store/icon-1024.png` och 512 i `public/icons/` klara 2026-10-26, `tools/make-icons.py`.)
 - [x] `[P2]` (klart 2026-10-26, egen liggande layout) Telefon på tvären (844×390).
 - [x] `[P2]` (klart 2026-10-26) Barn som inte läser: upplästa frågor och rätt/fel-ljud.
 - [ ] `[P3]` Innehåll: tio dubbletter utbytta 2026-10-26. Kvar: "samtidigt som T. rex" och papegojnäbb på flera kort, ca 20 fakta som upprepar kortets egen text. Coelophysis kannibalrad (motbevisad i texten) för 4-åringar?

@@ -27,6 +27,13 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    { "src": "screenshots/deck-narrow.webp", "sizes": "780x1688", "type": "image/webp", "form_factor": "narrow", "label": "Kortleken: svep för att bläddra bland dinosaurierna" },
+    { "src": "screenshots/dino-narrow.webp", "sizes": "780x1688", "type": "image/webp", "form_factor": "narrow", "label": "Kortets baksida med uttal, fakta och uppläsning" },
+    { "src": "screenshots/challenge-narrow.webp", "sizes": "780x1688", "type": "image/webp", "form_factor": "narrow", "label": "Utmaning: vinn ett nytt kort" },
+    { "src": "screenshots/deck-wide.webp", "sizes": "1280x800", "type": "image/webp", "form_factor": "wide", "label": "Kortleken" },
+    { "src": "screenshots/dino-wide.webp", "sizes": "1280x800", "type": "image/webp", "form_factor": "wide", "label": "Kortets baksida" }
+  ],
   "categories": [
     "education",
     "kids",

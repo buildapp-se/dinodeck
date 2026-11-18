@@ -4,10 +4,16 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-11-17
+reviewedAt: 2026-11-18
 ---
 
 # Handoff: Dinodeck
+
+## 2026-11-18: backlogsvep (agent)
+
+- Manifestet har `screenshots` (tre för telefon, två breda, WebP i `public/screenshots/`, 195 kB, följer med i service workerns cache). `src/manifest.test.ts` fäller om en bild saknas eller har annan storlek än manifestet säger; sett rött med fel storlek. Chromium tolkar manifestet utan fel. Featuregrafiken väntar på Patrik (BACKLOG `[needs-info]`).
+- Pteranodons museikälla: ingen som går att kontrollera hittad, sökningen står i BACKLOG P2.
+- Fynd, inte rättat: dagens ägg täcker kortets ljudknapp (BACKLOG P2).
 
 ## 2026-11-17: uppdateringsrunda
 
