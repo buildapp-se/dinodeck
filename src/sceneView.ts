@@ -36,7 +36,7 @@ export const itemStyle = (f: StageFrame, item: SceneItem): { translate: string; 
 });
 
 /** Bigger animals start bigger, so a Diplodocus dwarfs a Velociraptor before anyone resizes anything. */
-const startSize = (d: Dino): number => clamp(0.12 + (d.lengthM / 35) * 0.5, MIN_SIZE, MAX_SIZE);
+export const startSize = (d: Dino): number => clamp(0.12 + (d.lengthM / 35) * 0.5, MIN_SIZE, MAX_SIZE);
 
 export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   const { lang: l, scene } = ctx;
