@@ -9,6 +9,12 @@ reviewedAt: 2026-11-24
 
 # Handoff: Dinodeck
 
+## 2026-11-24: felsökning som användare (agent, worktree `_wt/dinodeck-1124h`, gren `hunt/2026-11-24`, klart)
+
+- Alla flöden körda med Playwright mot `vite preview` på 390 och 1440 px, svenska och engelska: kortlek, utmaning till vinst, scen, tidslinje, favoriter, föräldraläge, dagens ägg, källfrågan (tom, 0, -1, decimalkomma), bakåt och omladdning, bara tangentbord, offline via service workern. Inga sidfel, inget vågrätt spill, offline fungerar på alla fem flikar.
+- **Rättat** (se BACKLOG P3): kortets dolda sida nåbar med Tab, scenens djur gick inte att flytta med tangentbord, dialoger låg kvar modala efter bakåt. Varje fel sett rött live och grönt lokalt med samma skript. Inga enhetstester: rättningarna är DOM-kod som `node --test` inte kör.
+- **Fynd, inte rättat:** omladdning på `#/foralder` visar kortleken med föräldraadressen kvar (föräldraläget kräver avsiktligt 3 s tryck); omladdning på ett kort öppnat från tidslinjen gör att "Tillbaka" leder till favoriterna (`backTo` i `src/main.ts` sparas inte). Båda ofarliga.
+
 ## 2026-11-24: funktionspass (agent, worktree `dinodeck-1124f`, gren `feat/2026-11-24`, klart)
 
 - **Scenen döljer djur som blivit låsta igen** (`2b824e7`): ett djur som ställts ut medan "Alla kort öppna" var på stod kvar i färg, och i scenens målarbild, när brytaren slogs av. Nu döljs det men ligger kvar i det sparade (`shownItems` i `src/sceneView.ts`). Valt av agenten: dölja, inte ta bort, så att brytaren går att slå på igen utan förlust. Dolda djur räknas fortfarande mot taket på 20.
