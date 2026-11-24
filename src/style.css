@@ -682,8 +682,10 @@ button:focus-visible, a:focus-visible, .card:focus-visible .face { outline: 3px 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 /* The daily egg and its babies (src/babies.ts). */
 .art img.baby { place-self: end end; width: 34%; height: auto; max-height: 45%; margin: 0 2% 2% 0; z-index: 1; filter: drop-shadow(0 2px 3px rgb(0 0 0 / .2)); }
-.egg-btn { position: absolute; z-index: 5; top: -6px; left: -6px; width: 72px; height: 72px; padding: 6px; border: 0; border-radius: 50%; background: var(--card); box-shadow: var(--shadow-btn); cursor: pointer; animation: egg-nudge 2.4s ease-in-out infinite; }
+.egg-btn { position: absolute; z-index: 5; top: -6px; right: -6px; width: 72px; height: 72px; padding: 6px; border: 0; border-radius: 50%; background: var(--card); box-shadow: var(--shadow-btn); cursor: pointer; animation: egg-nudge 2.4s ease-in-out infinite; }
 .egg-btn img { width: 100%; height: 100%; object-fit: contain; }
+/* Top right, since the sound button holds the top left; a NY badge on the top card steps down under it. */
+.deck:has(.egg-btn) .card[data-depth='0'] .badge.new { top: 76px; }
 @keyframes egg-nudge { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -12deg; } 82% { rotate: 10deg; } 88% { rotate: -6deg; } }
 .hatch { margin: auto; border: 0; border-radius: 24px; padding: 20px; width: min(92vw, 420px); background: var(--card); color: var(--ink); text-align: center; box-shadow: 0 8px 30px rgb(0 0 0 / .3); }
 /* Anchored at the top, not centred: the text that comes in under the baby must not shove the egg up mid-hatch. */
