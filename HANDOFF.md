@@ -9,6 +9,12 @@ reviewedAt: 2026-11-24
 
 # Handoff: Dinodeck
 
+## 2026-11-24: djupsvep (agent, worktree `dinodeck-deep-1124`, gren `deep/2026-11-24`, klart)
+
+- **Backlog:** npm audit-raden stängd (`npm audit`: 0 sårbarheter med samma picomatch 4.0.7). Pteranodons 25 kg håller mot kortets källa (Wikipedia citerar Witton och Habib 2010: övre gräns 20 till 35 kg), inte ändrad. Innehållsraden (dubbletter, kannibalraden) lämnad: omskrivna rader måste läsas in på nytt av OmniVoice och avlyssnas, och kannibalraden är Patriks val.
+- **Mutation** (Stryker 10, command-löparen med filens egen test, concurrency 2): `text.ts` 24,71 till 100 % (tester i `text.test.ts`, två oanvända UI-nycklar borttagna), `babies.ts` och `scale.ts` 100 % redan, `sceneView.ts` 4,10 till 6,31 %: `startSize` exporteras och testas, all ren logik dödad. De 297 överlevarna är `renderScene`, DOM-kod som `node --test` inte kör utan ett DOM-bibliotek; inget tillagt för det.
+- **UX-granskning:** 7 av 7 skriptkontroller på alla fem flikar, skärmbilder telefon och dator. Inget fynd att rätta. Fälla: Git Bash gör om `"#/utmaning"` till en Windows-sökväg, kör `ux-checks.mjs` med `MSYS_NO_PATHCONV=1`; portarna 5287 och 5391 var upptagna av andra sessioners servrar, kontrollera att det är den egna bygget som svarar (asset-hash).
+
 ## 2026-11-24: backlogsvep (agent, worktree `dinodeck-sweep-1124`, gren `sweep/2026-11-24`, klart)
 
 - **Dagens ägg** sitter uppe till höger i kortleken (täckte ljudknappen uppe till vänster); NY-märket på översta kortet flyttar ned under ägget. Mätt i Chromium på fyra storlekar med ett Playwright-skript: krock med ljudknappen före på alla fyra, ingen krock efter. Placeringen är agentens val.

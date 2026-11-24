@@ -46,8 +46,8 @@ Dinosauriekort för barn 3 till 10 år, som också ska hålla som litet uppslags
 
 ## Audits
 - OWASP Top 10: 2026-10-30, pass, code review (Mistral Large; Claude read only the verdict line, lows unread), no live probe; 0 high, 0 medium reported
-- Mutation: 2026-10-27, warn, Stryker 10 on 6 src files: challenge 98,48 % (64,47), picture 100,00 % (75,61), print 97,50 % (27,50), state 94,48 % (66,87), text 24,71 % (3,77), timeline 100,00 % (75,76); tests by Gemini 3.8 Flash, reviewed by Claude
-- UX: 2026-10-27, pass, 7 of 7 script checks pass on all five tabs (local, --interact), screenshot review phone and desktop: no open finding; the card's source link was 40 px high, now 44
+- Mutation: 2026-11-24, warn, Stryker 10 (command runner, each file's own test): text 100,00 % (24,71), babies 100,00 % (first run), scale 100,00 % (first run), sceneView 6,31 % (first run 4,10; every mutant in the pure part killed, the 297 survivors are `renderScene`, DOM code that `node --test` cannot run without a DOM library). Unchanged since 2026-10-27: challenge 98,48 %, picture 100,00 %, print 97,50 %, state 94,48 %, timeline 100,00 %
+- UX: 2026-11-24, pass, 7 of 7 script checks pass on all five tabs (local `vite preview` of the build, --interact), screenshot review phone and desktop (deck, card back, challenge with a wrong answer, scene, timeline, empty favourites): no open finding (2026-10-27: pass, 7 of 7)
 - WCAG 2.2 AA: 2026-10-27, pass, axe 4.14.0 0 violations on buildapp.se/dinodeck (mobile); keyboard pass on all five tabs: every control reached, focus visible (the card's ring sits on `.face`)
 - Lighthouse: 2026-10-27, pass, mobile: performance 92, a11y 100, best practices 100, SEO 100
 - Markup: 2026-10-27, pass, W3C 0 errors, 0 warnings, 0 broken links on buildapp.se/dinodeck
