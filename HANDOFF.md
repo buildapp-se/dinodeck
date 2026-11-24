@@ -4,10 +4,18 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-11-18
+reviewedAt: 2026-11-24
 ---
 
 # Handoff: Dinodeck
+
+## 2026-11-24: backlogsvep (agent, worktree `dinodeck-sweep-1124`, gren `sweep/2026-11-24`, klart)
+
+- **Dagens ägg** sitter uppe till höger i kortleken (täckte ljudknappen uppe till vänster); NY-märket på översta kortet flyttar ned under ägget. Mätt i Chromium på fyra storlekar med ett Playwright-skript: krock med ljudknappen före på alla fyra, ingen krock efter. Placeringen är agentens val.
+- **Silhuettfrågan:** de fyra små tvåbenta (Coelophysis, Herrerasaurus, Eoraptor, Compsognathus) blir fel svar till varandra bara när inget annat djur finns (`LOOKALIKES` i `src/challenge.ts`). Nytt test sett rött före rättningen.
+- **Pteranodons källa:** AMNH och Museums Victoria ger CAPTCHA även i Chromium. UCMP Berkeley prövad, inte bytt (saknar vingfingret, vikten avviker), se BACKLOG P2.
+- Kvar i P2 kräver Patrik, riktig enhet, lyssning eller nya bilder.
+- Batch 5 ligger på grenen `batch-5` i huvudkopian, orörd av svepet.
 
 ## 2026-11-18: backlogsvep (agent)
 
