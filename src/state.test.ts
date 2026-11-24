@@ -149,6 +149,7 @@ test('loadState and saveState handle unavailable localStorage gracefully', () =>
 test('resetCollection empties the collection and keeps language and sound', () => {
   const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], seen: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
   assert.equal(s.unlockAll, true);
+  assert.equal(s.cute, true); // else the comparison below holds even if the style were dropped
   assert.deepEqual(resetCollection(s), parseState(JSON.stringify({ lang: 'en', muted: true, cute: true }), ids, 'sv'));
 });
 
