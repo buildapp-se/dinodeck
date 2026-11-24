@@ -9,6 +9,13 @@ reviewedAt: 2026-11-24
 
 # Handoff: Dinodeck
 
+## 2026-11-24: funktionspass (agent, worktree `dinodeck-1124f`, gren `feat/2026-11-24`, klart)
+
+- **Scenen döljer djur som blivit låsta igen** (`2b824e7`): ett djur som ställts ut medan "Alla kort öppna" var på stod kvar i färg, och i scenens målarbild, när brytaren slogs av. Nu döljs det men ligger kvar i det sparade (`shownItems` i `src/sceneView.ts`). Valt av agenten: dölja, inte ta bort, så att brytaren går att slå på igen utan förlust. Dolda djur räknas fortfarande mot taket på 20.
+- **Dagens ägg efter midnatt** (`9c9a606`): en app som återupptas utan omladdning visade inget nytt ägg förrän ett flikbyte. `visibilitychange` ritar om kortleken när äggets läge ändrats.
+- **Verifierat:** `npm test` 73/73, `npm run build`, Playwright-skript mot `vite preview` (scen och utskrift med brytaren av och på, ägg med låtsasklocka över midnatt och kläckning). Inte testat: riktig telefon.
+- **Backloggen rättad:** de tre scenbakgrunderna finns sedan 2026-10-03, alternativ bildstil är söt stil (2026-10-28).
+
 ## 2026-11-24: djupsvep (agent, worktree `dinodeck-deep-1124`, gren `deep/2026-11-24`, klart)
 
 - **Backlog:** npm audit-raden stängd (`npm audit`: 0 sårbarheter med samma picomatch 4.0.7). Pteranodons 25 kg håller mot kortets källa (Wikipedia citerar Witton och Habib 2010: övre gräns 20 till 35 kg), inte ändrad. Innehållsraden (dubbletter, kannibalraden) lämnad: omskrivna rader måste läsas in på nytt av OmniVoice och avlyssnas, och kannibalraden är Patriks val.
