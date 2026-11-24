@@ -1,6 +1,6 @@
 import type { ColourEvidence, Diet, Dino, Group, Lang, Period } from './dinos.ts';
 
-const UI = {
+export const UI = {
   deck: { sv: 'Kort', en: 'Cards' },
   favorites: { sv: 'Favoriter', en: 'Favourites' },
   noFavorites: {
@@ -94,8 +94,6 @@ const UI = {
   cute: { sv: 'Söta dinosaurier', en: 'Cute dinosaurs' },
   language: { sv: 'Språk', en: 'Language' },
   thisLang: { sv: 'Svenska', en: 'English' },
-  on: { sv: 'På', en: 'On' },
-  off: { sv: 'Av', en: 'Off' },
   reset: { sv: 'Nollställ samlingen', en: 'Reset the collection' },
   resetSure: {
     sv: 'Tryck igen för att ta bort vunna kort, favoriter och scenen',

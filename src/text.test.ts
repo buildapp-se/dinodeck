@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { colourNote, t, when } from './text.ts';
+import { buildTime, colourNote, dietName, groupNote, num, periodName, t, UI, weight, when } from './text.ts';
 import type { Dino } from './dinos.ts';
 
 const ids = (level: string): string[] => DINOS.filter((d) => d.colour === level).map((d) => d.id).sort();
@@ -74,4 +75,62 @@ test('when formats dinosaur period and time span in Swedish and English', () => 
   const at = (id: string): Dino => DINOS.find((d) => d.id === id)!;
   assert.equal(when('sv', at('shonisaurus')), 'Trias, för 227 miljoner år sedan');
   assert.equal(when('sv', at('anurognathus')), 'Jura, för 150,8 till 148,5 miljoner år sedan');
+});
+
+test('every UI text exists in both languages, has no dash, and is used somewhere in the app', () => {
+  const app = readdirSync('src')
+    .filter((f) => f.endsWith('.ts') && f !== 'text.ts' && !f.endsWith('.test.ts'))
+    .map((f) => readFileSync(`src/${f}`, 'utf8'))
+    .join('\n');
+  for (const key of Object.keys(UI) as (keyof typeof UI)[]) {
+    for (const lang of ['sv', 'en'] as const) {
+      assert.ok(t(lang, key).trim(), `${key} ${lang}: empty`);
+      assert.ok(!/[—–]/.test(t(lang, key)), `${key} ${lang}: dash`);
+    }
+    assert.ok(app.includes(`'${key}'`), `${key}: never used`);
+  }
+});
+
+test('period, diet and group names are filled in and tell the options apart', () => {
+  for (const lang of ['sv', 'en'] as const) {
+    const periods = (['triassic', 'jurassic', 'cretaceous'] as const).map((p) => periodName(lang, p));
+    const diets = (['carnivore', 'herbivore', 'piscivore', 'omnivore'] as const).map((d) => dietName(lang, d));
+    for (const list of [periods, diets]) {
+      assert.ok(list.every((s) => s.trim()), lang);
+      assert.equal(new Set(list).size, list.length, lang);
+    }
+  }
+  assert.deepEqual([periodName('sv', 'jurassic'), periodName('en', 'triassic')], ['Jura', 'Triassic']);
+  assert.deepEqual([dietName('sv', 'piscivore'), dietName('en', 'omnivore')], ['Fisk', 'Plants and small animals']);
+  assert.equal(groupNote('sv', 'dinosaur'), '');
+  assert.equal(groupNote('en', 'dinosaur'), '');
+  assert.equal(groupNote('sv', 'pterosaur'), 'Flygödla, inte en dinosaurie');
+  assert.equal(groupNote('en', 'marine'), 'Sea reptile, not a dinosaur');
+  for (const lang of ['sv', 'en'] as const) {
+    for (const g of ['pterosaur', 'marine'] as const) assert.ok(groupNote(lang, g).trim(), `${g} ${lang}`);
+    for (const c of ['known', 'relatives', 'guess'] as const) assert.ok(colourNote(lang, { colour: c }).trim(), `${c} ${lang}`);
+  }
+});
+
+test('numbers, weights and the build time follow each language', () => {
+  assert.equal(num('sv', 12500.5), '12 500,5');
+  assert.equal(num('en', 12500.5), '12,500.5');
+  assert.equal(weight('sv', 999), '999 kg');
+  assert.equal(weight('sv', 1000), '1 ton');
+  assert.equal(weight('sv', 1500), '1,5 ton');
+  assert.equal(weight('en', 70000), '70 tonnes');
+  assert.equal(weight('en', 25), '25 kg');
+  assert.equal(buildTime('sv', '2026-11-24T12:00:00Z'), '2026-11-24 13:00');
+  assert.equal(buildTime('en', '2026-07-01T12:00:00Z'), '01/07/2026, 14:00');
+});
+
+test('a colour note without a dispute is the evidence sentence alone', () => {
+  assert.equal(
+    colourNote('en', { colour: 'known' }),
+    'Scientists have found traces of colour in the fossils, so we really do know quite a lot about these colours.',
+  );
+  assert.equal(
+    colourNote('sv', { colour: 'guess', colourDisputed: true }),
+    'Ingen vet vilken färg det här djuret hade. Färgerna är en gissning som bygger på djur som lever i dag. Här är forskarna inte överens än.',
+  );
 });
