@@ -20,6 +20,8 @@ export interface SceneContext {
 
 const PERIODS: readonly Period[] = ['triassic', 'jurassic', 'cretaceous'];
 const clamp = (v: number, lo: number, hi: number): number => Math.min(hi, Math.max(lo, v));
+/** A keyboard step for the selected animal, as a fraction of the scene. */
+const ARROWS: Record<string, [number, number]> = { ArrowLeft: [-0.03, 0], ArrowRight: [0.03, 0], ArrowUp: [0, -0.03], ArrowDown: [0, 0.03] };
 
 export interface StageFrame {
   worldWidth: number;
@@ -229,12 +231,21 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     draw();
   });
 
-  // Delete (Backspace on a Mac keyboard) does what the take-away button does.
+  // Delete (Backspace on a Mac keyboard) does what the take-away button does; the arrows move it, as a drag would.
   const onKey = (e: KeyboardEvent): void => {
     if (!stage.isConnected) return document.removeEventListener('keydown', onKey);
-    if ((e.key === 'Delete' || e.key === 'Backspace') && selected) {
+    if (!selected) return;
+    if (e.key === 'Delete' || e.key === 'Backspace') {
       e.preventDefault();
       tools.querySelector<HTMLElement>('[data-tool="remove"]')!.click();
+    }
+    const step = ARROWS[e.key];
+    if (step) {
+      e.preventDefault();
+      selected.x = clamp(selected.x + step[0], 0, 1);
+      selected.y = clamp(selected.y + step[1], 0, 1);
+      ctx.save();
+      draw();
     }
   };
   document.addEventListener('keydown', onKey);
