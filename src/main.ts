@@ -176,8 +176,15 @@ function buildCard(d: Dino, depth: number): HTMLElement {
     <div class="face back">
       <div class="scroll"><h2 lang="la">${d.name}</h2>${factsHtml(d)}</div>
     </div>`;
+  showFace(card, false);
   fitScale(card, d);
   return card;
+}
+
+/** Only the face that shows can be reached: Tab and screen readers skip the side turned away. */
+function showFace(card: HTMLElement, back: boolean): void {
+  card.querySelector<HTMLElement>('.front')!.inert = back;
+  card.querySelector<HTMLElement>('.back')!.inert = !back;
 }
 
 /** The film roar, and a small jump so the tap is seen as well as heard. */
@@ -219,6 +226,7 @@ const handlers: DragHandlers = {
       }
     }
     const flipped = card.classList.toggle('flipped');
+    showFace(card, flipped);
     if (flipped && card.dataset.id && state.won.includes(card.dataset.id)) {
       state.seen = markSeen(state.seen, card.dataset.id);
       saveState(state);
