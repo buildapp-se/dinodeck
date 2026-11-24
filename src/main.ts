@@ -577,7 +577,9 @@ document.addEventListener('click', (e) => {
   });
 });
 
-window.addEventListener('hashchange', () => (document.startViewTransition ? void document.startViewTransition(render) : render()));
+// A second tab tap before the first animation ends skips that animation (render still runs) and rejects its `ready`: not an error.
+// A throwing render still surfaces through `updateCallbackDone`.
+window.addEventListener('hashchange', () => (document.startViewTransition ? void document.startViewTransition(render).ready.catch(() => {}) : render()));
 // The app open twice (a browser tab and the installed app): take the other copy's saves instead of overwriting them.
 window.addEventListener('storage', (e) => {
   if (e.key !== KEY) return;
