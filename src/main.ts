@@ -281,9 +281,11 @@ function fillDeck(): void {
   }
 }
 
+const eggToday = (): boolean => eggChoices(today(), state.eggDay, DINOS.filter(isOpen).map((d) => d.id), state.hatched).length > 0;
+
 function renderDeck(): void {
   const l = lang();
-  const egg = eggChoices(today(), state.eggDay, DINOS.filter(isOpen).map((d) => d.id), state.hatched).length > 0;
+  const egg = eggToday();
   view.innerHTML = `
     <div id="deck" class="deck">${egg ? `<button type="button" id="egg" class="egg-btn" aria-label="${t(l, 'eggToday')}"><img src="img/baby/egg.webp" alt=""></button>` : ''}</div>
     <div class="controls">
@@ -580,6 +582,11 @@ document.addEventListener('click', (e) => {
 // A second tab tap before the first animation ends skips that animation (render still runs) and rejects its `ready`: not an error.
 // A throwing render still surfaces through `updateCallbackDone`.
 window.addEventListener('hashchange', () => (document.startViewTransition ? void document.startViewTransition(render).ready.catch(() => {}) : render()));
+// An installed app is mostly resumed, not reloaded: the next morning's egg must show up without a reload.
+document.addEventListener('visibilitychange', () => {
+  const onDeck = location.hash === '' || location.hash === '#/';
+  if (document.visibilityState === 'visible' && onDeck && !document.querySelector('dialog[open]') && eggToday() !== !!view.querySelector('#egg')) render();
+});
 // The app open twice (a browser tab and the installed app): take the other copy's saves instead of overwriting them.
 window.addEventListener('storage', (e) => {
   if (e.key !== KEY) return;
