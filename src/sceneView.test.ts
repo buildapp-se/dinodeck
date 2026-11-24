@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 
 import { test } from 'node:test';
 
-import { itemStyle, startSize } from './sceneView.ts';
+import { itemStyle, shownItems, startSize } from './sceneView.ts';
 import { DINOS } from './catalog.ts';
 import type { Dino } from './dinos.ts';
 import { MAX_SIZE, MIN_SIZE } from './state.ts';
@@ -32,4 +32,13 @@ test('startSize: a placed animal starts at a size that follows its length, insid
   assert.equal(sized(35), 0.62);
   assert.equal(sized(100), MAX_SIZE, 'never bigger than the largest size the resize buttons allow');
   assert.equal(sized(-10), MIN_SIZE, 'never smaller than the smallest');
+});
+
+test('shownItems: an animal locked again (parent mode turned "every card open" off) leaves the scene but is kept in the save', () => {
+  const at = (id: string) => ({ id, x: 0.5, y: 0.5, size: 0.3, flip: false });
+  const items = [at('spinosaurus'), at('triceratops'), at('allosaurus')];
+  const open = DINOS.filter((d) => d.id === 'triceratops' || d.id === 'allosaurus');
+  assert.deepEqual(shownItems(items, open).map((i) => i.id), ['triceratops', 'allosaurus']);
+  assert.equal(items.length, 3, 'the locked one is hidden, not deleted: turning the switch on again brings it back');
+  assert.equal(shownItems(items, open)[0], items[1], 'the same objects, so a drag still moves the saved item');
 });

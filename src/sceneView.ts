@@ -12,8 +12,8 @@ export interface SceneContext {
   /** Image path per animal: the cute style swaps some (src/cute.ts). */
   art(id: string): string;
   save(): void;
-  /** The scene as a colouring page. */
-  print(): void;
+  /** The scene as a colouring page: the animals it shows, no locked ones. */
+  print(scene: Scene): void;
   /** Two quick taps on a placed animal. */
   roar(id: string, el: HTMLElement): void;
 }
@@ -37,6 +37,11 @@ export const itemStyle = (f: StageFrame, item: SceneItem): { translate: string; 
 
 /** Bigger animals start bigger, so a Diplodocus dwarfs a Velociraptor before anyone resizes anything. */
 export const startSize = (d: Dino): number => clamp(0.12 + (d.lengthM / 35) * 0.5, MIN_SIZE, MAX_SIZE);
+
+/** Only open animals stand in the scene. One placed while parent mode had every card open is hidden once that is off,
+ *  and kept in the save, so it is back when the switch is (or the card is won). */
+export const shownItems = (items: readonly SceneItem[], open: readonly Dino[]): SceneItem[] =>
+  items.filter((i) => open.some((d) => d.id === i.id));
 
 export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   const { lang: l, scene } = ctx;
@@ -99,7 +104,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     stage.dataset.bg = scene.bg;
     stage.classList.toggle('empty-stage', scene.items.length === 0);
     stage.innerHTML = `<img class="bg" src="img/bg-${scene.bg}.webp" alt="">`;
-    for (const item of scene.items) {
+    for (const item of shownItems(scene.items, ctx.open)) {
       const el = document.createElement('img');
       el.className = 'item';
       el.src = ctx.art(item.id);
@@ -118,7 +123,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   /** A new animal falls in from above and lands with a bounce. The last keyframe is place()'s own transform. */
   const dropIn = (item: SceneItem): void => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const el = stage.querySelectorAll<HTMLElement>('.item')[scene.items.indexOf(item)];
+    const el = stage.querySelectorAll<HTMLElement>('.item')[shownItems(scene.items, ctx.open).indexOf(item)];
     if (!el) return;
     const s = item.flip ? -1 : 1;
     el.animate([
@@ -191,6 +196,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   view.querySelectorAll<HTMLButtonElement>('[data-add]').forEach((b) =>
     b.addEventListener('click', () => {
       const d = ctx.open.find((x) => x.id === b.dataset.add);
+      // ponytail: hidden (locked) animals count towards the cap, since the save holds at most MAX_SCENE_ITEMS
       if (!d || scene.items.length >= MAX_SCENE_ITEMS) return;
       selected = { id: d.id, x: 0.5 + [0, -0.1, 0.1, -0.2, 0.2][scene.items.length % 5]!, y: 0.7, size: startSize(d), flip: false };
       scene.items.push(selected);
@@ -200,7 +206,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     }),
   );
 
-  view.querySelector('[data-print]')!.addEventListener('click', () => ctx.print());
+  view.querySelector('[data-print]')!.addEventListener('click', () => ctx.print({ ...scene, items: shownItems(scene.items, ctx.open) }));
 
   tools.addEventListener('click', (e) => {
     const tool = (e.target as Element).closest<HTMLElement>('[data-tool]')?.dataset.tool;
