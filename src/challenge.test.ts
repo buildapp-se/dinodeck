@@ -90,6 +90,21 @@ test('no silhouette questions until three pictures exist', () => {
   }
 });
 
+test('small triassic look-alikes are never options to each other while others are open', () => {
+  const alike = ['coelophysis', 'herrerasaurus', 'eoraptor', 'compsognathus'];
+  // The four plus just enough others to fill two wrong options.
+  const ids = [...alike, 'tyrannosaurus-rex', 'triceratops'];
+  let asked = 0;
+  for (let seed = 1; seed <= 600; seed++) {
+    const q = makeQuestion('small', seeded(seed), DINOS[0]!, DINOS, ids);
+    if (q.kind !== 'silhouette' || !q.show || !('silhouette' in q.show) || !alike.includes(q.show.silhouette)) continue;
+    asked++;
+    const shown = q.options.flatMap((o) => ('dino' in o ? [o.dino] : []));
+    assert.equal(shown.filter((id) => alike.includes(id)).length, 1, `seed ${seed}: ${shown.join(', ')}`);
+  }
+  assert.ok(asked > 0, 'a look-alike must sometimes be the answer');
+});
+
 test('silhouette questions also on level 8 to 10', () => {
   let silhouettes = 0;
   let rest = 0;

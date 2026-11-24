@@ -80,11 +80,16 @@ function math(rand: Rand, level: Level): Question {
   return numberQuestion(rand, { kind: 'math', prompt: same(`${text} = ?`) }, value);
 }
 
+/** Small two-legged meat-eaters whose dark shapes are hard to tell apart. */
+const LOOKALIKES: readonly string[] = ['coelophysis', 'herrerasaurus', 'eoraptor', 'compsognathus'];
+
 function silhouette(rand: Rand, pool: readonly Dino[]): Question {
   const right = pool[int(rand, 0, pool.length - 1)]!;
-  // Wrong options with another body shape first, so the dark shape stands apart from them.
+  // Wrong options with another body shape first, so the dark shape stands apart from them;
+  // a look-alike of the right one only when nothing else is left.
   const rest = shuffle(rand, pool.filter((d) => d !== right));
-  const wrong = [...rest.filter((d) => d.group !== right.group), ...rest.filter((d) => d.group === right.group)].slice(0, 2);
+  const rank = (d: Dino): number => d.group !== right.group ? 0 : LOOKALIKES.includes(d.id) && LOOKALIKES.includes(right.id) ? 2 : 1;
+  const wrong = [0, 1, 2].flatMap((n) => rest.filter((d) => rank(d) === n)).slice(0, 2);
   return build(
     rand,
     { kind: 'silhouette', prompt: { sv: 'Vilken dinosaurie är det?', en: 'Who is it?' }, show: { silhouette: right.id }, say: 'who' },
