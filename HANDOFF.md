@@ -9,6 +9,13 @@ reviewedAt: 2026-11-24
 
 # Handoff: Dinodeck
 
+## 2026-11-24: andra felsökningen som användare (agent, worktree `_wt/dinodeck-1124k`, gren `hunt2/2026-11-24`, klart)
+
+- **Gått igenom** (Playwright mot `vite preview`, 390 och 1440 px, sv och en): alla 50 detaljsidor, okända adresser (`#/xyz`, och `#/dino/`, `#/utmaning/`, `#/scen/` med okänt id), föräldraläget och dess länkar, alla kort vunna, trasigt sparat läge, bilder och ljud som inte laddas, service worker-uppdatering mellan två byggen och offline efter installation. Alla 50 källänkar ger 200 med djurets namn i titeln (NHM:s "undefined"-fälla kontrollerad), buildapp.se-sidorna 200. Inga sidfel, inga trasiga bilder, inget vågrätt spill, ingen decimalpunkt i svensk text, siffrorna i katalogen lika på sv och en.
+- **Rättat** (se BACKLOG P3): "Tillbaka" efter omladdning, föräldraadressen och okänt kort (de två första parkerade av första felsökningen), integritetssidan och licenserna offline, integritetssidans text om nollställning.
+- **Verifierat:** `npm test` 73/73, `npm run build`, skripten i `%TEMP%\aifabriken-lanes\hunt2-dinodeck\` (`walk.mjs`, `flows.mjs`, `back.mjs`, `offline.mjs`, `update.mjs`). Inga nya enhetstester: DOM- och service worker-kod som `node --test` inte kör.
+- **Fälla:** Playwrights `waitForFunction` med en `async`-funktion väntar inte, löftet räknas som sant direkt. Polla med `evaluate` i en slinga.
+
 ## 2026-11-24: felsökning som användare (agent, worktree `_wt/dinodeck-1124h`, gren `hunt/2026-11-24`, klart)
 
 - Alla flöden körda med Playwright mot `vite preview` på 390 och 1440 px, svenska och engelska: kortlek, utmaning till vinst, scen, tidslinje, favoriter, föräldraläge, dagens ägg, källfrågan (tom, 0, -1, decimalkomma), bakåt och omladdning, bara tangentbord, offline via service workern. Inga sidfel, inget vågrätt spill, offline fungerar på alla fem flikar.
