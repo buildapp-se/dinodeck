@@ -64,7 +64,7 @@ export function renderTimeline(view: HTMLElement, ctx: TimelineContext, maxLanes
           ${[250, 200, 150, 100, 50].map((m) => `<span class="tick" style="left:${x(m)}px">${l === 'sv' ? 'för ' : ''}${m} ${t(l, 'mya')}</span>`).join('')}
           ${items.map((i) => {
             const d = byId.get(i.id)!;
-            return `<a class="tl-item${ctx.isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}" draggable="false" style="left:${PAD + i.x}px;--lane:${i.lane}"><img src="img/${d.id}.webp" alt="" draggable="false"><span lang="la">${d.name}</span></a>`;
+            return `<a class="tl-item${ctx.isOpen(d) ? '' : ' locked'}" href="#/dino/${d.id}" draggable="false" style="left:${PAD + i.x}px;--lane:${i.lane}"><img src="img/${d.id}.webp" alt="" draggable="false" loading="lazy"><span lang="la">${d.name}</span></a>`;
           }).join('')}
           <span class="mark" style="left:${x(BOUNDS.cretaceous[1])}px"><span aria-hidden="true">☄️</span>${t(l, 'asteroid')}</span>
           <span class="mark" style="left:${x(0)}px"><span aria-hidden="true">🏠</span>${t(l, 'today')}</span>

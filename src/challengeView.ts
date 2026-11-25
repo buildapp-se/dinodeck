@@ -55,7 +55,7 @@ export function renderLevelPicker(view: HTMLElement, ctx: ChallengeContext): voi
       <h2>${ctx.repeat ? t(l, 'allWon') : `${t(l, 'winThis')} ${ctx.target.name}`}</h2>
       <p class="hint">${t(l, 'howOld')} ${sayBtn('how-old', l)}</p>
       <div class="levels">
-        ${LEVELS.map((lv) => `<button type="button" class="big" data-level="${lv}" aria-label="${AGES[lv][0]} ${l === 'sv' ? 'till' : 'to'} ${AGES[lv].at(-1)} ${t(l, 'years')}"><span class="ages">${AGES[lv].map((age) => `<span>${age}</span>`).join('')}</span><small>${t(l, 'years')}</small></button>`).join('')}
+        ${LEVELS.map((lv) => `<button type="button" class="big" data-level="${lv}"><span class="ages">${AGES[lv].map((age) => `<span>${age}</span>`).join(' ')}</span> <small>${t(l, 'years')}</small></button>`).join('')}
       </div>
     </section>`;
   ctx.say('how-old');

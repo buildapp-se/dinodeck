@@ -63,7 +63,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
   view.innerHTML = `
     <section class="scene">
       <div class="seg" role="group">
-        ${PERIODS.map((p) => `<button type="button" data-bg="${p}"><img src="img/bg-${p}.webp" alt="">${periodName(l, p)}</button>`).join('')}
+        ${PERIODS.map((p) => `<button type="button" data-bg="${p}"><img src="img/bg-${p}-thumb.webp" alt="" width="120" height="80">${periodName(l, p)}</button>`).join('')}
         <button type="button" class="print-btn" data-print aria-label="${t(l, 'printColour')}">${icon('print')}</button>
       </div>
       <div class="stage"></div>
@@ -117,7 +117,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
       stage.append(el);
     }
     tools.classList.toggle('on', selected !== null);
-    view.querySelectorAll<HTMLButtonElement>('[data-bg]').forEach((b) =>
+    view.querySelectorAll<HTMLButtonElement>('button[data-bg]').forEach((b) =>
       b.setAttribute('aria-pressed', String(b.dataset.bg === scene.bg)),
     );
   };
@@ -187,7 +187,7 @@ export function renderScene(view: HTMLElement, ctx: SceneContext): void {
     draw();
   });
 
-  view.querySelectorAll<HTMLButtonElement>('[data-bg]').forEach((b) =>
+  view.querySelectorAll<HTMLButtonElement>('button[data-bg]').forEach((b) =>
     b.addEventListener('click', () => {
       scene.bg = b.dataset.bg as Period;
       ctx.save();
