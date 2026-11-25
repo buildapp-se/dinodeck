@@ -606,9 +606,14 @@ document.addEventListener('visibilitychange', () => {
 // The app open twice (a browser tab and the installed app): take the other copy's saves instead of overwriting them.
 window.addEventListener('storage', (e) => {
   if (e.key !== KEY) return;
+  const openBefore = DINOS.filter(isOpen).map((d) => d.id).join();
   Object.assign(state, loadState(ids, state.lang));
+  // A win, a reset or "all open" over there changes which cards are open: deal the deck again, or reset cards stay in it as silhouettes.
+  if (DINOS.filter(isOpen).map((d) => d.id).join() !== openBefore) queue = freshQueue();
   applySettings();
-  render();
+  // A game in progress (or its win screen) is not drawn again: a favourite saved over there would throw away the child's stars.
+  if (view.querySelector('.challenge')) renderNav();
+  else render();
 });
 // Links out of the app go through an adult question (app stores' rule for children's apps).
 document.addEventListener('click', (e) => {
