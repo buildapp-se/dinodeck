@@ -9,6 +9,13 @@ reviewedAt: 2026-11-25
 
 # Handoff: Dinodeck
 
+## 2026-11-25: scenarier i flera steg (agent, worktree `_wt/dinodeck-1125c`, gren `scen/2026-11-25`, klart)
+
+- **Körda** (Playwright mot `vite preview`, skript i `%TEMP%\aifabriken-lanes\scen-dinodeck\`): en vecka i ett svep (`s1-week.mjs`: favoriter, vinst, NY-märke, scen med storlek, vändning, ta bort och lägg tillbaka, rensa favoriter, föräldraläget med språkbyte och nollställning, samma kort vunnet igen), två kopior samtidigt (`s2-two-tabs.mjs`, `s3-egg-two-copies.mjs`), stor och gammal sparad data (`s4-volume.mjs`: 50 vunna och favoriter med dubbletter och okända id, 60 scendjur, ett sparat läge utan de senare fälten; 390 och 1 440 px), gårdagens installerade bygge som står öppet medan dagens installeras och nätet sedan försvinner (`s6-upgrade.mjs`), bredd- och vridbyte mitt i utmaning, scen, detaljvy, vänt kort och tidslinje (`s7-width.mjs`, 390×844, 844×390, 1 440×900, 360×640). Inloggning och import/export finns inte i appen.
+- **Rättat** (se BACKLOG P3): en sparning i den andra kopian tömde en pågående utmaning, nollställning där lämnade kortleken full av silhuetter, dagens ägg gav två ungar om det var öppet i båda kopiorna.
+- **Inte ändrat:** mindre bilder för scenens fält (BACKLOG P3, samma filer som kortleken). Lagring som tar slut mitt i en session ger inga sidfel, men det sparas inte; som tänkt.
+- **Verifierat:** `npm test` 73/73, `npm run build`, alla sex skript gröna. Inga nya enhetstester: rättningarna är DOM-kod i `src/main.ts` som `node --test` inte kör.
+
 ## 2026-11-25: fart, tillgänglighet och metadata (agent, worktree `_wt/dinodeck-1125s`, gren `speed/2026-11-25`, klart)
 
 - **Mätt live** före och efter deploy med Playwright (Slow 4G, 4x CPU, 390 px; och 1 440 px utan strypning), kall cache, service worker avstängd, sju vyer. Före och efter per vy och rättningarna: BACKLOG P3, raderna Speed och WCAG i CONTEXT. Skripten: `%TEMP%\aifabriken-lanes\speed-dinodeck\` (`measure.mjs` med axe ur aifabriken, `flow.mjs`, `tl.mjs`).
