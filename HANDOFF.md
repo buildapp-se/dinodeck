@@ -4,10 +4,17 @@ status: active
 currentGoal: 50 djur live, söt stil i föräldraläget för alla (inte bekräftad av Patrik). Batch 5 (20 djur) researchas med Codex. Kvar: test på riktig telefon, surfplatta och papper, ungar till resten
 nextAction: Batch 5: data ur docs/research/batch-5a.md och batch-5b.md, målning, söt bild och målarbild (Codex), vrål, läte och uttal (lokalt); söta vrål först efter 2026-11-06 (ElevenLabs). Uppläsning för batch 4 och 5 saknas (OmniVoice). Äldre: `uv run tools/retake-read.py audio-src/read/check.log`
 blockers: []
-reviewedAt: 2026-11-24
+reviewedAt: 2026-11-25
 ---
 
 # Handoff: Dinodeck
+
+## 2026-11-25: fart, tillgänglighet och metadata (agent, worktree `_wt/dinodeck-1125s`, gren `speed/2026-11-25`, klart)
+
+- **Mätt live** före och efter deploy med Playwright (Slow 4G, 4x CPU, 390 px; och 1 440 px utan strypning), kall cache, service worker avstängd, sju vyer. Före och efter per vy och rättningarna: BACKLOG P3, raderna Speed och WCAG i CONTEXT. Skripten: `%TEMP%\aifabriken-lanes\speed-dinodeck\` (`measure.mjs` med axe ur aifabriken, `flow.mjs`, `tl.mjs`).
+- **Rättat:** tidslinjens bilder laddas när de rullas fram, scenens periodknappar har egna små bilder (`public/img/bg-*-thumb.webp`, gjorda en gång med Pillow ur bakgrunderna: görs bakgrunderna om, gör om dem i 120×80), tre axe-fel, canonical och djurantalet i beskrivningen.
+- **Inte ändrat:** bilder utan `width`/`height` (CLS högst 0,033 ändå, rutorna har fast storlek i CSS), `fetchpriority` på scenens bakgrund (provat, ingen mätbar skillnad: fältets djurbilder delar samma bandbredd), cachetiden för `assets/` (Cloudflare-regel, Patriks beslut).
+- **Fälla:** porten 6743 var upptagen av en annan session; kontrollera med `netstat` före `--strictPort`.
 
 ## 2026-11-24: andra felsökningen som användare (agent, worktree `_wt/dinodeck-1124k`, gren `hunt2/2026-11-24`, klart)
 
