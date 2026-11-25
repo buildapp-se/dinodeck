@@ -9,6 +9,14 @@ reviewedAt: 2026-11-25
 
 # Handoff: Dinodeck
 
+## 2026-11-25: inställningar och språk (agent, worktree `_wt/dinodeck-1125t`, gren `prefs/2026-11-25`, klart)
+
+- **Kört** (playwright-core ur aifabriken, `%TEMP%\aifabriken-lanes\prefs-dinodeck\prefs.mjs`, tio vyer: kortlek, baksida, favoriter, utmaning, fråga, scen, tidslinje, detaljvy, föräldraläget, integritetssidan): mörkt läge, minskad rörelse, 200 % text på 1 280 och 390 px, 200 % zoom och `forced-colors`. Appen har inget mörkt läge (färgerna lika med och utan mörkt läge); minskad rörelse stoppar animationerna, ingen mjuk scroll.
+- **Rättat** (se BACKLOG P3): långa namn utanför rutan med stor text, menyetiketter på bred skärm, tidslinjens rutor, kanter och valt läge i kontrastläge, Maiasauras namnbetydelse lika på kortet och i ungens text.
+- **Språk:** all svensk text i `src/text.ts`, katalogen (alla 50 djur och 12 ungar), vyerna, `index.html`, `integritet.html` och manifestet genomläst. Inga andra klara fel: decimalkomma, tusentalsmellanrum och datum stämmer, inga tankstreck (testerna fäller dem redan).
+- **Agentens val:** tidslinjens texter har ett tak (15 till 18 px) i stället för att remsan görs om; på 390 px bryts menyetiketterna mitt i ordet med 200 % text, eftersom fem flikar inte rymmer dem hela.
+- **Verifierat:** `npm test` 76/76, `npm run build`, skriptet grönt lokalt mot `vite preview`.
+
 ## 2026-11-25: webbläsarpass WebKit och Firefox (agent, worktree `_wt/dinodeck-1125x`, gren `xb/2026-11-25`, klart)
 
 - **Kört** (playwright-core 1.64.1 ur aifabriken: WebKit 27.2, Firefox 157.0, Chromium 156; skript i `%TEMP%\aifabriken-lanes\xb-dinodeck\`, `xb.mjs`): WebKit (Playwright) med iPhone 13-profilen, Chromium med Pixel 7, Firefox, WebKit och Chromium i 1 440×900. Flöden: första laddning, vändning och dold sida `inert`, svep till favorit, utmaning till vinst, scen (lägg till, dra, större), tidslinje till kort, detaljvy, föräldraspärren (fel och rätt svar, källan öppnas), föräldraläget med 3 s tryck och språkbyte, sparat läge efter omladdning, dagens ägg, snabba flikbyten med vyövergångar, offline via service workern (639 filer, servern avstängd: kortlek, tidslinje, scen, integritetssidan). Intl (`12 500,5`, datum, byggtid) lika i alla tre. Appen har inga datum-, tid- eller decimalfält, ingen urklipps- eller delningsknapp, ingen IndexedDB.
