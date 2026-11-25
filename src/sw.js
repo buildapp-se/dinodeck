@@ -51,7 +51,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request.url, { cache: 'no-cache', signal: slow.signal })
         .then((r) => (r.ok ? r : Promise.reject(new Error(String(r.status)))))
-        .catch(() => caches.match('index.html', { cacheName: CACHE, ignoreSearch: true })),
+        // The saved copy of that very page (the privacy page, the licences), else the app.
+        .catch(async () => (await caches.match(request.url, { cacheName: CACHE, ignoreSearch: true })) ?? caches.match('index.html', { cacheName: CACHE, ignoreSearch: true })),
     );
     return;
   }
