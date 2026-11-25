@@ -7,12 +7,18 @@ const decoded = new Map<string, Promise<AudioBuffer>>();
 const KEEP = 24;
 let taps = 0;
 
+/** The shared audio context, or undefined where the browser has no Web Audio: then the app runs silent instead of failing. */
+function audioCtx(): AudioContext | undefined {
+  if (!ctx && typeof AudioContext === 'function') ctx = new AudioContext();
+  void ctx?.resume();
+  return ctx;
+}
+
 /** Plays one sound, cutting off the one before it. Has to be called from a tap: browsers allow no sound before one.
  *  `onStart` gets a clock once the sound starts: seconds into it, or null once it has ended or been cut off. */
 export function play(url: string, onStart?: (elapsed: () => number | null) => void): void {
-  ctx ??= new AudioContext();
-  const audio = ctx;
-  void audio.resume();
+  const audio = audioCtx();
+  if (!audio) return;
   // The last tap wins: stop now, and a slower sound that finishes loading later stays quiet.
   const tap = ++taps;
   playing?.stop();
@@ -50,9 +56,8 @@ const STEPS = [523.25, 659.25, 783.99, 1046.5, 1318.5];
 
 /** Short game sounds made on the spot, no files: a rising "pling" for a right answer, a soft low "boop" for a wrong one, a fanfare for a win. They play over a roar instead of cutting it off. */
 export function chime(kind: 'right' | 'wrong' | 'win' | 'crack', step = 0): void {
-  ctx ??= new AudioContext();
-  const audio = ctx;
-  void audio.resume();
+  const audio = audioCtx();
+  if (!audio) return;
   const note = (freq: number, at: number, length: number, type: OscillatorType, glideTo?: number): void => {
     const t0 = audio.currentTime + at;
     const osc = audio.createOscillator();
@@ -97,9 +102,8 @@ export const peepPitch = (adultKg: number): number => Math.min(3600, Math.max(16
  * `id` picks the pattern, so each kind of baby always sounds the same and different from the others.
  */
 export function peep(id: string, adultKg: number): void {
-  ctx ??= new AudioContext();
-  const audio = ctx;
-  void audio.resume();
+  const audio = audioCtx();
+  if (!audio) return;
   let hash = 0;
   for (const c of id) hash = (hash * 31 + c.charCodeAt(0)) >>> 0;
   const base = peepPitch(adultKg);
