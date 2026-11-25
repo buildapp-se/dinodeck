@@ -509,6 +509,10 @@ function render(): void {
   if (hash !== '#/foralder') parentOpen = false;
   view.scrollTop = 0; // a long favourites list scrolled down would open the next view halfway down
   const dino = hash.startsWith('#/dino/') ? byId.get(hash.slice('#/dino/'.length)) : undefined;
+  // A card keeps its list in the history entry, so "back" still leads there after a reload or a return from another page.
+  if (dino) { if (typeof history.state?.backTo === 'string') backTo = history.state.backTo; else history.replaceState({ backTo }, ''); }
+  // The deck stands in for an address it does not belong to (parent mode after a reload, a card that does not exist): the address and the navigation say deck too.
+  if ((hash === '#/foralder' && !parentOpen) || (hash.startsWith('#/dino/') && !dino)) history.replaceState(null, '', '#/');
   if (parentOpen) {
     // Any of the four can change which cards are open or what the page says: rebuild the deck order and the navigation.
     const saved = (change: () => void) => () => {
