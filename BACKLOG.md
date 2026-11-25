@@ -77,10 +77,10 @@ Det mesta från de tre designagenterna är gjort (se HANDOFF, natt 2026-10-25/26
 - [x] `[P2]` (klart 2026-10-26) Kortlekens ordning: bara de tre nästa att vinna, varvade med öppna kort.
 - [x] `[P2]` (klart 2026-10-26, Patriks idé) Dagens ägg: en unge om dagen till ett öppet kort, tolv ungar.
 - [ ] `[P2]` Ungar till de övriga 24 djuren som lägger ägg (havsreptilerna föder levande, inget ägg). Nästa i tur: de mest kända, t.ex. Spinosaurus, Allosaurus, Iguanodon, Edmontosaurus. Fakta per unge måste ha källa (`docs/research/babies.md`); för arter utan kända ungar skrivs det ärligt, med släkting.
-- [ ] `[P3]` Målarbilder av ungarna.
+- [ ] `[P3]` Målarbilder av ungarna. 2026-11-25 (funktionspass): inte gjort av agent. Konturerna görs av Codex som linjeteckning (`img-src/BRIEF-line.md`) och granskas för ögat, och var knappen ska sitta (detaljvyn, flerutskriften) är ett val.
 - [x] `[P2]` (klart 2026-10-26) Föräldraläget: sammanfattning (vunna kort, kläckta ungar, favoriter, tre senast vunna).
 - [x] `[P3]` (klart 2026-10-30) Föräldraläget: skriv ut flera målarbilder på en gång, favoriterna förvalda.
-- [ ] `[P3]` Föräldraläget: veckans kort. Kräver datum per vinst (sparas inte i dag).
+- [x] `[P3]` (klart 2026-11-25, agent, `76e3a39`) Föräldraläget: veckans kort. Sammanfattningen har raden "Vunna senaste veckan" med korten som vunnits de sju senaste dagarna, nyast först ("Inga" annars). Varje vinst sparar sitt lokala datum (`wonOn` i `src/state.ts`, `wonThisWeek` med test i `state.test.ts`); kort vunna före 2026-11-25 saknar datum och syns inte i raden. Nollställning tömmer datumen, integritetssidan nämner att dagen sparas. Agentens val: rullande sju dagar, inte kalendervecka (en förälder som tittar på måndag morgon ser då helgens kort). Playwright mot `vite preview`, 390 px: vinst får dagens datum, gammalt datum och odaterad vinst syns inte, engelska, nollställning, inga sidfel.
 - [x] (rättad 2026-10-30) `[P3]` Hjälp efter två fel (rätt svar pulserar); silhuettfrågor på nivå 3-5 med olika kroppsformer; silhuetter även på nivå 8-10.
 - [x] `[P3]` (klart 2026-10-26, agent) Visuellt: faktaruta på baksidan, detaljvyns knappar i två nivåer (utskrift fylld), märke i sidhuvudet, tidslinjen centrerad med periodpiller, solfjäder i kortstapeln, radieskala `--r-s` till `--r-pill`, gamla CSS-lagret sammanslaget.
 - [x] (rättad 2026-10-30) `[P3]` Nytt djur i scenen: fall in med studs; "NY"-märke på vunna kort tills de vänts.

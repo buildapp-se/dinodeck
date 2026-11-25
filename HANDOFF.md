@@ -9,6 +9,12 @@ reviewedAt: 2026-11-25
 
 # Handoff: Dinodeck
 
+## 2026-11-25: funktionspass P3 (agent, worktree `_wt/dinodeck-1125p`, gren `p3/2026-11-25`, klart)
+
+- **Byggt:** "Vunna senaste veckan" i föräldralägets sammanfattning (BACKLOG Design, `76e3a39`). Nytt fält `wonOn` i det sparade läget; gamla vinster saknar datum.
+- **Inte byggt:** målarbilder av ungarna (kräver Codex-teckningar och ett val om knappens plats), övriga P3 kräver Patrik eller är avskrivna i BACKLOG.
+- **Verifierat:** `npm test` 75/75, `npm run build`, `%TEMP%\aifabriken-lanes\p3-dinodeck\week.mjs` mot `vite preview` (8 av 8).
+
 ## 2026-11-25: scenarier i flera steg (agent, worktree `_wt/dinodeck-1125c`, gren `scen/2026-11-25`, klart)
 
 - **Körda** (Playwright mot `vite preview`, skript i `%TEMP%\aifabriken-lanes\scen-dinodeck\`): en vecka i ett svep (`s1-week.mjs`: favoriter, vinst, NY-märke, scen med storlek, vändning, ta bort och lägg tillbaka, rensa favoriter, föräldraläget med språkbyte och nollställning, samma kort vunnet igen), två kopior samtidigt (`s2-two-tabs.mjs`, `s3-egg-two-copies.mjs`), stor och gammal sparad data (`s4-volume.mjs`: 50 vunna och favoriter med dubbletter och okända id, 60 scendjur, ett sparat läge utan de senare fälten; 390 och 1 440 px), gårdagens installerade bygge som står öppet medan dagens installeras och nätet sedan försvinner (`s6-upgrade.mjs`), bredd- och vridbyte mitt i utmaning, scen, detaljvy, vänt kort och tidslinje (`s7-width.mjs`, 390×844, 844×390, 1 440×900, 360×640). Inloggning och import/export finns inte i appen.
