@@ -79,6 +79,8 @@ export const UI = {
   babiesHatched: { sv: 'Kläckta ungar', en: 'Babies hatched' },
   latestWon: { sv: 'Senast vunna', en: 'Latest won' },
   noneYet: { sv: 'Inga än', en: 'None yet' },
+  wonThisWeek: { sv: 'Vunna senaste veckan', en: 'Won in the past week' },
+  noneThisWeek: { sv: 'Inga', en: 'None' },
   timeline: { sv: 'Tidslinje', en: 'Timeline' },
   today: { sv: 'I dag', en: 'Today' },
   asteroid: { sv: 'Asteroiden slår ned', en: 'The asteroid hits' },

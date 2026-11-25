@@ -15,7 +15,7 @@ import { attachHold, renderParent } from './parentView.ts';
 import { renderScene } from './sceneView.ts';
 import { renderTimeline } from './timelineView.ts';
 import type { Dino, Lang } from './dinos.ts';
-import { KEY, advance, deckOrder, loadState, markSeen, resetCollection, saveState, toggleFavorite } from './state.ts';
+import { KEY, advance, deckOrder, loadState, markSeen, resetCollection, saveState, wonThisWeek, toggleFavorite } from './state.ts';
 import { artSrc, babySrc, roarSrc } from './cute.ts';
 import { colourNote, dietName, groupNote, num, t, weight, when } from './text.ts';
 
@@ -471,7 +471,7 @@ function renderChallenge(id: string, level?: Level): void {
       renderChallenge('', lv);
     },
     onWin(d) {
-      if (!repeat && !state.won.includes(d.id)) state.won = [...state.won, d.id];
+      if (!repeat && !state.won.includes(d.id)) { state.won = [...state.won, d.id]; state.wonOn = { ...state.wonOn, [d.id]: today() }; }
       saveState(state);
       queue = [d.id, ...freshQueue().filter((x) => x !== d.id)]; // the new card on top, and the next to win dealt in
       renderNav();
@@ -535,6 +535,7 @@ function render(): void {
           hatched: state.hatched.length,
           babies: Object.keys(BABIES).length,
           latest: state.won.slice(-3).reverse().map((id) => byId.get(id)?.name ?? id),
+          week: wonThisWeek(state.wonOn, today()).map((id) => byId.get(id)?.name ?? id),
         };
       },
       // A getter as well: unlocking every card changes who can be printed.

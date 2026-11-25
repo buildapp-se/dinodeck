@@ -58,13 +58,17 @@ export interface State {
   hatched: string[];
   /** The local date (YYYY-MM-DD) the last egg was opened: one egg a day. */
   eggDay: string;
+  /** The local date (YYYY-MM-DD) each card was won on, for the parent's week. Cards won before 2026-11-25 have none. */
+  wonOn: Record<string, string>;
 }
+
+const isDay = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 
 export const KEY = 'dinodeck';
 
 /** Parses whatever localStorage held. Anything unusable falls back to the default, never throws. */
 export function parseState(raw: string | null, knownIds: readonly string[], fallbackLang: Lang): State {
-  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], seen: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' };
+  const fresh: State = { v: 1, lang: fallbackLang, favorites: [], won: [], seen: [], scene: parseScene(null, knownIds), unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} };
   if (!raw) return fresh;
   let data: unknown;
   try {
@@ -88,13 +92,26 @@ export function parseState(raw: string | null, knownIds: readonly string[], fall
     cute: d.cute === true,
     onboarded: d.onboarded === true,
     hatched: idList(d.hatched),
-    eggDay: typeof d.eggDay === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.eggDay) ? d.eggDay : '',
+    eggDay: isDay(d.eggDay) ? d.eggDay : '',
+    wonOn: Object.fromEntries(
+      Object.entries(typeof d.wonOn === 'object' && d.wonOn !== null ? d.wonOn : {}).filter(([id, day]) => knownIds.includes(id) && isDay(day)),
+    ),
   };
 }
 
 /** Parent mode's reset: the collection starts over, the device's settings (language, sound, style) stay. */
 export function resetCollection(state: State): State {
-  return { v: 1, lang: state.lang, muted: state.muted, cute: state.cute, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '' };
+  return { v: 1, lang: state.lang, muted: state.muted, cute: state.cute, onboarded: state.onboarded, unlockAll: false, favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, hatched: [], eggDay: '', wonOn: {} };
+}
+
+/** Cards won in the seven days up to and including `today` (YYYY-MM-DD), newest first. */
+export function wonThisWeek(wonOn: Readonly<Record<string, string>>, today: string): string[] {
+  const [y, m, d] = today.split('-').map(Number);
+  const from = new Date(Date.UTC(y!, m! - 1, d! - 6)).toISOString().slice(0, 10);
+  return Object.entries(wonOn)
+    .filter(([, day]) => day >= from && day <= today)
+    .sort((a, b) => b[1].localeCompare(a[1]))
+    .map(([id]) => id);
 }
 
 export function toggleFavorite(favorites: readonly string[], id: string): string[] {

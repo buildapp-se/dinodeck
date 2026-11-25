@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { DINOS } from './catalog.ts';
-import { advance, deckOrder, KEY, loadState, markSeen, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, type State, toggleFavorite } from './state.ts';
+import { advance, deckOrder, KEY, loadState, markSeen, MAX_SCENE_ITEMS, parseState, resetCollection, saveState, type State, toggleFavorite, wonThisWeek } from './state.ts';
 
 const ids = DINOS.map((d) => d.id);
 
 test('parseState survives junk and drops unknown ids', () => {
-  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
-  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '' });
+  assert.deepEqual(parseState(null, ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
+  assert.deepEqual(parseState('{nope', ids, 'en'), { v: 1, lang: 'en', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
+  assert.deepEqual(parseState('null', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
+  assert.deepEqual(parseState('123', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
+  assert.deepEqual(parseState('"junk"', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
+  assert.deepEqual(parseState('true', ids, 'sv'), { v: 1, lang: 'sv', favorites: [], won: [], seen: [], scene: { bg: 'jurassic', items: [] }, unlockAll: false, muted: false, cute: false, onboarded: false, hatched: [], eggDay: '', wonOn: {} });
   assert.deepEqual(parseState('[]', ids, 'sv').favorites, []);
   const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops', 'dragon', 7, 'triceratops'], won: ['spinosaurus', 'x'], seen: ['spinosaurus', 'dragon', 7, 'spinosaurus'], scene: { bg: 'mars', items: [{ id: 'triceratops', x: 7, y: 'a', size: 0, flip: 1 }, { id: 'dragon' }, 5] }, unlockAll: 'yes', muted: true, hatched: ['triceratops', 'dragon'], eggDay: 'igår' }), ids, 'sv');
   assert.deepEqual(s, {
@@ -27,6 +27,7 @@ test('parseState survives junk and drops unknown ids', () => {
     onboarded: false,
     hatched: ['triceratops'],
     eggDay: '',
+    wonOn: {},
   });
 });
 
@@ -147,7 +148,7 @@ test('loadState and saveState handle unavailable localStorage gracefully', () =>
 });
 
 test('resetCollection empties the collection and keeps language and sound', () => {
-  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], seen: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
+  const s = parseState(JSON.stringify({ lang: 'en', favorites: ['triceratops'], won: ['spinosaurus'], wonOn: { spinosaurus: '2026-11-25' }, seen: ['spinosaurus'], unlockAll: true, muted: true, cute: true, scene: { bg: 'triassic', items: [{ id: 'triceratops', x: 0.5, y: 0.5, size: 0.3, flip: false }] } }), ids, 'sv');
   assert.equal(s.unlockAll, true);
   assert.equal(s.cute, true); // else the comparison below holds even if the style were dropped
   assert.deepEqual(resetCollection(s), parseState(JSON.stringify({ lang: 'en', muted: true, cute: true }), ids, 'sv'));
@@ -195,4 +196,17 @@ test('catalog is complete in both languages', () => {
       assert.ok(!/[—–]/.test(t.sv + t.en), `${d.id}: dash in text`);
     }
   }
+});
+
+test('parseState keeps a win date only for a known card and a real day', () => {
+  const s = parseState(JSON.stringify({ wonOn: { spinosaurus: '2026-11-25', dragon: '2026-11-25', triceratops: 'igår', x: 7 } }), ids, 'sv');
+  assert.deepEqual(s.wonOn, { spinosaurus: '2026-11-25' });
+  assert.deepEqual(parseState(JSON.stringify({ wonOn: 'junk' }), ids, 'sv').wonOn, {});
+});
+
+test('wonThisWeek lists the past seven days newest first, across a month and a year', () => {
+  const wonOn = { a: '2026-11-18', b: '2026-11-19', c: '2026-11-25', d: '2026-11-22', e: '2026-11-26' };
+  assert.deepEqual(wonThisWeek(wonOn, '2026-11-25'), ['c', 'd', 'b']);
+  assert.deepEqual(wonThisWeek({ a: '2026-12-26', b: '2026-12-25', c: '2027-01-01' }, '2027-01-01'), ['c', 'a']);
+  assert.deepEqual(wonThisWeek({}, '2026-11-25'), []);
 });
