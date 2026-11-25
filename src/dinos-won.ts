@@ -585,7 +585,7 @@ export const WON: Dino[] = [
     id: 'maiasaura',
     name: 'Maiasaura',
     pronounce: { sv: 'ma-ja-SAU-ra', en: 'MY-ah-SORE-ah' },
-    meaning: { sv: 'God mammaödla', en: 'Good mother lizard' },
+    meaning: { sv: 'God moderödla', en: 'Good mother lizard' },
     group: 'dinosaur',
     period: 'cretaceous',
     fromMya: 80,
