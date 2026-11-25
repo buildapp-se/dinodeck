@@ -9,6 +9,13 @@ reviewedAt: 2026-11-25
 
 # Handoff: Dinodeck
 
+## 2026-11-25: webbläsarpass WebKit och Firefox (agent, worktree `_wt/dinodeck-1125x`, gren `xb/2026-11-25`, klart)
+
+- **Kört** (playwright-core 1.64.1 ur aifabriken: WebKit 27.2, Firefox 157.0, Chromium 156; skript i `%TEMP%\aifabriken-lanes\xb-dinodeck\`, `xb.mjs`): WebKit (Playwright) med iPhone 13-profilen, Chromium med Pixel 7, Firefox, WebKit och Chromium i 1 440×900. Flöden: första laddning, vändning och dold sida `inert`, svep till favorit, utmaning till vinst, scen (lägg till, dra, större), tidslinje till kort, detaljvy, föräldraspärren (fel och rätt svar, källan öppnas), föräldraläget med 3 s tryck och språkbyte, sparat läge efter omladdning, dagens ägg, snabba flikbyten med vyövergångar, offline via service workern (639 filer, servern avstängd: kortlek, tidslinje, scen, integritetssidan). Intl (`12 500,5`, datum, byggtid) lika i alla tre. Appen har inga datum-, tid- eller decimalfält, ingen urklipps- eller delningsknapp, ingen IndexedDB.
+- **Rättat:** WebKit (Playwright) saknar `AudioContext`, och ett tryck på en åldersknapp kastade då ett fel så att ingen fråga kom. `audioCtx()` i `src/sound.ts`: utan Web Audio blir det tyst. `src/sound.test.ts` rött före, grönt efter. En riktig iPhone har `AudioContext`; ändringen gör bara appen tålig där det saknas.
+- **Fälla, inte ett fel i appen:** WebKit (Playwright) på Windows följer inte `backface-visibility: hidden`, så kortets baksida syns spegelvänd genom framsidan. Samma fel med ett minimalt exempel utan appens CSS (`bf.mjs`); Chromium och Firefox visar framsidan. Skärmbilder av kortleken i den byggen säger alltså inget om Safari.
+- **Inte testat:** riktig iPhone eller iOS, riktiga pekhändelser (svep och långt tryck kördes som mus i en touch-profil), utskrift i WebKit och Firefox, ljud i WebKit.
+
 ## 2026-11-25: funktionspass P3 (agent, worktree `_wt/dinodeck-1125p`, gren `p3/2026-11-25`, klart)
 
 - **Byggt:** "Vunna senaste veckan" i föräldralägets sammanfattning (BACKLOG Design, `76e3a39`). Nytt fält `wonOn` i det sparade läget; gamla vinster saknar datum.
