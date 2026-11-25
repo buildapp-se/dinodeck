@@ -347,6 +347,8 @@ function hatch(): void {
   let taps = 0;
   egg.addEventListener('click', () => {
     if (taps >= 3) { hop(id, baby); return; }
+    // Hatched in the app's other copy meanwhile (the storage event updated `state`): one baby a day, this egg is gone.
+    if (state.eggDay === today()) { dialog.close(); return; }
     taps++;
     if (!state.muted) chime('crack', taps);
     navigator.vibrate?.(taps < 3 ? 15 : [20, 40, 40]);
